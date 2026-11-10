@@ -59,6 +59,27 @@ let currentSource: AudioBufferSourceNode | null = null;
  * flows). Fired once per speakSpanish call that produced audio. */
 type EndCb = () => void;
 let speechEndCb: EndCb | null = null;
+/** Watchdog timer for the in-flight kokoro turn (see speakSpanish). */
+let speakWatchdog: number | null = null;
+
+function clearSpeakWatchdog(): void {
+  if (speakWatchdog != null) {
+    window.clearTimeout(speakWatchdog);
+    speakWatchdog = null;
+  }
+}
+
+/**
+ * Fire the pending end callback exactly once and drop any watchdog.
+ * Speech is a bonus, never a blocker: every path that could leave a flow
+ * waiting (round transitions, dialogue pages) must end here.
+ */
+function fireSpeechEnd(): void {
+  clearSpeakWatchdog();
+  const cb = speechEndCb;
+  speechEndCb = null;
+  if (cb) cb();
+}
 
 function setStatus(next: Partial<VoiceStatus>) {
   status = { ...status, ...next };
@@ -96,12 +117,19 @@ function handleWorkerMessage(msg: OutMsg) {
       setStatus({ state: "error", progress: 0, fallback: true });
       break;
     case "audio":
-      if (msg.id > stopToken) playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
+      // Audio arrived: the playback path now owns the end callback.
+      if (msg.id > stopToken) {
+        clearSpeakWatchdog();
+        playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
+      } else {
+        fireSpeechEnd(); // dropped turn — nothing waits on it
+      }
       break;
     case "speakError":
-      // generation failed: nothing else to do here, the browser voice already
-      // spoke this turn while the model was loading, and if kokoro was ready
-      // the worker retries on the next utterance
+      // generation failed: nothing to wait for — release the flow (the browser
+      // voice already spoke this turn while the model was loading, and if
+      // kokoro was ready the worker retries on the next utterance)
+      fireSpeechEnd();
       break;
   }
 }
@@ -145,7 +173,11 @@ function audioContext(): AudioContext | null {
 
 function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1): void {
   const ac = audioContext();
-  if (!ac) return;
+  if (!ac) {
+    // No AudioContext: nothing audible to wait for — release the flow.
+    fireSpeechEnd();
+    return;
+  }
   try {
     const buffer = ac.createBuffer(1, audio.length, samplingRate);
     buffer.getChannelData(0).set(audio);
@@ -158,9 +190,7 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
     currentSource = source;
     source.onended = () => {
       if (currentSource === source) currentSource = null;
-      const cb = speechEndCb;
-      speechEndCb = null;
-      if (cb) cb();
+      fireSpeechEnd();
     };
     // Watchdog: a suspended AudioContext (no output device) never ends — never block the game.
     window.setTimeout(() => {
@@ -168,16 +198,12 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
         try { source.stop(); } catch { /* already stopped */ }
         currentSource = null;
       }
-      const cb = speechEndCb;
-      speechEndCb = null;
-      if (cb) cb();
-    }, 5000 + text.length * 140);
+      fireSpeechEnd();
+    }, 5000 + audio.length / samplingRate * 1000 + 2000);
     source.start();
   } catch {
     // audio is a bonus, never a blocker
-    const cb = speechEndCb;
-    speechEndCb = null;
-    if (cb) cb();
+    fireSpeechEnd();
   }
 }
 
@@ -196,17 +222,9 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
     if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
     // Watchdog: some browsers (and headless runners) never fire onend/onerror —
     // speech is a bonus, never a blocker, so fire the callback anyway.
-    let fired = false;
-    const fireOnce = () => {
-      if (fired) return;
-      fired = true;
-      const cb = speechEndCb;
-      speechEndCb = null;
-      if (cb) cb();
-    };
-    utter.onend = fireOnce;
-    utter.onerror = fireOnce;
-    window.setTimeout(fireOnce, 4000 + text.length * 120);
+    utter.onend = fireSpeechEnd;
+    utter.onerror = fireSpeechEnd;
+    window.setTimeout(fireSpeechEnd, 4000 + text.length * 120);
     const es = window.speechSynthesis.getVoices().find((v) => v.lang?.toLowerCase().startsWith("es"));
     if (es) utter.voice = es;
     window.speechSynthesis.speak(utter);
@@ -233,9 +251,7 @@ export function stopSpeaking(): void {
     }
     currentSource = null;
   }
-  const cb = speechEndCb;
-  speechEndCb = null;
-  if (cb) cb();
+  fireSpeechEnd();
 }
 
 /**
@@ -265,6 +281,11 @@ export function speakSpanish(
       speed: o.speed ?? 0.9,
       pitch: o.pitch ?? 0,
     });
+    // Watchdog: if the worker never replies (stalled/offline model), release
+    // the flow — speech is a bonus, never a blocker. Generous window covers
+    // generation plus playback of a normal line.
+    clearSpeakWatchdog();
+    speakWatchdog = window.setTimeout(fireSpeechEnd, 9000 + text.length * 160);
     return;
   }
   // Not ready yet: never wait for it — the browser voice speaks now and the
