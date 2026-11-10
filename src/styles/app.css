@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    @apply bg-orange-50 text-stone-800 antialiased;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+}
+
+@keyframes palabra-pop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes palabra-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes palabra-rise {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes palabra-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.anim-pop {
+  animation: palabra-pop 0.35s ease-out both;
+}
+.anim-shake {
+  animation: palabra-shake 0.4s ease-in-out both;
+}
+.anim-rise {
+  animation: palabra-rise 0.3s ease-out both;
+}
+.anim-float {
+  animation: palabra-float 3s ease-in-out infinite;
+}
+
+/** A game balloon bursts: quick squash, then vanish. */
+@keyframes palabra-burst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.35);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+}
+.balloon-burst {
+  animation: palabra-burst 0.45s ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop,
+  .anim-shake,
+  .anim-rise,
+  .anim-float {
+    animation: none;
+  }
+}

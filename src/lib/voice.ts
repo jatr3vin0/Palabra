@@ -1,0 +1,200 @@
+/**
+ * Palabra's natural Spanish voice: kokoro-js v1.2.1 (Apache-2.0), running in a
+ * Web Worker so the WASM/model work never blocks the game thread, and cached
+ * by the service worker — the ~86 MB model downloads once (visible progress
+ * pill), lands in the cache, and every later visit is instant and offline.
+ *
+ * kokoro-js v1.2.1 ships its own Spanish-capable pipeline, but its bundled
+ * voice registry only lists English voices, so Spanish goes through the public
+ * low-level path the worker wires up:
+ *   phonemize(text, "es")  → tokenizer → tts.generate_from_ids(ids, "ef_dora")
+ * `ef_dora` is one of the model repo's real Spanish voices
+ * (onnx-community/Kokoro-82M-v1.0-ONNX, voices/ef_dora.bin).
+ *
+ * The game NEVER waits for the model: while kokoro loads — or if the download
+ * fails — speechSynthesis with a Spanish voice speaks instead, and kokoro
+ * takes over the moment it is ready. See voice.worker.ts for the other half.
+ */
+
+import { useSyncExternalStore } from "react";
+
+export type VoiceState = "idle" | "loading" | "ready" | "error";
+export type VoiceStatus = {
+  state: VoiceState;
+  /** 0–1 share of the one-time model download. */
+  progress: number;
+  /** True while kokoro is unavailable and speechSynthesis is speaking. */
+  fallback: boolean;
+};
+
+type OutMsg =
+  | { ev: "progress"; progress: number }
+  | { ev: "ready" }
+  | { ev: "error" }
+  | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number }
+  | { ev: "speakError"; id: number };
+
+let status: VoiceStatus = { state: "idle", progress: 0, fallback: false };
+const listeners = new Set<() => void>();
+let worker: Worker | null = null;
+let workerStarted = false;
+/** In-flight kokoro requests, dropped on stopSpeaking() like the queued turns. */
+let speakId = 0;
+let stopToken = 0;
+let ctx: AudioContext | null = null;
+let currentSource: AudioBufferSourceNode | null = null;
+
+function setStatus(next: Partial<VoiceStatus>) {
+  status = { ...status, ...next };
+  listeners.forEach((l) => l());
+}
+
+function subscribe(cb: () => void): () => void {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+
+function getSnapshot(): VoiceStatus {
+  return status;
+}
+
+/** React hook: live voice state for the download pill / fallback notice. */
+export function useVoiceStatus(): VoiceStatus {
+  return useSyncExternalStore(subscribe, getSnapshot, () => status);
+}
+
+/** True when kokoro audio is usable right now (vs. browser-fallback voice). */
+export function kokoroReady(): boolean {
+  return status.state === "ready";
+}
+
+function handleWorkerMessage(msg: OutMsg) {
+  switch (msg.ev) {
+    case "progress":
+      setStatus({ state: "loading", progress: msg.progress, fallback: status.state !== "ready" });
+      break;
+    case "ready":
+      setStatus({ state: "ready", progress: 1, fallback: false });
+      break;
+    case "error":
+      setStatus({ state: "error", progress: 0, fallback: true });
+      break;
+    case "audio":
+      if (msg.id > stopToken) playAudio(msg.audio, msg.samplingRate);
+      break;
+    case "speakError":
+      // generation failed: nothing else to do here, the browser voice already
+      // spoke this turn while the model was loading, and if kokoro was ready
+      // the worker retries on the next utterance
+      break;
+  }
+}
+
+/** Start the voice worker (called from the hub, so the download is underway
+ * before a frame even mounts; the pill shows its progress everywhere). */
+export function primeVoice(): void {
+  if (typeof window === "undefined") return;
+  if (workerStarted) return;
+  workerStarted = true;
+  try {
+    worker = new Worker(new URL("./voice.worker.ts", import.meta.url), { type: "module" });
+    worker.onmessage = (e: MessageEvent<OutMsg>) => handleWorkerMessage(e.data);
+    worker.onerror = () => setStatus({ state: "error", progress: 0, fallback: true });
+    setStatus({ state: "loading", progress: 0, fallback: true });
+    worker.postMessage({ op: "init" });
+  } catch (err) {
+    console.warn("[voice] no worker support, browser speech only", err);
+    setStatus({ state: "error", progress: 0, fallback: true });
+  }
+}
+
+function audioContext(): AudioContext | null {
+  if (typeof window === "undefined") return null;
+  try {
+    if (!ctx) {
+      ctx = new AudioContext();
+      // A suspended context starts playing the moment any user tap resumes it;
+      // the frame pages are always reached by a tap on the hub.
+      const resume = () => {
+        if (ctx && ctx.state === "suspended") void ctx.resume();
+      };
+      window.addEventListener("pointerdown", resume, { passive: true });
+    }
+    if (ctx.state === "suspended") void ctx.resume();
+    return ctx;
+  } catch {
+    return null;
+  }
+}
+
+function playAudio(audio: Float32Array, samplingRate: number): void {
+  const ac = audioContext();
+  if (!ac) return;
+  try {
+    const buffer = ac.createBuffer(1, audio.length, samplingRate);
+    buffer.getChannelData(0).set(audio);
+    const source = ac.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ac.destination);
+    currentSource = source;
+    source.onended = () => {
+      if (currentSource === source) currentSource = null;
+    };
+    source.start();
+  } catch {
+    // audio is a bonus, never a blocker
+  }
+}
+
+function speakFallback(text: string, slow: boolean): void {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "es-ES";
+    utter.rate = slow ? 0.6 : 0.92;
+    const es = window.speechSynthesis.getVoices().find((v) => v.lang?.toLowerCase().startsWith("es"));
+    if (es) utter.voice = es;
+    window.speechSynthesis.speak(utter);
+  } catch {
+    // speech is a bonus, never a blocker
+  }
+}
+
+/** Stop whatever the voice is saying (browser voice + any in-flight kokoro turn). */
+export function stopSpeaking(): void {
+  stopToken = speakId;
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // ignore
+    }
+  }
+  if (currentSource) {
+    try {
+      currentSource.stop();
+    } catch {
+      // already ended
+    }
+    currentSource = null;
+  }
+}
+
+/**
+ * Speak Spanish. kokoro (natural ef_dora) once loaded; speechSynthesis
+ * (es-ES) while the model is downloading or if it failed — the frame starts
+ * speaking immediately either way, and kokoro takes over when ready. Calls
+ * after a stopSpeaking() are dropped, so navigating away never leaves audio.
+ */
+export function speakSpanish(text: string, slow = false): void {
+  stopSpeaking();
+  const id = ++speakId;
+  if (status.state === "ready" && worker) {
+    worker.postMessage({ op: "speak", id, text });
+    return;
+  }
+  // Not ready yet: never wait for it — the browser voice speaks now and the
+  // next utterances get kokoro as soon as the worker reports ready.
+  speakFallback(text, slow);
+}

@@ -1,0 +1,1085 @@
+{
+  "unitId": "a0-u01",
+  "cefr": "A0",
+  "title": "¡Hola! — Primeros saludos",
+  "subtitle": "Greet someone, say your name, and talk about your family",
+  "theme": "A first morning in a new town — say hello, meet a family, and hear how the story began",
+  "storyThread": "La creación (Génesis 1): Dios crea la luz, la tierra y la familia humana — told in very simple Spanish",
+  "vocab": [
+    { "es": "hola", "en": "hello", "note": "the h is silent: OH-lah" },
+    { "es": "buenos días", "en": "good morning", "note": "used until about noon" },
+    { "es": "buenas tardes", "en": "good afternoon", "note": "used from noon until dark" },
+    { "es": "buenas noches", "en": "good evening / good night", "note": "hello after dark, and goodbye at bedtime" },
+    { "es": "adiós", "en": "goodbye" },
+    { "es": "hasta luego", "en": "see you later" },
+    { "es": "hasta mañana", "en": "see you tomorrow" },
+    { "es": "me llamo", "en": "my name is", "note": "from llamarse; literally «I call myself»" },
+    { "es": "¿Cómo te llamas?", "en": "What is your name?", "note": "to a friend, a child, someone your age" },
+    { "es": "¿Cómo se llama usted?", "en": "What is your name?", "note": "polite, to an adult you do not know well" },
+    { "es": "tú", "en": "you", "note": "familiar" },
+    { "es": "usted", "en": "you", "note": "polite; takes the same verb form as él/ella" },
+    { "es": "¿y tú?", "en": "and you?", "note": "familiar" },
+    { "es": "¿y usted?", "en": "and you?", "note": "polite" },
+    { "es": "soy", "en": "I am", "note": "from ser" },
+    { "es": "eres", "en": "you are", "note": "from ser, familiar" },
+    { "es": "es", "en": "he / she / it is", "note": "from ser" },
+    { "es": "mucho gusto", "en": "pleased to meet you" },
+    { "es": "por favor", "en": "please" },
+    { "es": "gracias", "en": "thank you" },
+    { "es": "muchas gracias", "en": "thank you very much" },
+    { "es": "de nada", "en": "you're welcome", "note": "literally «of nothing»" },
+    { "es": "perdón", "en": "sorry / pardon me" },
+    { "es": "disculpe", "en": "excuse me", "note": "polite, to usted" },
+    { "es": "lo siento", "en": "I am sorry" },
+    { "es": "familia", "en": "family" },
+    { "es": "madre", "en": "mother" },
+    { "es": "padre", "en": "father" },
+    { "es": "hermano", "en": "brother" },
+    { "es": "hermana", "en": "sister" },
+    { "es": "hijo", "en": "son", "note": "the h is silent: EE-ho" },
+    { "es": "hija", "en": "daughter", "note": "the h is silent: EE-ha" },
+    { "es": "mi", "en": "my", "note": "mi madre, mi padre — one person" },
+    { "es": "bueno", "en": "good", "note": "buena before a feminine word: buena luz" },
+    { "es": "Dios", "en": "God" },
+    { "es": "amor", "en": "love" },
+    { "es": "luz", "en": "light" },
+    { "es": "tierra", "en": "earth, land" },
+    { "es": "cielo", "en": "sky; los cielos = the heavens" },
+    { "es": "día", "en": "day", "note": "masculine, even though it ends in -a" },
+    { "es": "noche", "en": "night" },
+    { "es": "principio", "en": "beginning", "note": "en el principio = in the beginning" },
+    { "es": "creó", "en": "he created", "note": "story word from Génesis 1" },
+    { "es": "vio", "en": "he saw", "note": "story word" },
+    { "es": "era", "en": "it was", "note": "story word" },
+    { "es": "tinieblas", "en": "darkness", "note": "story word, always plural" },
+    { "es": "imagen", "en": "image", "note": "story word" },
+    { "es": "hombre", "en": "man, human being", "note": "story word" },
+    { "es": "llave", "en": "key", "note": "ll sounds like the y in «yes»" },
+    { "es": "mañana", "en": "morning; tomorrow", "note": "ñ sounds like the ny in «canyon»" },
+    { "es": "jardín", "en": "garden", "note": "j sounds like a strong English h" },
+    { "es": "español", "en": "Spanish" }
+  ],
+  "lessons": [
+    {
+      "id": "a0-u01-l1",
+      "title": "Saludos y despedidas",
+      "goal": "Greet someone and say goodbye at the right time of day",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l1-e1",
+          "instruction": "Choose one answer.",
+          "prompt": "Which word means «hello»?",
+          "choices": ["hola", "adiós", "gracias"],
+          "answer": "hola"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l1-e2",
+          "instruction": "Listen, then type the word you hear. The «h» is silent.",
+          "audioText": "hola",
+          "answer": "hola",
+          "accepted": ["hola"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l1-e3",
+          "instruction": "Choose one answer.",
+          "prompt": "It is nine in the morning. Which greeting fits?",
+          "choices": ["Buenos días", "Buenas noches", "Hasta luego"],
+          "answer": "Buenos días"
+        },
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l1-e4",
+          "instruction": "Match each Spanish word with its meaning.",
+          "pairs": [
+            { "es": "hola", "en": "hello" },
+            { "es": "adiós", "en": "goodbye" },
+            { "es": "buenos días", "en": "good morning" },
+            { "es": "hasta luego", "en": "see you later" },
+            { "es": "buenas noches", "en": "good night" }
+          ]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l1-e5",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Good morning",
+          "answer": "Buenos días",
+          "accepted": ["buenos dias", "buenos días"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l1-e6",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Goodbye",
+          "answer": "Adiós",
+          "accepted": ["adios", "adiós"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l1-e7",
+          "instruction": "Put the words in order.",
+          "prompt": "See you tomorrow.",
+          "words": ["hasta", "mañana", "luego"],
+          "answer": "hasta mañana"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l1-e8",
+          "instruction": "Choose the missing word.",
+          "sentence": "___ días, señora García.",
+          "choices": ["Buenos", "Buenas", "Adiós"],
+          "answer": "Buenos"
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l1-e9",
+          "instruction": "Say it out loud.",
+          "target": "Buenos días",
+          "translation": "Good morning",
+          "minScore": 60
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l1-e10",
+          "instruction": "Choose one answer.",
+          "prompt": "Which one is a farewell?",
+          "choices": ["Hola", "¿Cómo te llamas?", "Hasta luego"],
+          "answer": "Hasta luego"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l1-e11",
+          "instruction": "Listen, then type what you hear.",
+          "audioText": "Buenas tardes",
+          "answer": "buenas tardes",
+          "accepted": ["buenas tardes"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l1-e12",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Good night",
+          "answer": "Buenas noches",
+          "accepted": ["buenas noches"]
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l2",
+      "title": "Me llamo…",
+      "goal": "Say your name, ask someone's name, and choose between tú and usted",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l2-e1",
+          "instruction": "Choose one answer.",
+          "prompt": "How do you say «My name is Ana»?",
+          "choices": ["Me llamo Ana", "Soy llamo Ana", "Tú llamas Ana"],
+          "answer": "Me llamo Ana"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l2-e2",
+          "instruction": "Choose the missing word.",
+          "sentence": "___ llamo Pedro.",
+          "choices": ["Me", "Te", "Se"],
+          "answer": "Me"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l2-e3",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My name is María.",
+          "answer": "Me llamo María",
+          "accepted": ["me llamo maria", "me llamo maría", "soy maria", "soy maría"]
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l2-e4",
+          "instruction": "Listen, then type the question you hear.",
+          "audioText": "¿Cómo te llamas?",
+          "answer": "¿Cómo te llamas?",
+          "accepted": ["como te llamas", "cómo te llamas", "como te llamas?", "cómo te llamas?"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l2-e5",
+          "instruction": "Put the words in order to ask a friend's name.",
+          "prompt": "What is your name? (to a friend)",
+          "words": ["Cómo", "te", "llamas", "se"],
+          "answer": "¿Cómo te llamas?"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l2-e6",
+          "instruction": "Write it in Spanish.",
+          "prompt": "I am Ana.",
+          "answer": "Soy Ana",
+          "accepted": ["soy ana"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l2-e7",
+          "instruction": "Choose one answer.",
+          "prompt": "You are speaking to an adult you do not know. Which question is polite?",
+          "choices": ["¿Cómo se llama usted?", "¿Cómo te llamas?", "Me llamo"],
+          "answer": "¿Cómo se llama usted?"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l2-e8",
+          "instruction": "Choose the missing word.",
+          "sentence": "—¿Cómo te llamas? —___ llamo Lucía.",
+          "choices": ["Me", "Te", "Le"],
+          "answer": "Me"
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l2-e9",
+          "instruction": "Say it out loud.",
+          "target": "Me llamo Ana",
+          "translation": "My name is Ana",
+          "minScore": 60
+        },
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l2-e10",
+          "instruction": "Match each Spanish phrase with its meaning.",
+          "pairs": [
+            { "es": "me llamo", "en": "my name is" },
+            { "es": "te llamas", "en": "your name is (familiar)" },
+            { "es": "soy", "en": "I am" },
+            { "es": "mucho gusto", "en": "pleased to meet you" },
+            { "es": "usted", "en": "you (polite)" }
+          ]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l2-e11",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Pleased to meet you.",
+          "answer": "Mucho gusto",
+          "accepted": ["mucho gusto", "encantado", "encantada"]
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l2-e12",
+          "instruction": "Listen, then type what you hear.",
+          "audioText": "Soy Elena",
+          "answer": "Soy Elena",
+          "accepted": ["soy elena"]
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l3",
+      "title": "Por favor y gracias",
+      "goal": "Ask politely, thank someone, and say sorry",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l3-e1",
+          "instruction": "Match each Spanish phrase with its meaning.",
+          "pairs": [
+            { "es": "por favor", "en": "please" },
+            { "es": "gracias", "en": "thank you" },
+            { "es": "de nada", "en": "you're welcome" },
+            { "es": "perdón", "en": "sorry" },
+            { "es": "disculpe", "en": "excuse me" }
+          ]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l3-e2",
+          "instruction": "Choose one answer.",
+          "prompt": "Someone gives you a gift. What do you say?",
+          "choices": ["Gracias", "De nada", "Adiós"],
+          "answer": "Gracias"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l3-e3",
+          "instruction": "Choose the missing word.",
+          "sentence": "—Gracias. —De ___.",
+          "choices": ["nada", "noche", "favor"],
+          "answer": "nada"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l3-e4",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Please",
+          "answer": "Por favor",
+          "accepted": ["por favor"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l3-e5",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Thank you very much.",
+          "answer": "Muchas gracias",
+          "accepted": ["muchas gracias"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l3-e6",
+          "instruction": "Put the words in order.",
+          "prompt": "You're welcome.",
+          "words": ["De", "nada", "gracias"],
+          "answer": "De nada"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l3-e7",
+          "instruction": "Choose one answer.",
+          "prompt": "You step on someone's foot by accident. What do you say?",
+          "choices": ["Lo siento", "De nada", "Buenos días"],
+          "answer": "Lo siento"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l3-e8",
+          "instruction": "Listen, then type what you hear.",
+          "audioText": "Disculpe, por favor",
+          "answer": "Disculpe, por favor",
+          "accepted": ["disculpe por favor", "disculpe, por favor"]
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l3-e9",
+          "instruction": "Say it out loud.",
+          "target": "Muchas gracias",
+          "translation": "Thank you very much",
+          "minScore": 60
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l3-e10",
+          "instruction": "Choose the missing word.",
+          "sentence": "___, ¿cómo se llama usted?",
+          "choices": ["Disculpe", "Gracias", "De nada"],
+          "answer": "Disculpe"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l3-e11",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Excuse me, please.",
+          "answer": "Disculpe, por favor",
+          "accepted": ["disculpe por favor", "disculpe, por favor"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l3-e12",
+          "instruction": "Choose one answer.",
+          "prompt": "What does «de nada» mean?",
+          "choices": ["you're welcome", "thank you", "please"],
+          "answer": "you're welcome"
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l4",
+      "title": "Mi familia",
+      "goal": "Name your family and read the first lines of the creation story",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l4-e1",
+          "instruction": "Match each family word with its meaning.",
+          "pairs": [
+            { "es": "madre", "en": "mother" },
+            { "es": "padre", "en": "father" },
+            { "es": "hermano", "en": "brother" },
+            { "es": "hermana", "en": "sister" },
+            { "es": "hijo", "en": "son" },
+            { "es": "hija", "en": "daughter" }
+          ]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l4-e2",
+          "instruction": "Choose one answer.",
+          "prompt": "Which word means «sister»?",
+          "choices": ["hermana", "hermano", "hija"],
+          "answer": "hermana"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l4-e3",
+          "instruction": "Choose the missing word.",
+          "sentence": "Mi ___ es María. (my mother)",
+          "choices": ["madre", "padre", "hermana"],
+          "answer": "madre"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l4-e4",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My brother",
+          "answer": "Mi hermano",
+          "accepted": ["mi hermano"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l4-e5",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My sister is Ana.",
+          "answer": "Mi hermana es Ana",
+          "accepted": ["mi hermana es ana"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l4-e6",
+          "instruction": "Put the words in order.",
+          "prompt": "My brother is David.",
+          "words": ["Mi", "hermano", "es", "David", "madre"],
+          "answer": "Mi hermano es David"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l4-e7",
+          "instruction": "Listen, then type the sentence. The «h» in «hijo» is silent.",
+          "audioText": "Mi hijo se llama David",
+          "answer": "Mi hijo se llama David",
+          "accepted": ["mi hijo se llama david"]
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l4-e8",
+          "instruction": "Say it out loud.",
+          "target": "Mi madre es Ana",
+          "translation": "My mother is Ana",
+          "minScore": 60
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l4-e9",
+          "instruction": "Read the text, then answer. (tinieblas = darkness)",
+          "prompt": "En el principio, Dios creó los cielos y la tierra. Dios dijo: «Sea la luz», y hubo luz. Dios vio que la luz era buena. Y llamó Dios a la luz «día» y a las tinieblas «noche». — ¿Qué creó Dios en el principio?",
+          "choices": ["los cielos y la tierra", "el mar y los peces", "la casa y la familia"],
+          "answer": "los cielos y la tierra"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l4-e10",
+          "instruction": "Choose one answer.",
+          "prompt": "En el texto: «Dios dijo: «Sea la luz», y hubo luz.» ¿Qué dijo Dios?",
+          "choices": ["«Sea la luz»", "«Sea la noche»", "«Sea el día»"],
+          "answer": "«Sea la luz»"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l4-e11",
+          "instruction": "Choose one answer.",
+          "prompt": "En el texto: «Dios vio que la luz era buena.» ¿Cómo era la luz?",
+          "choices": ["buena", "mala", "pequeña"],
+          "answer": "buena"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l4-e12",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My daughter is Ana.",
+          "answer": "Mi hija es Ana",
+          "accepted": ["mi hija es ana"]
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l5",
+      "title": "Soy, eres, es",
+      "goal": "Use soy, eres and es to say who someone is — and read «Dios es amor»",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l5-e1",
+          "instruction": "Choose the correct sentence.",
+          "prompt": "Which sentence is correct?",
+          "choices": ["Yo soy Ana", "Yo es Ana", "Yo eres Ana"],
+          "answer": "Yo soy Ana"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l5-e2",
+          "instruction": "Choose the missing word. (1 Juan 4:8)",
+          "sentence": "Dios ___ amor.",
+          "choices": ["es", "soy", "eres"],
+          "answer": "es"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l5-e3",
+          "instruction": "Choose the missing word.",
+          "sentence": "Yo ___ Ana.",
+          "choices": ["soy", "es", "eres"],
+          "answer": "soy"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l5-e4",
+          "instruction": "Write it in Spanish.",
+          "prompt": "God is love.",
+          "answer": "Dios es amor",
+          "accepted": ["dios es amor"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l5-e5",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My father is good.",
+          "answer": "Mi padre es bueno",
+          "accepted": ["mi padre es bueno"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l5-e6",
+          "instruction": "Put the words in order.",
+          "prompt": "God is love.",
+          "words": ["Dios", "es", "amor", "soy"],
+          "answer": "Dios es amor"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l5-e7",
+          "instruction": "Listen, then type the sentence.",
+          "audioText": "Dios es amor",
+          "answer": "Dios es amor",
+          "accepted": ["dios es amor"]
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l5-e8",
+          "instruction": "Say it out loud.",
+          "target": "Dios es amor",
+          "translation": "God is love",
+          "minScore": 60
+        },
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l5-e9",
+          "instruction": "Match each Spanish word with its meaning.",
+          "pairs": [
+            { "es": "soy", "en": "I am" },
+            { "es": "eres", "en": "you are (familiar)" },
+            { "es": "es", "en": "he / she / it is" },
+            { "es": "Dios", "en": "God" },
+            { "es": "amor", "en": "love" }
+          ]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l5-e10",
+          "instruction": "Choose one answer.",
+          "prompt": "«Dios es amor» is a verse from which book of the Bible?",
+          "choices": ["1 Juan", "Génesis", "Salmos"],
+          "answer": "1 Juan"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l5-e11",
+          "instruction": "Choose the missing word.",
+          "sentence": "Tú ___ mi hermana.",
+          "choices": ["eres", "es", "soy"],
+          "answer": "eres"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l5-e12",
+          "instruction": "Write it in Spanish. (to a friend)",
+          "prompt": "You are my brother.",
+          "answer": "Tú eres mi hermano",
+          "accepted": ["tu eres mi hermano", "eres mi hermano"]
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l6",
+      "title": "Sonidos: h, j, ll, ñ",
+      "goal": "Hear and write the sounds of h, j, ll and ñ, and read how God made people",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l6-e1",
+          "instruction": "Choose one answer.",
+          "prompt": "In the word «hola», the letter h is…",
+          "choices": ["silent", "said like the English h", "said like the Spanish j"],
+          "answer": "silent"
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l6-e2",
+          "instruction": "Listen, then type the word. The h is silent.",
+          "audioText": "hijo",
+          "answer": "hijo",
+          "accepted": ["hijo"]
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l6-e3",
+          "instruction": "Listen, then type the word. The ñ sounds like the ny in «canyon».",
+          "audioText": "mañana",
+          "answer": "mañana",
+          "accepted": ["manana", "mañana"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l6-e4",
+          "instruction": "Choose one answer.",
+          "prompt": "Which word has the ñ sound, as in «mañana»?",
+          "choices": ["niño", "noche", "nueve"],
+          "answer": "niño"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l6-e5",
+          "instruction": "Choose the missing letter.",
+          "sentence": "La palabra «espa___ol» tiene una eñe.",
+          "choices": ["ñ", "ll", "j"],
+          "answer": "ñ"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l6-e6",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My son's name is David.",
+          "answer": "Mi hijo se llama David",
+          "accepted": ["mi hijo se llama david"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l6-e7",
+          "instruction": "Put the words in order.",
+          "prompt": "My sister's name is Lucía.",
+          "words": ["Mi", "hermana", "se", "llama", "Lucía", "hijo"],
+          "answer": "Mi hermana se llama Lucía"
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l6-e8",
+          "instruction": "Say it out loud.",
+          "target": "mañana",
+          "translation": "morning / tomorrow",
+          "minScore": 60
+        },
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l6-e9",
+          "instruction": "Match each Spanish word with its meaning.",
+          "pairs": [
+            { "es": "hijo", "en": "son" },
+            { "es": "jardín", "en": "garden" },
+            { "es": "llave", "en": "key" },
+            { "es": "mañana", "en": "morning" },
+            { "es": "español", "en": "Spanish" }
+          ]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l6-e10",
+          "instruction": "Choose one answer.",
+          "prompt": "Which letter is never pronounced in «hola», «hijo» and «hermano»?",
+          "choices": ["h", "j", "ñ"],
+          "answer": "h"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l6-e11",
+          "instruction": "Choose the missing letter.",
+          "sentence": "En «___ijo» la primera letra no se pronuncia.",
+          "choices": ["h", "j", "ll"],
+          "answer": "h"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l6-e12",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Good morning, my son.",
+          "answer": "Buenos días, mi hijo",
+          "accepted": ["buenos dias mi hijo", "buenos dias, mi hijo", "buenos días mi hijo", "buenos días, mi hijo"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l6-e13",
+          "instruction": "Read the text, then answer. (hombre = man, human being; imagen = image; varón y hembra = male and female)",
+          "prompt": "Y dijo Dios: «Hagamos al hombre a nuestra imagen.» Y creó Dios al hombre a su imagen, a imagen de Dios lo creó; varón y hembra los creó. Y vio Dios todo lo que había hecho, y he aquí que era bueno en gran manera. — ¿A imagen de quién creó Dios al hombre?",
+          "choices": ["a imagen de Dios", "a imagen de los ángeles", "a imagen de la tierra"],
+          "answer": "a imagen de Dios"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l6-e14",
+          "instruction": "Choose one answer.",
+          "prompt": "En el texto: «Y vio Dios todo lo que había hecho, y he aquí que era bueno en gran manera.» ¿Cómo era todo lo que Dios había hecho?",
+          "choices": ["bueno en gran manera", "malo", "pequeño"],
+          "answer": "bueno en gran manera"
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l7",
+      "title": "Mucho gusto",
+      "goal": "Introduce yourself to a friend and to an adult, and answer «mucho gusto»",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l7-e1",
+          "instruction": "Choose one answer.",
+          "prompt": "A child meets his teacher for the first time. Which question is polite?",
+          "choices": ["¿Cómo se llama usted?", "¿Cómo te llamas?", "¿Qué es esto?"],
+          "answer": "¿Cómo se llama usted?"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l7-e2",
+          "instruction": "Choose the missing word.",
+          "sentence": "—Buenos días. ¿Cómo ___ usted? —Me llamo señor Ruiz.",
+          "choices": ["se", "te", "me"],
+          "answer": "se"
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l7-e3",
+          "instruction": "Put the words in order. (to an adult)",
+          "prompt": "Hello, my name is Ana. And you?",
+          "words": ["Hola,", "me", "llamo", "Ana.", "¿Y", "usted?", "tú"],
+          "answer": "Hola, me llamo Ana. ¿Y usted?"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l7-e4",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Pleased to meet you, my name is David.",
+          "answer": "Mucho gusto, me llamo David",
+          "accepted": ["mucho gusto me llamo david", "mucho gusto, me llamo david"]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l7-e5",
+          "instruction": "Write it in Spanish. (to a friend)",
+          "prompt": "Is your name Ana?",
+          "answer": "¿Te llamas Ana?",
+          "accepted": ["te llamas ana", "¿te llamas ana?"]
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l7-e6",
+          "instruction": "Listen, then type what you hear.",
+          "audioText": "Hasta luego, mucho gusto",
+          "answer": "Hasta luego, mucho gusto",
+          "accepted": ["hasta luego mucho gusto", "hasta luego, mucho gusto"]
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l7-e7",
+          "instruction": "Say it out loud.",
+          "target": "Mucho gusto, me llamo Ana",
+          "translation": "Pleased to meet you, my name is Ana",
+          "minScore": 60
+        },
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l7-e8",
+          "instruction": "Match each Spanish phrase with its meaning.",
+          "pairs": [
+            { "es": "¿Cómo se llama usted?", "en": "What is your name? (polite)" },
+            { "es": "¿Cómo te llamas?", "en": "What is your name? (friend)" },
+            { "es": "mucho gusto", "en": "pleased to meet you" },
+            { "es": "hasta luego", "en": "see you later" },
+            { "es": "de nada", "en": "you're welcome" }
+          ]
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l7-e9",
+          "instruction": "Choose the missing word.",
+          "sentence": "—Mucho gusto. —___ gusto.",
+          "choices": ["Mucho", "Nada", "Por"],
+          "answer": "Mucho"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l7-e10",
+          "instruction": "Choose one answer.",
+          "prompt": "María is your mother's daughter, and she is not you. María is your…",
+          "choices": ["hermana", "madre", "hija"],
+          "answer": "hermana"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l7-e11",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Good afternoon, my name is Lucía.",
+          "answer": "Buenas tardes, me llamo Lucía",
+          "accepted": ["buenas tardes me llamo lucia", "buenas tardes, me llamo lucia"]
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l7-e12",
+          "instruction": "Put the words in order.",
+          "prompt": "My father's name is José.",
+          "words": ["Mi", "padre", "se", "llama", "José", "hijo"],
+          "answer": "Mi padre se llama José"
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l7-e13",
+          "instruction": "Choose one answer.",
+          "prompt": "Someone says «Gracias». You answer…",
+          "choices": ["De nada", "De noche", "Buenos días"],
+          "answer": "De nada"
+        }
+      ]
+    },
+    {
+      "id": "a0-u01-l8",
+      "title": "En el principio",
+      "goal": "Put the whole unit together and tell the creation story in simple Spanish",
+      "xp": 10,
+      "exercises": [
+        {
+          "type": "match_pairs",
+          "id": "a0-u01-l8-e1",
+          "instruction": "Match each Spanish word with its meaning.",
+          "pairs": [
+            { "es": "hola", "en": "hello" },
+            { "es": "familia", "en": "family" },
+            { "es": "amor", "en": "love" },
+            { "es": "luz", "en": "light" },
+            { "es": "día", "en": "day" },
+            { "es": "tierra", "en": "earth" }
+          ]
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l8-e2",
+          "instruction": "Write it in Spanish.",
+          "prompt": "God created the light.",
+          "answer": "Dios creó la luz",
+          "accepted": ["dios creo la luz", "dios creó la luz"]
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l8-e3",
+          "instruction": "Choose the missing word.",
+          "sentence": "En el principio, Dios ___ los cielos y la tierra.",
+          "choices": ["creó", "soy", "eres"],
+          "answer": "creó"
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l8-e4",
+          "instruction": "Put the words in order.",
+          "prompt": "God saw that the light was good.",
+          "words": ["Dios", "vio", "que", "la", "luz", "era", "buena"],
+          "answer": "Dios vio que la luz era buena"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l8-e5",
+          "instruction": "Write it in Spanish.",
+          "prompt": "My daughter's name is Ana.",
+          "answer": "Mi hija se llama Ana",
+          "accepted": ["mi hija se llama ana"]
+        },
+        {
+          "type": "listen_type",
+          "id": "a0-u01-l8-e6",
+          "instruction": "Listen, then type the sentence.",
+          "audioText": "Dios creó la tierra",
+          "answer": "Dios creó la tierra",
+          "accepted": ["dios creo la tierra", "dios creó la tierra"]
+        },
+        {
+          "type": "speak",
+          "id": "a0-u01-l8-e7",
+          "instruction": "Say it out loud.",
+          "target": "En el principio, Dios creó los cielos y la tierra",
+          "translation": "In the beginning, God created the heavens and the earth",
+          "minScore": 55
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l8-e8",
+          "instruction": "Choose one answer.",
+          "prompt": "What does «hasta mañana» mean?",
+          "choices": ["see you tomorrow", "good night", "thank you"],
+          "answer": "see you tomorrow"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l8-e9",
+          "instruction": "Choose the missing word.",
+          "sentence": "___ noches, hasta mañana.",
+          "choices": ["Buenas", "Buenos", "Buen"],
+          "answer": "Buenas"
+        },
+        {
+          "type": "translate",
+          "id": "a0-u01-l8-e10",
+          "instruction": "Write it in Spanish.",
+          "prompt": "Thank you very much, goodbye!",
+          "answer": "Muchas gracias, adiós",
+          "accepted": ["muchas gracias adios", "muchas gracias, adios", "muchas gracias adiós"]
+        },
+        {
+          "type": "multiple_choice",
+          "id": "a0-u01-l8-e11",
+          "instruction": "Choose one answer.",
+          "prompt": "Which word means «light»?",
+          "choices": ["luz", "amor", "día"],
+          "answer": "luz"
+        },
+        {
+          "type": "order_words",
+          "id": "a0-u01-l8-e12",
+          "instruction": "Put the words in order.",
+          "prompt": "See you later, Ana.",
+          "words": ["Hasta", "luego,", "Ana", "adiós"],
+          "answer": "Hasta luego, Ana"
+        },
+        {
+          "type": "fill_blank",
+          "id": "a0-u01-l8-e13",
+          "instruction": "Choose the missing word. (1 Juan 4:8)",
+          "sentence": "Dios es ___.",
+          "choices": ["amor", "luz", "día"],
+          "answer": "amor"
+        }
+      ]
+    }
+  ],
+  "checkpoint": {
+    "id": "a0-u01-cp",
+    "title": "Prueba de la Unidad 1",
+    "goal": "Show you can greet, introduce yourself, be polite, name your family and read the creation story",
+    "exercises": [
+      {
+        "type": "match_pairs",
+        "id": "a0-u01-cp-e1",
+        "instruction": "Match each Spanish word with its meaning.",
+        "pairs": [
+          { "es": "buenos días", "en": "good morning" },
+          { "es": "gracias", "en": "thank you" },
+          { "es": "madre", "en": "mother" },
+          { "es": "hijo", "en": "son" },
+          { "es": "amor", "en": "love" }
+        ]
+      },
+      {
+        "type": "multiple_choice",
+        "id": "a0-u01-cp-e2",
+        "instruction": "Choose one answer.",
+        "prompt": "Which one is a farewell?",
+        "choices": ["Adiós", "Hola", "Gracias"],
+        "answer": "Adiós"
+      },
+      {
+        "type": "translate",
+        "id": "a0-u01-cp-e3",
+        "instruction": "Write it in Spanish.",
+        "prompt": "My name is Pedro.",
+        "answer": "Me llamo Pedro",
+        "accepted": ["me llamo pedro", "soy pedro"]
+      },
+      {
+        "type": "fill_blank",
+        "id": "a0-u01-cp-e4",
+        "instruction": "Choose the missing word.",
+        "sentence": "—¿Cómo ___ llamas? —Me llamo Sara.",
+        "choices": ["te", "se", "me"],
+        "answer": "te"
+      },
+      {
+        "type": "listen_type",
+        "id": "a0-u01-cp-e5",
+        "instruction": "Listen, then type what you hear.",
+        "audioText": "Buenas tardes",
+        "answer": "Buenas tardes",
+        "accepted": ["buenas tardes"]
+      },
+      {
+        "type": "translate",
+        "id": "a0-u01-cp-e6",
+        "instruction": "Write it in Spanish.",
+        "prompt": "Excuse me, please.",
+        "answer": "Disculpe, por favor",
+        "accepted": ["disculpe por favor", "disculpe, por favor"]
+      },
+      {
+        "type": "order_words",
+        "id": "a0-u01-cp-e7",
+        "instruction": "Put the words in order.",
+        "prompt": "My sister's name is Ana.",
+        "words": ["Mi", "hermana", "se", "llama", "Ana", "madre"],
+        "answer": "Mi hermana se llama Ana"
+      },
+      {
+        "type": "speak",
+        "id": "a0-u01-cp-e8",
+        "instruction": "Say it out loud.",
+        "target": "Mucho gusto, soy David",
+        "translation": "Pleased to meet you, I am David",
+        "minScore": 60
+      },
+      {
+        "type": "multiple_choice",
+        "id": "a0-u01-cp-e9",
+        "instruction": "Choose one answer.",
+        "prompt": "In the word «hola», the letter h is…",
+        "choices": ["silent", "said like the English h", "said like the Spanish j"],
+        "answer": "silent"
+      },
+      {
+        "type": "fill_blank",
+        "id": "a0-u01-cp-e10",
+        "instruction": "Choose the missing word. (1 Juan 4:8)",
+        "sentence": "Dios ___ amor.",
+        "choices": ["es", "eres", "soy"],
+        "answer": "es"
+      },
+      {
+        "type": "translate",
+        "id": "a0-u01-cp-e11",
+        "instruction": "Write it in Spanish.",
+        "prompt": "God created the light.",
+        "answer": "Dios creó la luz",
+        "accepted": ["dios creo la luz", "dios creó la luz"]
+      },
+      {
+        "type": "order_words",
+        "id": "a0-u01-cp-e12",
+        "instruction": "Put the words in order.",
+        "prompt": "In the beginning, God created the heavens and the earth.",
+        "words": ["En", "el", "principio,", "Dios", "creó", "los", "cielos", "y", "la", "tierra"],
+        "answer": "En el principio, Dios creó los cielos y la tierra"
+      },
+      {
+        "type": "multiple_choice",
+        "id": "a0-u01-cp-e13",
+        "instruction": "Read the sentence, then answer.",
+        "prompt": "En el texto: «Dios vio que la luz era buena.» ¿Cómo era la luz?",
+        "choices": ["buena", "mala", "grande"],
+        "answer": "buena"
+      },
+      {
+        "type": "translate",
+        "id": "a0-u01-cp-e14",
+        "instruction": "Write it in Spanish. (to a friend)",
+        "prompt": "You are my brother.",
+        "answer": "Tú eres mi hermano",
+        "accepted": ["tu eres mi hermano", "eres mi hermano"]
+      }
+    ]
+  }
+}
