@@ -162,6 +162,16 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
       speechEndCb = null;
       if (cb) cb();
     };
+    // Watchdog: a suspended AudioContext (no output device) never ends — never block the game.
+    window.setTimeout(() => {
+      if (currentSource === source) {
+        try { source.stop(); } catch { /* already stopped */ }
+        currentSource = null;
+      }
+      const cb = speechEndCb;
+      speechEndCb = null;
+      if (cb) cb();
+    }, 5000 + text.length * 140);
     source.start();
   } catch {
     // audio is a bonus, never a blocker
@@ -184,11 +194,19 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
       utter.rate = slow ? 0.6 : 0.92;
     }
     if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
-    utter.onend = () => {
+    // Watchdog: some browsers (and headless runners) never fire onend/onerror —
+    // speech is a bonus, never a blocker, so fire the callback anyway.
+    let fired = false;
+    const fireOnce = () => {
+      if (fired) return;
+      fired = true;
       const cb = speechEndCb;
       speechEndCb = null;
       if (cb) cb();
     };
+    utter.onend = fireOnce;
+    utter.onerror = fireOnce;
+    window.setTimeout(fireOnce, 4000 + text.length * 120);
     const es = window.speechSynthesis.getVoices().find((v) => v.lang?.toLowerCase().startsWith("es"));
     if (es) utter.voice = es;
     window.speechSynthesis.speak(utter);
