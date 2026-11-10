@@ -23,7 +23,10 @@ window.addEventListener('load', () => {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
-      fps: fpsParam ? { target: fpsParam } : undefined,
+      // forceSetTimeOut: without it Phaser stays on the RAF loop and a target
+      // below ~55 is advisory only (run-4 evidence: target 8, actual 55).
+      // With it the loop is driven by setTimeout, so the cap actually bites.
+      fps: fpsParam ? { target: fpsParam, forceSetTimeOut: true } : undefined,
       scene: [BootScene, TitleScene, IntroScene, GameScene, UIScene, PauseScene, GameOverScene, VictoryScene],
     });
   };
