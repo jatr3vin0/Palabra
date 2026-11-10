@@ -1,32 +1,32 @@
-# Gate verification status — feat/eldoria-gate (continuation session)
+# Gate verification status — feat/eldoria-gate (session 3, 2026-11-10 late)
 
-Run on the dev site (https://3704f599821a6c1a9ea31cf73d7b28a2-dev.cto.site/adventure), 1280×800, agent-browser + real input (synthetic KeyboardEvents on the iframe window for keys, CDP mouse taps for taps). Pre-mission state recorded live from the world: player x=187, y=136, room "4,3", gems 0, localStorage `palabra.progress.v1` = null (fresh).
+Run on local vite :3100 (dev.cto.site unreachable from the box again this session — HTTP 000; platform dev server not touched). 1280×800, agent-browser + real input (CDP taps, synthetic KeyboardEvents on the iframe window). World loop + shooter throttled to 12 fps (the ~12 fps workaround). The browser daemon wedged twice more mid-shooter ("Resource temporarily unavailable", CDP "Internal error", page_wedged) — `agent-browser close --all` recovers it every time; this is the same automation-environment failure documented in sessions 1–2, not an app failure.
 
-## PASS (verified live, screenshots in this folder)
+## STILL VERIFIED LIVE this session (screenshots in this folder)
 
-- **Boot + world** — Palabra-branded title (00-boot.png), Spanish intro (01-start.png), village room 4,3 boots (02-after-intro.png). Slot 1 start via tap.
-- **Pip greeting** — walked the hero right (168→187 px, real arrow-key input), talked to Pip: Spanish greeting pages with gloss, taps advance dialogue, dialogue closed cleanly, `npc_pip_met` flow observed (03-pip-dialogue.png).
-- **Pip handoff → openMission** — second talk shows the handoff variant "¡Mi amigo es Capitán Rico!…" (04-pip-handoff.png); on dialogue end the bridge fired `openMission` and the app opened the mission overlay over the still-mounted world: Capitán Rico greet, Niño tier preselected from `mission.difficulty=child` (05-mission-open.png; a11y snapshot listed the overlay over the iframe).
-- **Mission session playable** — ¡JUGAR! starts the Phaser shooter inside the overlay: Onda 1/5, Aciertos 0/2, round "Rico saluda: hola"; live scene inspected — target enemy `hola` has `isTarget: true`, decoys `adiós`/`gracias`, canvas→screen coordinate mapping computed and confirmed (06-shooter-play.png).
+- Fresh boot → slot 1 → intro → village room 4,3 at x=168,y=136 (20-boot-3100.png, 21-slot-start.png).
+- Walk right → x=187,y=136 (this run: x=186) → SPACE → Pip greeting pages, taps advance, closes clean, `npc_pip_met` set (22-pip-greeting.png).
+- SPACE again → handoff variant → taps → `openMission` fires, overlay opens over the still-mounted world, `window.__palabraSky` appears (23-pip-handoff.png, 24-mission-overlay.png, 25-handoff-run2.png).
+- ¡JUGAR! → shooter wave 1 live: target `hola` isTarget:true, decoys adiós/gracias, Niño tier 2/2. Synthetic canvas taps at mapped enemy coords land hits (two hits → wave-1 complete, HUD "ONDA 1/5 ACIERTOS 2/2", enemies cleared). Session 2 already proved `onMiss` → `palabra.progress.v1` misses persistence live; re-observed flow consistent.
 
-## NOT YET VERIFIED (stopped by automation environment, not by app code)
+## THE BLOCKER — wave-boundary stall, NOT voice (item 1 still NOT COMPLETE)
 
-- **Win → record → exact return (item 1)** — the win loop was interrupted mid-wave-1 each attempt by the browser daemon wedging (headless SwiftShader WebGL under two Phaser canvases; `eval`/`navigate` start failing with "Resource temporarily unavailable" ~1 min into the shooter; `agent-browser close --all` recovers it every time). No app defect observed up to that point; the code path (FrameGame.handleWin → completeLesson/storage.ts `palabra.progress.v1` → onWin → `palabra:missionResult` → flag `mission_pip_jet_done` + 15 gems + unfreeze + refocus) was code-reviewed and wired, but the win has not been clicked through. **No fix made — nothing found broken to fix.**
-- **Ana leg (item 2)** — not started. Ana at tile (6,8) same room; greeting → handoff → `casa-rosa-verse` (React scripture frame, no Phaser — should be lighter on the daemon).
-- **375px mobile pass (item 3)** — not started. Touch overlay ids for the run: `#pj-pad`/`#pj-thumb` (joystick), `#pb-action` (ACCIÓN), `#pb-item`, `#pb-cycle`; dialogue advances on any canvas tap (UIScene pointerdown); touch controls show on narrow/coarse pointers via CSS in `public/eldoria/index.html`.
+Three independent runs (session 2 + two this session) stall at the SAME point: after wave-1 completes (threshold 2/2), HUD freezes at "ONDA 1/5 ACIERTOS 2/2", enemies [], `sky.locked=true`, forever. The win screen ("Volver a la aventura") never appears, so the XP→flag→gems→exact-return leg stays unproven.
 
-## Resume recipe (exact, from this session)
+Session 2's diagnosis (speech onend) was wrong in one respect: its committed watchdog in `playAudio` referenced `text.length`, which is OUT OF SCOPE there — the watchdog itself threw ReferenceError before firing (vite dev has no tsc gate — defect 12 exactly). **Session 3 fix (committed 05e9f88, voice.ts):** single `fireSpeechEnd()` helper + real coverage: (a) worker-branch watchdog in speakSpanish for a never-replying worker, (b) `speakError` now releases the flow, (c) missing-AudioContext early-return releases the flow, (d) the broken `text.length` watchdog replaced with an audio-duration-based one. voice.ts type-checks clean (remaining tsc errors are pre-existing serve.ts Bun-typing only).
 
-1. `agent-browser set viewport 1280 800 && agent-browser open https://3704f599821a6c1a9ea31cf73d7b28a2-dev.cto.site/adventure`
-2. Tap Casilla 1 (~640,412), tap through intro (~5 taps at 640,400). Throttle early to keep the daemon alive: `frames[0].game.loop.actualFps = 12`, and after ¡JUGAR! also `__palabraSky.loop.actualFps = 12`.
-3. Walk right: dispatch keydown/keyup ArrowRight (keyCode 39) ~300 ms → player lands x≈187, y=136. SPACE (keyCode 32) to talk; tap (640,400) advances pages.
-4. Pip: talk #1 = greeting (sets npc_pip_met), talk #2 = handoff → overlay opens automatically.
-5. Win loop (wave count 5, Niño threshold 2): read `window.__palabraSky.scene.getScene('sky')`, find `enemies.find(e => !e.dead && e.isTarget)`, map to screen: `canvas.getBoundingClientRect()`; `s = min(w/720, h/960)`; `sx = r.left + (r.w−720·s)/2 + e.x·s` (same for y with 960); mouse-down+up there; wait ~1.9 s; repeat until body text shows "Volver a la aventura". Then check `localStorage['palabra.progress.v1']` (xp/coins/completed['plaza-rico-shooter']/misses), `GS.flags.mission_pip_jet_done`, `GS.gems` = 15, player back at x=187, y=136 in room "4,3"; screenshot; click "Volver a la aventura ▶".
-6. Ana leg at tile (6,8), then 375×812 viewport for the touch pass.
+After the fix the stall PERSISTS at the same point → voice is exonerated for this path. Live probes at the stall: page visible+focused, `setTimeout` fires (window.__t1=1), no console errors, no window.onerror/unhandledrejection captured, banner children still alive. The wave-complete path (FrameGame.tsx handleHit:195-204) is: say() → ctrl.showBanner() (locks scene) → `waveTimer = setTimeout(setWaveIdx(next), 1900)`. HUD never reaching "ONDA 2/5" means that setState never committed. Next debugging step (recipe): instrument BEFORE the stall — wrap window.setTimeout/clearTimeout logging 1400–2600 ms callbacks + capture errors (`/tmp/instr.js` from session 3 does exactly this), replay, and at the stall read `window.__errs` + `window.__tmr`: a PENDING 1900 ms entry = timer never fired (browser/env), an ABSENT entry = cleared or the callback ran without effect (React state/transition bug in FrameGame.tsx). The session-3 instrumented run was killed by the daemon wedge before the dump could be read.
 
-## Continuation session 2 (local vite :3100 — dev sandbox down, see below)
+## NOT REACHED
 
-- Dev preview sandbox was unreachable (503, nothing on :3000) → served the same working tree with a temporary local `vite dev --port 3100`; platform servers untouched.
-- Re-verified live on :3100: boot → slot 1 → intro → village 4,3 → walk to x=186,y=136 → Pip greeting (npc_pip_met) → handoff ("¡Mi amigo es Capitán Rico!") → openMission overlay → ¡JUGAR! → shooter round 1. Evidence: 10–14-*.png.
-- **Win loop (item 1) — PARTIAL, blocked by a real voice bug.** Round 1 completed (HUD "ONDA 1/5 ACIERTOS 2/2"), `onMiss` flows into `palabra.progress.v1` (misses.hola.n=15, game=plaza-rico-shooter) — bridge→store proven live. But the round→round transition stalls: React speaks round.say and waits for onEnd before `ctrl.playRound(next)`. Root cause found: `speakFallback` (`src/lib/voice.ts`) relies on `utter.onend`, which headless Chrome never fires; the kokoro-worker path has the same hole (no reply → nothing fires). This is also the real cause of the "daemon wedge" blamed on WebGL in session 1: the page stops progressing and the automation dies around it. **Fix applied (committed): watchdogs in voice.ts fire the onEnd callback after 4–6 s if onend/onerror/worker never respond — speech is a bonus, never a blocker.** After the fix the session still stalled once (page was reloaded before… needs one more clean pass), but round-1 completion + misses persistence were captured live (15-win-blocked-state.png). Resume: reload → replay recipe above → win loop2 (/tmp/win-loop2.sh, synthetic canvas taps at exact enemy coords) → expect Volver a la aventura → verify XP/coins/completed[plaza-rico-shooter]/flag mission_pip_jet_done/gems 15/return to exact x,y.
-- Item 2 (Ana leg) and item 3 (375px touch pass) not reached in this session — same recipe applies; Ana at tile (6,8) same room.
+- Ana leg (item 2) — tile (6,8), room 5,3, mission `mission_ana_balloons` → casa-rosa-verse (React DOM buttons, no Phaser; drive by clicking the wrong-balloon buttons).
+- 375px mobile pass (item 3) — `#pj-pad`/`#pj-thumb`, `#pb-action` in public/eldoria/index.html; dialogue advances on canvas tap.
+
+## Resume recipe (session 3 exact)
+
+1. `agent-browser close --all`; serve the branch with vite :3100 (or the dev site when reachable); `set viewport 1280 800`; open /adventure.
+2. Inject `/tmp/instr.js` FIRST (it is already written); then: tap Casilla 1 (640,412) → 6 taps (640,400) through intro → `frames[0]` game loop 12 fps → walk ArrowRight 320 ms → x≈187 → SPACE → 8 taps → SPACE → taps until `window.__palabraSky` → click ¡Jugar! → `__palabraSky.loop.actualFps = 12` → `bash /tmp/win-loop2.sh` (taps target enemies each 1.7 s).
+3. At the stall: `agent-browser eval "JSON.stringify({errs:window.__errs,tmr:window.__tmr})"` → decide per above; the fix is expected in FrameGame.tsx handleHit wave-complete branch (195-204) or the sky-words showBanner/unlock contract.
+4. Then: verify win screen → palabra.progress.v1 (xp/coins/completed['plaza-rico-shooter']/misses) + GS.flags.mission_pip_jet_done + GS.gems=15 + player back at exact x,y/room 4,3 → click "Volver a la aventura ▶" → Ana leg → 375×812 touch pass.
+
+Evidence numbering continues at 26+ for the next session.
