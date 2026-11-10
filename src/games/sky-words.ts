@@ -276,7 +276,12 @@ class SkyScene extends Phaser.Scene {
           .setAlpha(0),
       );
     }
-    this.tweens.chain({
+    // A plain tween here, NOT tweens.chain: the chain builder mis-shards this
+    // scale/alpha config in Phaser 3.88 and its setCurrentTween() reads a data
+    // entry that does not exist (undefined.setActiveState) — the synchronous
+    // throw killed the wave-complete flow before the wave break timer was set,
+    // stranding every session at "ONDA 1/5" with a locked scene (gate defect).
+    this.tweens.add({
       targets: banner,
       scale: 1,
       alpha: 1,
