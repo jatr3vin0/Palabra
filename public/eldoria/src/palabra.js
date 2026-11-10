@@ -122,7 +122,16 @@ window.addEventListener('message', (e) => {
   }
 });
 
-// Boot handshake: tell the app we exist and ask for learner context.
-if (window.Palabra && window.Palabra.attached) {
-  window.Palabra.post({ type: 'palabra:hello' });
-}
+// Boot handshake: tell the app we exist and ask for learner context. Retried
+// briefly — the app's message listener attaches right after hydration and the
+// static iframe can beat it to the first post.
+(function handshake() {
+  if (!window.Palabra || !window.Palabra.attached) return;
+  const tries = [0, 400, 1200, 2500];
+  for (const ms of tries) {
+    setTimeout(() => {
+      if (window.PALABRA_CTX.attached) return;
+      window.Palabra.post({ type: 'palabra:hello' });
+    }, ms);
+  }
+})();

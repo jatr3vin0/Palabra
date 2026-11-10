@@ -170,7 +170,7 @@ function Adventure() {
             exact room, dialogue and flags (Eldoria save is live in here). */}
         <iframe
           ref={frameRef}
-          src="/eldoria/"
+          src="/eldoria/index.html"
           title="Palabra — Aventura"
           className={`h-full w-full border-0 transition-opacity ${mission ? "pointer-events-none opacity-0" : "opacity-100"}`}
           allow="autoplay"
