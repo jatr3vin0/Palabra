@@ -7,6 +7,12 @@ import { stopSpeaking, speakSpanish } from "~/lib/voice";
 import { castParams, type VoiceKey } from "~/lib/voiceCast";
 
 export const Route = createFileRoute("/adventure")({
+  // ?fps=N passes a frame-rate cap down to the world boot (low-end devices /
+  // software-rendered VMs); absent = world boots with its default config.
+  validateSearch: (search: Record<string, unknown>) => {
+    const n = Number(search.fps);
+    return Number.isInteger(n) && n >= 1 && n <= 60 ? { fps: n } : {};
+  },
   component: Adventure,
 });
 
@@ -35,6 +41,7 @@ type MissionRequest = {
 };
 
 function Adventure() {
+  const { fps } = Route.useSearch();
   const [p] = useProgress();
   const frameRef = useRef<HTMLIFrameElement | null>(null);
   const [mission, setMission] = useState<MissionRequest | null>(null);
@@ -170,7 +177,7 @@ function Adventure() {
             exact room, dialogue and flags (Eldoria save is live in here). */}
         <iframe
           ref={frameRef}
-          src="/eldoria/index.html"
+          src={fps ? `/eldoria/index.html?fps=${fps}` : "/eldoria/index.html"}
           title="Palabra — Aventura"
           className={`h-full w-full border-0 transition-opacity ${mission ? "pointer-events-none opacity-0" : "opacity-100"}`}
           allow="autoplay"

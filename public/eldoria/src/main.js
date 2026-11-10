@@ -1,6 +1,13 @@
 // Boot the game — but only after the pixel font is ready, or every text
 // object would bake the fallback font into its texture.
 window.addEventListener('load', () => {
+  // ?fps=N on the boot URL caps the world's frame rate (Phaser fps target) —
+  // genuinely useful on low-end devices / software-rendered VMs where a 60Hz
+  // RAF loop pegs the main thread. Default (no param): untouched.
+  const fpsParam = (() => {
+    const n = parseInt(new URLSearchParams(window.location.search).get('fps'), 10);
+    return Number.isInteger(n) && n >= 1 && n <= 60 ? n : null;
+  })();
   const boot = () => {
     window.game = new Phaser.Game({
       type: Phaser.AUTO,
@@ -16,6 +23,7 @@ window.addEventListener('load', () => {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
+      fps: fpsParam ? { target: fpsParam } : undefined,
       scene: [BootScene, TitleScene, IntroScene, GameScene, UIScene, PauseScene, GameOverScene, VictoryScene],
     });
   };
