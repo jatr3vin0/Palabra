@@ -110,6 +110,25 @@ function Village() {
         </div>
       </header>
 
+      {/* the adventure front: the explorable Eldoria world */}
+      <section className="mx-auto max-w-xl px-4 pt-4">
+        <a
+          href="/adventure"
+          className="flex items-center justify-between gap-3 rounded-3xl border-2 border-indigo-200 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white shadow-[0_5px_0_0_#3730a3] transition hover:brightness-110 active:translate-y-[3px] active:shadow-[0_2px_0_0_#3730a3]"
+          aria-label="Entrar a la aventura — el mundo explorable"
+        >
+          <span>
+            <span className="block text-lg font-black">⚔ Entra a la aventura</span>
+            <span className="block text-xs font-semibold text-indigo-100">
+              Explora el pueblo, habla con Pip y Ana, gana misiones
+            </span>
+          </span>
+          <span className="text-3xl" aria-hidden>
+            🗺️
+          </span>
+        </a>
+      </section>
+
       {/* the village */}
       <section className="mx-auto max-w-xl px-4 pt-4">
         <div className="relative h-[430px] overflow-hidden rounded-3xl border-2 border-sky-200 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 shadow-sm sm:h-[480px]">

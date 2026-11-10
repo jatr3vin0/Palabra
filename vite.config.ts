@@ -43,4 +43,9 @@ export default defineConfig({
   worker: {
     format: "es",
   },
+  // Phaser is lazily imported on the game route only; pre-bundling it up front
+  // keeps the first frame open from triggering an optimize-deps page reload.
+  optimizeDeps: {
+    include: ["phaser"],
+  },
 });

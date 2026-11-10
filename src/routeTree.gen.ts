@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MinigameRouteImport } from './routes/minigame'
+import { Route as AdventureRouteImport } from './routes/adventure'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LessonIdRouteImport } from './routes/lesson.$id'
 import { Route as GameFrameIdRouteImport } from './routes/game.$frameId'
@@ -17,6 +18,11 @@ import { Route as GameFrameIdRouteImport } from './routes/game.$frameId'
 const MinigameRoute = MinigameRouteImport.update({
   id: '/minigame',
   path: '/minigame',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdventureRoute = AdventureRouteImport.update({
+  id: '/adventure',
+  path: '/adventure',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const GameFrameIdRoute = GameFrameIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adventure': typeof AdventureRoute
   '/minigame': typeof MinigameRoute
   '/game/$frameId': typeof GameFrameIdRoute
   '/lesson/$id': typeof LessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adventure': typeof AdventureRoute
   '/minigame': typeof MinigameRoute
   '/game/$frameId': typeof GameFrameIdRoute
   '/lesson/$id': typeof LessonIdRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/adventure': typeof AdventureRoute
   '/minigame': typeof MinigameRoute
   '/game/$frameId': typeof GameFrameIdRoute
   '/lesson/$id': typeof LessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/minigame' | '/game/$frameId' | '/lesson/$id'
+  fullPaths: '/' | '/adventure' | '/minigame' | '/game/$frameId' | '/lesson/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/minigame' | '/game/$frameId' | '/lesson/$id'
-  id: '__root__' | '/' | '/minigame' | '/game/$frameId' | '/lesson/$id'
+  to: '/' | '/adventure' | '/minigame' | '/game/$frameId' | '/lesson/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/adventure'
+    | '/minigame'
+    | '/game/$frameId'
+    | '/lesson/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdventureRoute: typeof AdventureRoute
   MinigameRoute: typeof MinigameRoute
   GameFrameIdRoute: typeof GameFrameIdRoute
   LessonIdRoute: typeof LessonIdRoute
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/minigame'
       fullPath: '/minigame'
       preLoaderRoute: typeof MinigameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adventure': {
+      id: '/adventure'
+      path: '/adventure'
+      fullPath: '/adventure'
+      preLoaderRoute: typeof AdventureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdventureRoute: AdventureRoute,
   MinigameRoute: MinigameRoute,
   GameFrameIdRoute: GameFrameIdRoute,
   LessonIdRoute: LessonIdRoute,

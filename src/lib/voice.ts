@@ -31,8 +31,20 @@ type OutMsg =
   | { ev: "progress"; progress: number }
   | { ev: "ready" }
   | { ev: "error" }
-  | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number }
+  | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number; playbackRate?: number }
   | { ev: "speakError"; id: number };
+
+/** Per-character voice request (brief: voiceId in the worker protocol). */
+export type SpeakOpts = {
+  /** kokoro voice id, e.g. "ef_dora" / "em_alex" / "em_santa". */
+  voice?: string;
+  /** Audible rate: 1.05 = a touch fast, 0.85 = slow. */
+  speed?: number;
+  /** Pitch shift in semitones (+2 = child-bright, -3 = villain-deep). */
+  pitch?: number;
+  /** Legacy boolean: browser-fallback slower rate. */
+  slow?: boolean;
+};
 
 let status: VoiceStatus = { state: "idle", progress: 0, fallback: false };
 const listeners = new Set<() => void>();
@@ -43,6 +55,10 @@ let speakId = 0;
 let stopToken = 0;
 let ctx: AudioContext | null = null;
 let currentSource: AudioBufferSourceNode | null = null;
+/** Resolved when the current utterance's audio finishes (music ducking, page
+ * flows). Fired once per speakSpanish call that produced audio. */
+type EndCb = () => void;
+let speechEndCb: EndCb | null = null;
 
 function setStatus(next: Partial<VoiceStatus>) {
   status = { ...status, ...next };
@@ -80,7 +96,7 @@ function handleWorkerMessage(msg: OutMsg) {
       setStatus({ state: "error", progress: 0, fallback: true });
       break;
     case "audio":
-      if (msg.id > stopToken) playAudio(msg.audio, msg.samplingRate);
+      if (msg.id > stopToken) playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
       break;
     case "speakError":
       // generation failed: nothing else to do here, the browser voice already
@@ -127,7 +143,7 @@ function audioContext(): AudioContext | null {
   }
 }
 
-function playAudio(audio: Float32Array, samplingRate: number): void {
+function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1): void {
   const ac = audioContext();
   if (!ac) return;
   try {
@@ -135,24 +151,44 @@ function playAudio(audio: Float32Array, samplingRate: number): void {
     buffer.getChannelData(0).set(audio);
     const source = ac.createBufferSource();
     source.buffer = buffer;
+    // pitch-shift playback (+n semitones = 2^(n/12)); the worker generated at
+    // speed/r so the duration stays what the caller asked for
+    if (playbackRate !== 1) source.playbackRate.value = playbackRate;
     source.connect(ac.destination);
     currentSource = source;
     source.onended = () => {
       if (currentSource === source) currentSource = null;
+      const cb = speechEndCb;
+      speechEndCb = null;
+      if (cb) cb();
     };
     source.start();
   } catch {
     // audio is a bonus, never a blocker
+    const cb = speechEndCb;
+    speechEndCb = null;
+    if (cb) cb();
   }
 }
 
-function speakFallback(text: string, slow: boolean): void {
+function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   try {
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = "es-ES";
-    utter.rate = slow ? 0.6 : 0.92;
+    // the fallback stays single-voice (brief): speed/pitch approximate the cast
+    if (opts?.speed != null) {
+      utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
+    } else {
+      utter.rate = slow ? 0.6 : 0.92;
+    }
+    if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
+    utter.onend = () => {
+      const cb = speechEndCb;
+      speechEndCb = null;
+      if (cb) cb();
+    };
     const es = window.speechSynthesis.getVoices().find((v) => v.lang?.toLowerCase().startsWith("es"));
     if (es) utter.voice = es;
     window.speechSynthesis.speak(utter);
@@ -179,22 +215,41 @@ export function stopSpeaking(): void {
     }
     currentSource = null;
   }
+  const cb = speechEndCb;
+  speechEndCb = null;
+  if (cb) cb();
 }
 
 /**
- * Speak Spanish. kokoro (natural ef_dora) once loaded; speechSynthesis
- * (es-ES) while the model is downloading or if it failed — the frame starts
- * speaking immediately either way, and kokoro takes over when ready. Calls
- * after a stopSpeaking() are dropped, so navigating away never leaves audio.
+ * Speak Spanish with a per-character voice (brief: `speak` seam carries
+ * voiceId+speed+pitch). kokoro (natural cast voice) once loaded;
+ * speechSynthesis (es-ES, speed/pitch approximated) while the model is
+ * downloading or if it failed. Calls after a stopSpeaking() are dropped.
+ *
+ * `opts` may be `true` (legacy "slow") and `onEnd` fires when the utterance
+ * finishes (or is cut) — used for music ducking and sequential lines.
  */
-export function speakSpanish(text: string, slow = false): void {
+export function speakSpanish(
+  text: string,
+  opts?: SpeakOpts | boolean,
+  onEnd?: () => void,
+): void {
+  const o: SpeakOpts = typeof opts === "object" && opts !== null ? opts : { slow: opts === true };
   stopSpeaking();
   const id = ++speakId;
+  speechEndCb = onEnd ?? null;
   if (status.state === "ready" && worker) {
-    worker.postMessage({ op: "speak", id, text });
+    worker.postMessage({
+      op: "speak",
+      id,
+      text,
+      voice: o.voice ?? "ef_dora",
+      speed: o.speed ?? 0.9,
+      pitch: o.pitch ?? 0,
+    });
     return;
   }
   // Not ready yet: never wait for it — the browser voice speaks now and the
   // next utterances get kokoro as soon as the worker reports ready.
-  speakFallback(text, slow);
+  speakFallback(text, o.slow ?? false, o);
 }

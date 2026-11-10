@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Palabra — Aventura</title>
+<!-- mobile: the gate requires phones/tablets; the canvas scales with FIT below -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<style>
+  @font-face { font-family: 'PressStart';
+    src: url('lib/press-start-2p.woff2') format('woff2'); }
+  html, body { margin: 0; padding: 0; background: #07070d; color: #ccc;
+    font-family: monospace; height: 100%; overscroll-behavior: none; }
+  body { overflow: hidden; }
+  #wrap { display: flex; flex-direction: column; align-items: center; gap: 6px;
+    height: 100%; padding: 6px 0 env(safe-area-inset-bottom) 0; box-sizing: border-box; }
+  h1 { color: #ffe97f; font-size: 14px; letter-spacing: 4px; margin: 2px 0 0 0;
+    text-shadow: 0 2px 0 #000; }
+  #game { width: min(100vw - 12px, 960px); aspect-ratio: 320 / 208; }
+  #game canvas { image-rendering: pixelated; border: 2px solid #2c2c44;
+    border-radius: 4px; box-shadow: 0 8px 40px #000; }
+  #hint { color: #777799; font-size: 10px; text-align: center; line-height: 1.6; }
+  #hint b { color: #aaaacc; }
+  #err { position: fixed; bottom: 0; left: 0; right: 0; background: #400;
+    color: #fbb; font-size: 11px; padding: 2px 8px; display: none;
+    white-space: pre-wrap; max-height: 80px; overflow: auto; z-index: 40; }
+
+  /* ── Palabra touch controls ─────────────────────────────────────────── */
+  #palabra-touch { position: fixed; inset: auto 0 0 0; padding: 10px 14px
+    calc(10px + env(safe-area-inset-bottom)); display: none;
+    justify-content: space-between; align-items: flex-end;
+    pointer-events: none; z-index: 30; user-select: none; -webkit-user-select: none; }
+  #pj-pad { pointer-events: auto; width: 116px; height: 116px; border-radius: 50%;
+    background: rgba(20,20,40,.55); border: 2px solid rgba(150,150,220,.4);
+    touch-action: none; position: relative; }
+  #pj-thumb { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px;
+    margin: -23px 0 0 -23px; border-radius: 50%; background: rgba(255,233,127,.75);
+    box-shadow: 0 2px 8px rgba(0,0,0,.5); transition: transform .06s linear; }
+  .pbtns { display: grid; grid-template-columns: repeat(2, 62px); gap: 10px; }
+  .pbtn { pointer-events: auto; width: 62px; height: 62px; border-radius: 50%;
+    background: rgba(20,20,40,.55); border: 2px solid rgba(150,150,220,.4);
+    color: #ffe97f; font-family: 'PressStart', monospace; font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: none; text-align: center; line-height: 1.2; }
+  .pbtn.pressed { background: rgba(255,233,127,.35); }
+  .pbtn-big { width: 74px; height: 74px; font-size: 11px; }
+  /* show on coarse pointers and portrait phones */
+  @media (pointer: coarse) { #palabra-touch { display: flex; } #hint { display: none; } }
+  @media (max-width: 640px) { #hint { display: none; } }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>⚔ PALABRA ⚔</h1>
+  <div id="game"></div>
+  <div id="hint">
+    <b>FLECHAS/WASD</b> moverse &nbsp; <b>ESPACIO</b> espada + hablar + abrir &nbsp; <b>X</b> objeto<br>
+    <b>C</b> cambiar objeto &nbsp; <b>ENTER</b> pausa + inventario + guardar &nbsp; <b>M</b> silencio
+  </div>
+</div>
+
+<!-- virtual joystick + action buttons (touch devices only, CSS-gated) -->
+<div id="palabra-touch">
+  <div id="pj-pad"><div id="pj-thumb"></div></div>
+  <div class="pbtns">
+    <div class="pbtn" id="pb-cycle">CAMBIAR</div>
+    <div class="pbtn" id="pb-pause">PAUSA</div>
+    <div class="pbtn" id="pb-item">OBJETO</div>
+    <div class="pbtn pbtn-big" id="pb-action">ACCIÓN</div>
+  </div>
+</div>
+
+<div id="err"></div>
+<script>
+  window.onerror = function (msg, src, line) {
+    var el = document.getElementById('err');
+    el.style.display = 'block';
+    el.textContent += msg + ' @ ' + (src || '').split('/').pop() + ':' + line + '\n';
+  };
+</script>
+
+<script src="lib/phaser.min.js"></script>
+
+<!-- engine -->
+<script src="src/config.js"></script>
+<script src="src/world/tiles.js"></script>
+<script src="src/textures.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/save.js"></script>
+<script src="src/items.js"></script>
+<script src="src/dialogue.js"></script>
+<script src="src/enemies.js"></script>
+<script src="src/player.js"></script>
+<script src="src/world.js"></script>
+
+<!-- content: art -->
+<script src="src/sprites/tile_art.js"></script>
+<script src="src/sprites/actor_art.js"></script>
+<script src="src/sprites/enemy_art.js"></script>
+<script src="src/sprites/item_art.js"></script>
+
+<!-- content: audio, words, beings -->
+<script src="src/audio_content.js"></script>
+<script src="src/dialogue_content.js"></script>
+<script src="src/enemy_types.js"></script>
+<script src="src/bosses.js"></script>
+
+<!-- content: world -->
+<script src="src/world/regions/meadows.js"></script>
+<script src="src/world/regions/forest.js"></script>
+<script src="src/world/regions/lake.js"></script>
+<script src="src/world/regions/mountains.js"></script>
+<script src="src/world/regions/wastes.js"></script>
+<script src="src/world/regions/swamp.js"></script>
+<script src="src/world/regions/desert.js"></script>
+<script src="src/world/dungeon1.js"></script>
+<script src="src/world/dungeon2.js"></script>
+<script src="src/world/dungeon3.js"></script>
+<script src="src/world/citadel.js"></script>
+<script src="src/world/shrine.js"></script>
+<script src="src/world/interiors.js"></script>
+
+<!-- Palabra: NPC/mission data + the app bridge + touch controls -->
+<script src="src/palabra_npc_config.js"></script>
+<script src="src/palabra.js"></script>
+<script src="src/touch.js"></script>
+
+<!-- scenes -->
+<script src="src/scenes/BootScene.js"></script>
+<script src="src/scenes/TitleScene.js"></script>
+<script src="src/scenes/IntroScene.js"></script>
+<script src="src/scenes/GameScene.js"></script>
+<script src="src/scenes/UIScene.js"></script>
+<script src="src/scenes/PauseScene.js"></script>
+<script src="src/scenes/GameOverScene.js"></script>
+<script src="src/scenes/VictoryScene.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>

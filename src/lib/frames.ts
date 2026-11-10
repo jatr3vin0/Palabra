@@ -22,6 +22,12 @@ export type ShooterRound = {
   missing?: string;
   /** True when this round re-serves a word missed in another frame. */
   isReplay?: boolean;
+  /**
+   * Wave tag for the shooter template (session waves 1–5; wave 5 is the
+   * adaptive-replay wave, built at runtime from progress.misses). Untagged
+   * rounds play as one single wave.
+   */
+  wave?: number;
 };
 
 export type ScriptureRound = {
@@ -35,16 +41,37 @@ export type ScriptureRound = {
   balloons: string[];
 };
 
-export type FrameKind = "shooter" | "scripture";
+export type FrameKind = "shooter" | "scripture" | "phaser";
+
+/** Mini-game template params — see GAME-ROADMAP.md: { mechanic, contentBinding, speed, difficulty, masteryThreshold }. */
+export type FrameParams = {
+  /** Descent/spawn tempo multiplier: child 0.6×, standard 1.0×, adult 1.4×. */
+  speed: number;
+  /** Enemies per wave formation (bigger = more decoys on screen). */
+  difficulty: number;
+  /** Correct hits required to clear a wave. */
+  masteryThreshold: number;
+};
 
 export type FrameDef = {
   id: string;
   kind: FrameKind;
+  /**
+   * The arcade mechanic the frame's Phaser island runs ("shooter-word" for
+   * game #1). Frames without one play the legacy React exercise body.
+   */
+  mechanic?: string;
+  /** Template params for the mechanic; the level picker scales them per tier. */
+  params?: FrameParams;
   /** The villager who opens this frame in the village. */
   villager: { name: string; emoji: string };
   place: string;
   englishLevel: 0 | 1 | 2 | 3;
   xp: number;
+  /** Voice-cast keys (see voiceCast.ts) — speech is per character. */
+  voice?: string;
+  /** Voice for round content (scripture frames use the narrator row). */
+  roundVoice?: string;
   /** Spoken when the villager opens the frame. */
   greeting: { es: string; en: string };
   /** Spoken on a right answer. */
@@ -65,14 +92,19 @@ const PRAISE = ["¡Muy bien!", "¡Exacto!", "¡Eso es!", "¡Perfecto!"];
 const GENTLE = ["Casi. Escucha otra vez.", "Mmm, no era esa. Otra vez, despacito.", "¡Ánimo! Escucha de nuevo."];
 
 export const frames: Record<string, FrameDef> = {
-  // ─── Plaza: Capitán Rico's jet word-shooter ───────────────────────────────
+  // ─── Plaza: Capitán Rico's jet word-shooter — Phaser template (game #1) ────
+  // Wave bindings (Unit 1): 1–2 saludos (a0-u01-l1), 3 cortesía (a0-u01-l3),
+  // 4 «En el principio» story words (a0-u01-l8), 5 adaptive replay (runtime).
   [PLAZA_FRAME_ID]: {
     id: PLAZA_FRAME_ID,
-    kind: "shooter",
+    kind: "phaser",
+    mechanic: "shooter-word",
+    params: { speed: 1.0, difficulty: 5, masteryThreshold: 3 },
     villager: { name: "Capitán Rico", emoji: "✈️" },
     place: "La plaza",
     englishLevel: 0,
     xp: 10,
+    voice: "villagerM",
     greeting: {
       es: "¡Hola! Soy el Capitán Rico. Mi jet dispara palabras del cielo. ¡Escucha y toca la palabra buena!",
       en: "Hi! I'm Captain Rico. My jet shoots words from the sky. Listen and tap the right word!",
@@ -81,64 +113,194 @@ export const frames: Record<string, FrameDef> = {
     gentle: GENTLE,
     farewell: { es: "¡Buen trabajo, piloto! ¡Hasta luego!", en: "Good work, pilot! See you later!" },
     rounds: [
+      // ── Wave 1 · saludos (a0-u01-l1) ──
       {
         word: "hola",
         en: "hello",
-        say: "¡Hola! La palabra es… hola.",
-        caption: "La palabra es… hola.",
-        options: ["hola", "adiós", "gracias", "luz"],
+        say: "¡Hola! Yo saludo así: ¡hola!",
+        caption: "Rico saluda: hola",
+        options: ["hola", "adiós", "gracias"],
+        wave: 1,
+      },
+      {
+        word: "adiós",
+        en: "goodbye",
+        say: "Cuando me voy, digo… adiós.",
+        caption: "Rico se va: adiós",
+        options: ["adiós", "hola", "hasta luego"],
+        wave: 1,
+      },
+      {
+        word: "buenos días",
+        en: "good morning",
+        say: "De mañana digo… buenos días.",
+        caption: "De mañana: buenos días",
+        options: ["buenos días", "buenas noches", "adiós"],
+        wave: 1,
+      },
+      {
+        word: "buenas tardes",
+        en: "good afternoon",
+        say: "Después de comer digo… buenas tardes.",
+        caption: "Después de comer: buenas tardes",
+        options: ["buenas tardes", "buenos días", "buenas noches"],
+        wave: 1,
+      },
+      // ── Wave 2 · saludos (a0-u01-l1) ──
+      {
+        word: "buenas noches",
+        en: "good evening / good night",
+        say: "En la noche digo… buenas noches.",
+        caption: "En la noche: buenas noches",
+        options: ["buenas noches", "buenas tardes", "hola"],
+        wave: 2,
+      },
+      {
+        word: "hasta luego",
+        en: "see you later",
+        say: "Nos vemos pronto: ¡hasta luego!",
+        caption: "Nos vemos pronto: hasta luego",
+        options: ["hasta luego", "adiós", "buenas noches"],
+        wave: 2,
+      },
+      {
+        word: "hasta mañana",
+        en: "see you tomorrow",
+        say: "Vuelvo mañana: ¡hasta mañana!",
+        caption: "Vuelvo mañana: hasta mañana",
+        options: ["hasta mañana", "hasta luego", "buenas tardes"],
+        wave: 2,
+      },
+      // ── Wave 3 · cortesía (a0-u01-l3) ──
+      {
+        word: "por favor",
+        en: "please",
+        say: "Pido con cariño: por favor.",
+        caption: "Pido con cariño: por favor",
+        options: ["por favor", "gracias", "perdón"],
+        wave: 3,
       },
       {
         word: "gracias",
         en: "thank you",
-        say: "Mamá dice… gracias, cuando recibe un regalo.",
-        caption: "Mamá dice… gracias.",
-        options: ["gracias", "hola", "noche", "padre"],
+        say: "Mamá recibe un regalo y dice… gracias.",
+        caption: "Con un regalo: gracias",
+        options: ["gracias", "de nada", "por favor"],
+        wave: 3,
       },
       {
-        word: "madre",
-        en: "mother",
-        say: "La madre de Ana cocina. La palabra es… madre.",
-        caption: "La palabra es… madre.",
-        options: ["madre", "padre", "hola", "tierra"],
+        word: "de nada",
+        en: "you're welcome",
+        say: "—Gracias. —¡De nada!",
+        caption: "La respuesta amable: de nada",
+        options: ["de nada", "gracias", "lo siento"],
+        wave: 3,
+      },
+      {
+        word: "perdón",
+        en: "sorry / pardon me",
+        say: "Pisó mi pie: ¡perdón!",
+        caption: "Cuando me equivoco: perdón",
+        options: ["perdón", "gracias", "de nada"],
+        wave: 3,
+      },
+      {
+        word: "lo siento",
+        en: "I am sorry",
+        say: "Si alguien está triste, digo… lo siento.",
+        caption: "Cuando algo duele: lo siento",
+        options: ["lo siento", "perdón", "de nada"],
+        wave: 3,
+      },
+      // ── Wave 4 · «En el principio» (a0-u01-l8, Génesis 1) ──
+      {
+        word: "Dios",
+        en: "God",
+        say: "En el principio creó… Dios… los cielos y la tierra.",
+        caption: "Génesis 1: Dios crea",
+        missing: "En el principio creó ___ los cielos y la tierra.",
+        options: ["Dios", "hombre", "luz"],
+        wave: 4,
+      },
+      {
+        word: "principio",
+        en: "beginning",
+        say: "Todo empieza en el… principio.",
+        caption: "Génesis 1: el principio",
+        missing: "En el ___ creó Dios los cielos y la tierra.",
+        options: ["principio", "día", "noche"],
+        wave: 4,
+      },
+      {
+        word: "luz",
+        en: "light",
+        say: "Y Dios dijo: sea la… luz.",
+        caption: "Génesis 1: la primera luz",
+        missing: "Y dijo Dios: Sea la ___.",
+        options: ["luz", "tinieblas", "tierra"],
+        wave: 4,
+      },
+      {
+        word: "tinieblas",
+        en: "darkness",
+        say: "Antes de la luz había… tinieblas.",
+        caption: "Génesis 1: las tinieblas",
+        options: ["tinieblas", "luz", "cielo"],
+        wave: 4,
       },
       {
         word: "cielo",
         en: "sky; los cielos = the heavens",
-        say: "Mira arriba: el cielo. ¡Mi jet vuela en el cielo!",
-        caption: "Mi jet vuela en el cielo.",
-        options: ["cielo", "tierra", "día", "hola"],
-      },
-      {
-        word: "Dios",
-        en: "God",
-        say: "En el principio creó ___ los cielos y la tierra. ¿Quién creó? ¡Dios!",
-        caption: "En el principio creó ___ los cielos y la tierra.",
-        missing: "En el principio creó ___ los cielos y la tierra.",
-        options: ["Dios", "hola", "jardín", "noche"],
+        say: "Arriba está el… cielo. ¡Mi jet vuela en el cielo!",
+        caption: "Arriba: el cielo",
+        options: ["cielo", "tierra", "luz"],
+        wave: 4,
       },
       {
         word: "tierra",
         en: "earth, land",
-        say: "Dios hizo los cielos y la ___… ¡la tierra!",
-        caption: "Dios hizo los cielos y la ___.",
+        say: "Dios hizo los cielos y la… tierra.",
+        caption: "Génesis 1: la tierra",
         missing: "En el principio creó Dios los cielos y la ___.",
-        options: ["tierra", "luz", "gracias", "padre"],
+        options: ["tierra", "cielo", "hombre"],
+        wave: 4,
       },
+      {
+        word: "creó",
+        en: "he created",
+        say: "Dios hizo todo: Dios… creó.",
+        caption: "Génesis 1: Dios creó",
+        missing: "En el principio ___ Dios los cielos y la tierra.",
+        options: ["creó", "vio", "era"],
+        wave: 4,
+      },
+      {
+        word: "hombre",
+        en: "man, human being",
+        say: "Dios creó al… hombre. ¡Tú y yo somos su obra!",
+        caption: "Génesis 1: el hombre",
+        options: ["hombre", "Dios", "tierra"],
+        wave: 4,
+      },
+      // ── Wave 5 · adaptive replay — built at runtime from progress.misses ──
     ] satisfies ShooterRound[],
   },
 
-  // ─── Family home: Doña Rosa's scripture balloon-pop ───────────────────────
+  // ─── Ana's home: the scripture balloon-pop (gate NPC villager_ana) ────────
+  // (Attribution per CONTENT-gate-dialogue.md: this frame belongs to Ana —
+  // two gate NPCs total, no third name.)
   [CASA_FRAME_ID]: {
     id: CASA_FRAME_ID,
     kind: "scripture",
-    villager: { name: "Doña Rosa", emoji: "🏡" },
-    place: "La casa de la familia",
+    villager: { name: "Ana", emoji: "🏡" },
+    place: "La casa de Ana",
     englishLevel: 0,
     xp: 10,
+    voice: "villagerF",
+    roundVoice: "scripture",
     greeting: {
-      es: "¡Hola, cariño! Soy Doña Rosa. Hoy hablamos de la Palabra: «En el principio creó Dios los cielos y la tierra». Revienta los globos que no van, y guarda el bueno.",
-      en: "Hello, dear! I'm Doña Rosa. Today we talk about the Word: “In the beginning God created the heavens and the earth.” Pop the balloons that don't belong, and keep the right one.",
+      es: "¡Hola, cariño! Soy Ana. Hoy hablamos de la Palabra: «En el principio creó Dios los cielos y la tierra». Revienta los globos que no van, y guarda el bueno.",
+      en: "Hello, dear! I'm Ana. Today we talk about the Word: “In the beginning God created the heavens and the earth.” Pop the balloons that don't belong, and keep the right one.",
     },
     praise: PRAISE,
     gentle: GENTLE,
