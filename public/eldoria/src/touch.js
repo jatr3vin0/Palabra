@@ -9,6 +9,13 @@
 window.PALABRA_TOUCH = {
   dir: { up: false, down: false, left: false, right: false },
   press(name) {
+    // ACCIÓN must advance an open dialogue like SPACE/ENTER do: pushing
+    // pending.action does nothing while frozen() (GameScene clears it every
+    // frame), so the button felt dead mid-conversation.
+    if (name === 'action') {
+      const ui = window.game && window.game.scene ? window.game.scene.getScene('UI') : null;
+      if (ui && ui.dialogue) { ui.advancePressed = true; return; }
+    }
     const s = window.game && window.game.scene ? window.game.scene.getScene('Game') : null;
     if (s) s.pending[name] = true;
     // menu scenes (title/pause/intro) advance on their own pointer handlers;

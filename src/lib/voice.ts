@@ -236,6 +236,16 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
 /** Stop whatever the voice is saying (browser voice + any in-flight kokoro turn). */
 export function stopSpeaking(): void {
   stopToken = speakId;
+  // Tell the worker to drop the queued turn(s): kokoro generates serialized at
+  // ~real-time per line, so without this a stale page's generation kept the
+  // pipeline busy and every later dialogue page arrived late or never.
+  if (worker) {
+    try {
+      worker.postMessage({ op: "stop", id: speakId });
+    } catch {
+      // worker gone — nothing queued to cancel
+    }
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();
