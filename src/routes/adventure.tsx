@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { StatsBar, useProgress } from "~/components/Chrome";
 import { FrameGame, type MissionResult } from "~/components/FrameGame";
-import { onVoicePhase, stopSpeaking, speakSpanish, warmVoice } from "~/lib/voice";
+import { onVoicePhase, setVoiceVolume, stopSpeaking, speakSpanish, warmVoice } from "~/lib/voice";
 import { castParams, type VoiceKey } from "~/lib/voiceCast";
 import type { Progress } from "~/lib/storage";
 
@@ -54,15 +54,23 @@ function Adventure() {
   // Parent music-only mute: the header button mirrors the profile; the world
   // (pause-menu row) can also toggle it and echoes the state back.
   const [musicMuted, setMusicMuted] = useState(false);
+  // Audio settings panel: music / voices / effects (0–1), persisted in the
+  // profile and mirrored live into the world (music + effects buses) and into
+  // the kokoro voice gain (voices).
+  const [vols, setVols] = useState({ music: 0.9, voice: 1, sfx: 1 });
   const updateRef = useRef(update);
   const pRef = useRef<Progress | null>(p);
   updateRef.current = update;
   pRef.current = p;
 
   useEffect(() => {
-    if (p) setMusicMuted(!!p.musicMuted);
+    if (p) {
+      setMusicMuted(!!p.musicMuted);
+      setVols({ music: p.musicVol, voice: p.voiceVol, sfx: p.sfxVol });
+      setVoiceVolume(p.voiceVol);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p?.musicMuted]);
+  }, [p?.musicMuted, p?.musicVol, p?.voiceVol, p?.sfxVol]);
 
   const postTo = useCallback((msg: Record<string, unknown>) => {
     frameRef.current?.contentWindow?.postMessage({ source: "palabra-app", ...msg });
@@ -107,7 +115,15 @@ function Adventure() {
       switch (msg.type) {
         case "palabra:hello": {
           setBooted(true);
-          postTo({ type: "palabra:context", englishLevel: p?.englishLevel ?? 0 });
+          postTo({
+            type: "palabra:context",
+            englishLevel: p?.englishLevel ?? 0,
+            // audio panel values ride the boot handshake so the world's buses
+            // and pause menu start at the profile's settings
+            music: p?.musicVol ?? 0.9,
+            sfx: p?.sfxVol ?? 1,
+            voice: p?.voiceVol ?? 1,
+          });
           break;
         }
         case "palabra:speak": {
@@ -136,6 +152,23 @@ function Adventure() {
           const cur = pRef.current;
           if (cur && !!cur.musicMuted !== muted) {
             updateRef.current({ ...cur, musicMuted: muted });
+          }
+          break;
+        }
+        case "palabra:audioState": {
+          // The world's pause-menu sliders (and boot) echo the panel values:
+          // adopt them here so the header and the profile agree with the game.
+          const next = {
+            music: typeof msg.music === "number" ? msg.music : pRef.current?.musicVol ?? 0.9,
+            voice: typeof msg.voice === "number" ? msg.voice : pRef.current?.voiceVol ?? 1,
+            sfx: typeof msg.sfx === "number" ? msg.sfx : pRef.current?.sfxVol ?? 1,
+          };
+          setVols(next);
+          setVoiceVolume(next.voice);
+          setMusicMuted(!!msg.muted);
+          const cur = pRef.current;
+          if (cur && (cur.musicVol !== next.music || cur.voiceVol !== next.voice || cur.sfxVol !== next.sfx)) {
+            updateRef.current({ ...cur, ...next });
           }
           break;
         }
@@ -197,6 +230,24 @@ function Adventure() {
     postTo({ type: "palabra:music", muted: next });
   }, [musicMuted, postTo]);
 
+  // Audio settings panel: one slider per bus. Persisted in the profile, and
+  // mirrored live into the world (music + effects buses) and kokoro (voices).
+  const volsRef = useRef(vols);
+  volsRef.current = vols;
+  const changeVol = useCallback(
+    (key: "music" | "voice" | "sfx", v: number) => {
+      const val = Math.max(0, Math.min(1, v));
+      const next = { ...volsRef.current, [key]: val };
+      volsRef.current = next;
+      setVols(next);
+      if (key === "voice") setVoiceVolume(val);
+      const cur = pRef.current;
+      if (cur) updateRef.current({ ...cur, ...next });
+      postTo({ type: "palabra:audioVol", music: next.music, sfx: next.sfx, voice: next.voice });
+    },
+    [postTo],
+  );
+
   // Leaving the adventure: stop speech, un-duck the world.
   useEffect(() => {
     return () => {
@@ -217,6 +268,33 @@ function Adventure() {
         </a>
         <div className="flex items-center gap-2">
           {p && <StatsBar p={p} />}
+          {/* Audio settings panel: música / voces / efectos, live */}
+          <div className="hidden items-center gap-2 rounded-full bg-stone-900/70 px-2.5 py-1.5 sm:flex">
+            {(
+              [
+                ["music", "🎵", "Música"],
+                ["voice", "🗣️", "Voces"],
+                ["sfx", "🔔", "Efectos"],
+              ] as const
+            ).map(([k, icon, label]) => (
+              <label key={k} className="flex items-center gap-1">
+                <span aria-hidden="true" className="text-xs">
+                  {icon}
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={vols[k]}
+                  aria-label={`Volumen de ${label.toLowerCase()}`}
+                  title={label}
+                  onChange={(e) => changeVol(k, Number(e.target.value))}
+                  className="h-1 w-14 cursor-pointer accent-teal-500"
+                />
+              </label>
+            ))}
+          </div>
           <button
             type="button"
             onClick={toggleMusic}

@@ -45,27 +45,60 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     // by a re-sealed door without making them die.
     const game = this.scene.get('Game');
     const inSubMap = game.mapId !== 'overworld' && game.mapEntry && game.mapEntry.map === game.mapId;
-    if (inSubMap) this.txt(160, 150, 'R: volver a la entrada (si atascado)', '#ffd24a', 8, true);
+    if (inSubMap) this.rHint = true;
 
-    this.txt(160, 162, '< > elegir  S guardar  Q salir', '#8888aa', 8, true);
-    this.txt(160, 174, 'ESC o ENTER: volver al juego', '#8888aa', 8, true);
-    this.saveNote = this.txt(160, 188, '', '#9affb0', 8, true);
+    // --- audio settings: three sliders (música / voces / efectos) ----------
+    // Music+effects set the world buses; voices crosses the bridge so the app
+    // meters the kokoro gain. Tap-position or keys 1/2/3 + ←/→. Persisted in
+    // the world save AND (through palabra:audioState) the app profile.
+    this.sliderDefs = [
+      { key: 'music', label: 'Música' },
+      { key: 'voice', label: 'Voces' },
+      { key: 'sfx', label: 'Efectos' },
+    ];
+    this.sliderSel = -1;
+    this.sliderUI = this.sliderDefs.map((d, i) => {
+      const y = 150 + i * 12;
+      const lab = this.txt(36, y, d.label, '#9999bb', 8, true);
+      this.add.rectangle(160, y, 180, 10, 0x222238).setStrokeStyle(1, 0x44446a);
+      const fill = this.add.rectangle(70, y, 180, 10, 0x68b8e8).setOrigin(0, 0.5);
+      const pct = this.txt(280, y, '', '#bfefff', 8, true);
+      return { d, lab, fill, pct, y };
+    });
+    this.refreshSliders();
+
+    this.hintText = this.txt(160, 188, this.rHint
+      ? 'R entrada · S guardar · Q salir · ESC volver'
+      : 'S guardar · Q salir · ESC volver', '#8888aa', 8, true);
     // Parent control: music-only mute (voices stay). M key, or tap the row.
     this.musicRow = this.txt(160, 198, '', '#88c8e8', 8, true);
     this.refreshMusicRow();
 
-    this.input.keyboard.on('keydown-LEFT', () => this.move(-1));
-    this.input.keyboard.on('keydown-RIGHT', () => this.move(1));
-    // Palabra mobile: tapping the pause card closes it — EXCEPT the music row,
-    // which toggles the parent mute.
+    this.input.keyboard.on('keydown-LEFT', () => this.nav(-1));
+    this.input.keyboard.on('keydown-RIGHT', () => this.nav(1));
+    this.input.keyboard.on('keydown-ONE', () => this.selSlider(0));
+    this.input.keyboard.on('keydown-TWO', () => this.selSlider(1));
+    this.input.keyboard.on('keydown-THREE', () => this.selSlider(2));
+    // Palabra mobile: tapping the pause card closes it — EXCEPT the audio rows,
+    // which set slider values, and the music row, which toggles the parent mute.
     this.input.on('pointerdown', (p) => {
       if (p.y > 194) this.toggleMusic();
+      else if (p.y >= 144 && p.y < 180) {
+        const row = Math.min(2, Math.max(0, Math.floor((p.y - 144) / 12)));
+        this.setSliderFromTap(row, p.x);
+      }
       else if (p.y > 80) this.close();
+    });
+    this.input.on('pointermove', (p) => {
+      if (p.isDown && p.y >= 144 && p.y < 180) {
+        const row = Math.min(2, Math.max(0, Math.floor((p.y - 144) / 12)));
+        this.setSliderFromTap(row, p.x);
+      }
     });
     this.input.keyboard.on('keydown-M', () => this.toggleMusic());
     this.input.keyboard.on('keydown-S', () => {
       const ok = this.scene.get('Game').autoSave();
-      this.saveNote.setText(ok ? '¡Guardado!' : '¡No se pudo guardar!');
+      this.hintText.setText(ok ? '¡Guardado!' : '¡No se pudo guardar!');
       AUDIO.sfx(ok ? 'save' : 'denied');
     });
     this.input.keyboard.on('keydown-Q', () => {
@@ -116,6 +149,55 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     const k = this.owned[this.sel];
     const nm = ITEMS[k] && ITEMS[k].name;
     if (nm && window.Palabra) window.Palabra.speak(nm, 'narrator');
+  }
+
+  // ←/→: adjust the selected slider, or move the equip cursor when none is
+  // selected (keys 1/2/3 select; the same key deselects).
+  nav(d) {
+    if (this.sliderSel >= 0) {
+      const def = this.sliderDefs[this.sliderSel];
+      const cur = AUDIO[def.key + 'Vol'];
+      this.setSlider(this.sliderSel, cur + d * 0.05);
+      return;
+    }
+    this.move(d);
+  }
+
+  selSlider(i) {
+    this.sliderSel = this.sliderSel === i ? -1 : i;
+    AUDIO.sfx('menuMove');
+    this.refreshSliders();
+  }
+
+  setSliderFromTap(row, x) {
+    this.sliderSel = row;
+    // bar spans x 70..250 (180 wide, centered at 160)
+    this.setSlider(row, (x - 70) / 180);
+  }
+
+  setSlider(row, v) {
+    const def = this.sliderDefs[row];
+    const val = Math.max(0, Math.min(1, v));
+    AUDIO.setVolumes({ [def.key]: val });
+    if (window.GS) SAVE.write();
+    this.refreshSliders();
+    // Tell the app: it meters the kokoro gain (voices) and persists the panel
+    // values into the profile so the header sliders agree.
+    if (window.Palabra) {
+      window.Palabra.post({
+        type: 'palabra:audioState',
+        music: AUDIO.musicVol, sfx: AUDIO.sfxVol, voice: AUDIO.voiceVol, muted: !!AUDIO.musicMuted,
+      });
+    }
+  }
+
+  refreshSliders() {
+    this.sliderUI.forEach((ui, i) => {
+      const v = Math.max(0, Math.min(1, AUDIO[ui.d.key + 'Vol'] != null ? AUDIO[ui.d.key + 'Vol'] : 1));
+      ui.fill.width = Math.max(180 * v, 1);
+      ui.pct.setText(Math.round(v * 100) + '%');
+      ui.lab.setColor(this.sliderSel === i ? '#ffe97f' : '#9999bb');
+    });
   }
 
   refreshMusicRow() {

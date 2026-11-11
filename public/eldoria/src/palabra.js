@@ -38,10 +38,20 @@ window.Palabra = {
     }
   },
 
-  // The learner's immersion level (0–3), sent by the app at boot.
+  // The learner's immersion level (0–3), sent by the app at boot. The boot
+  // message also carries the profile's audio panel values (music/voices/sfx,
+  // 0–1) so the world starts at the profile's settings.
   context(data) {
     if (data && typeof data.englishLevel === 'number') {
       window.PALABRA_CTX.englishLevel = data.englishLevel;
+    }
+    if (data && (data.music != null || data.sfx != null || data.voice != null)) {
+      window.PALABRA_CTX.musicVol = data.music;
+      window.PALABRA_CTX.sfxVol = data.sfx;
+      window.PALABRA_CTX.voiceVol = data.voice;
+      if (window.AUDIO && window.AUDIO.setVolumes) {
+        window.AUDIO.setVolumes({ music: data.music, sfx: data.sfx, voice: data.voice });
+      }
     }
     window.PALABRA_CTX.attached = true;
   },
@@ -139,6 +149,15 @@ window.addEventListener('message', (e) => {
     case 'palabra:music':
       // Parent music-only mute from the app header (voices stay).
       if (window.AUDIO && window.AUDIO.setMusicMuted) window.AUDIO.setMusicMuted(!!msg.muted);
+      break;
+    case 'palabra:audioVol':
+      // Audio settings panel (app header): live music/voices/effects volumes.
+      // Applied to the buses now; when a world save is live it mirrors the
+      // values and persists them with the next write.
+      if (window.AUDIO && window.AUDIO.setVolumes) {
+        window.AUDIO.setVolumes({ music: msg.music, sfx: msg.sfx, voice: msg.voice });
+        if (window.GS) SAVE.write();
+      }
       break;
     case 'palabra:duck':
       Palabra.duck(!!msg.on);

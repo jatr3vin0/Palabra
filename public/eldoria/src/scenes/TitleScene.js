@@ -115,9 +115,16 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
     AUDIO.sfx('menuSelect');
     const existing = SAVE.load(this.sel);
     SAVE.start(this.sel);
-    // Apply the saved music-mute and tell the app so its header button agrees.
+    // Apply the saved audio settings and tell the app so its panel agrees.
+    AUDIO.setVolumes({ music: GS.musicVol, sfx: GS.sfxVol, voice: GS.voiceVol });
     AUDIO.setMusicMuted(!!GS.musicMuted);
     AUDIO.stopSong();
+    if (window.Palabra) {
+      window.Palabra.post({
+        type: 'palabra:audioState',
+        music: GS.musicVol, sfx: GS.sfxVol, voice: GS.voiceVol, muted: !!GS.musicMuted,
+      });
+    }
     if (existing) {
       GS.hearts = Math.max(GS.hearts, Math.min(3, GS.maxHearts));
       this.scene.start('Game');
