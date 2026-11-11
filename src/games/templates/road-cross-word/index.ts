@@ -582,19 +582,42 @@ class RoadCrossScene extends Phaser.Scene {
     return Math.max(0.4, this.bridge.params.speed || 1);
   }
 
+  /** Row index of the round's safe lane (lanes are bottom→top: lane l = row
+   * l+1). Judged BY LABEL (lane.safe), never a row index (invariant 2). */
+  private safeLaneRow(): number {
+    if (!this.board) return -1;
+    return this.board.lanes.findIndex((l) => l.safe) + 1;
+  }
+
+  /** Screen-correct row ABOVE `row` (ROW_Y: 0 = goal strip top, 1–5 = lanes
+   * bottom→top, 6 = sidewalk bottom). THE GOAL GATE: the goal accepts entry
+   * ONLY when the move leaves the safe lane — whichever row it sits on. From
+   * the safe lane the up-move is therefore the winning LEAP straight to row 0
+   * (the in-flight traffic check already exempts row 0, so the leap cannot be
+   * car-killed — the round stays winnable by listening alone); from any other
+   * lane the goal is closed and up climbs one 128-px lane instead. */
+  private rowAbove(): number | null {
+    if (this.row === this.safeLaneRow()) return 0;
+    if (this.row === 6) return 1;
+    if (this.row >= 1 && this.row <= 4) return this.row + 1;
+    return null; // top lane without the word (goal closed), or on the goal itself
+  }
+
+  /** Screen-correct row BELOW `row` — the same ladder run backwards. */
+  private rowBelow(): number | null {
+    if (this.row >= 2 && this.row <= 5) return this.row - 1;
+    if (this.row === 1) return 6;
+    return null; // sidewalk floor, or on the goal (never stood on)
+  }
+
   private tryMove(dir: Dir): void {
     if (this.locked || !this.board || this.tweening || this.dead) return;
     const nc = this.col + dir.dx;
-    const nr = this.row + dir.dy;
-    if (nc < 0 || nc > 5 || nr < 0 || nr > 6) return; // grid bounds: mechanical
-    if (nr === 0 && this.row === 1) {
-      // the goal is enterable ONLY from the safe lane — the crossing is
-      // judged by its word, never by a row index (invariant 2)
-      const lane = this.board.lanes[0]; // row 1 = lanes[0]
-      if (!lane?.safe) {
-        this.nudge(dir);
-        return;
-      }
+    const nr = dir.dy < 0 ? this.rowAbove() : dir.dy > 0 ? this.rowBelow() : this.row;
+    if (nc < 0 || nc > 5 || nr === null) {
+      // grid edge or the closed goal — a mechanical bump, never a language event
+      this.nudge(dir);
+      return;
     }
     this.hop(nc, nr);
   }
@@ -619,11 +642,15 @@ class RoadCrossScene extends Phaser.Scene {
     const fromRow = this.row;
     this.col = nc;
     this.row = nr;
+    // one-tile hops keep the pinned HOP_MS; the safe-lane leap spans several
+    // tiles, so its flight scales with distance (still overlap-immune: the
+    // traffic check exempts row 0, which this hop targets)
+    const tiles = Math.max(1, Math.abs(this.rowY(nr) - this.player.y) / TILE);
     this.tweens.add({
       targets: this.player,
       x: this.colX(nc),
       y: this.rowY(nr),
-      duration: Math.max(80, HOP_MS * this.speedMul()),
+      duration: Math.max(80, HOP_MS * this.speedMul() * tiles),
       ease: "Sine.InOut",
       onComplete: () => {
         this.tweening = false;

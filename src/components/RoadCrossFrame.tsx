@@ -13,7 +13,6 @@ import { Mascot } from "~/components/Mascot";
 import { useProgress } from "~/components/Chrome";
 import { PhaserIsland } from "~/components/PhaserGame";
 import { BackButton, ExitButton, FrameShell, Gloss, HowtoCard, REWARD_COPY, RewardSummary, TIERS, type MissionResult } from "~/components/FrameGame";
-import { seededShuffle } from "~/lib/answer";
 import { glossMode, type FrameDef } from "~/lib/frames";
 import {
   bumpImmersion,
@@ -31,93 +30,25 @@ import {
 import { primeVoice, speakSpanish, stopSpeaking, type SpeakOpts } from "~/lib/voice";
 import { castParams } from "~/lib/voiceCast";
 import { packForBinding } from "~/content/packs/a0-packs";
-import { nearFormDecoys, waveIds, wordFor } from "~/content/packs/a0-u05-sokoban";
+import { wordFor } from "~/content/packs/a0-u05-sokoban";
 import { achievementLabel as roadCrossAchievementLabel, curve as roadCrossCurve } from "~/games/templates/road-cross-word/curve";
-import { createController as createRoadCrossController, type RoadCrossBoard, type RoadCrossRound } from "~/games/templates/road-cross-word/types";
+import {
+  buildRoadCrossBoard,
+  buildRoadCrossRounds,
+  composedCrossSay,
+  wordForSafe,
+} from "~/games/templates/road-cross-word/rounds";
+import { createController as createRoadCrossController, type RoadCrossRound } from "~/games/templates/road-cross-word/types";
 
-type Phase = "greet" | "play" | "done";
+type Phase = "greet" | "play" | "over" | "done";
 
-/** Per-round knob tables (PORT-road-cross-word.md knob map; R3 anchors pinned
- * in GAME-source-pins.md #3: speeds [220,260,280,300,330], 25 s, 5 rows). */
-const RC_BASE_SPEEDS = [220, 260, 280, 300, 330];
-const RC_STANDARD_TIME = 25;
-/** masteryThreshold SUPERSEDES the source score counter (R1–R2 = 2, R3–R5 = 3). */
+/** Per-round mastery thresholds (PORT-road-cross-word.md; R1–R2 = 2, R3–R5 = 3) —
+ * SUPERSEDE the source score counter. The speed/clock/lane knobs are the pure
+ * builders' (rounds.ts, R3 anchors pinned in GAME-source-pins.md #3). */
 const RC_THRESHOLDS = [2, 2, 3, 3, 3];
-/** difficulty → labeled lanes per round: child 3 (target + 2 decoys) → adult 5. */
-const RC_LANES_BY_TIER = [3, 4, 5];
 const RC_ROUND_BREAK_MS = 1500;
 const RC_MISS_RESPAWN_MS = 1900;
 const RC_RETRY_MS = 1400;
-
-/** Article per a0-u05 word (-a feminine, else masculine — includes el norte…). */
-function articleFor(es: string): string {
-  return es.endsWith("a") ? "la" : "el";
-}
-
-/** The composed TPR command (≤38 chars), COMPOSED at session time, never stored. */
-function composedCrossSay(es: string): string {
-  return `¡Cruza por ${articleFor(es)} ${es.toUpperCase()}!… ${es}.`;
-}
-
-/** a0-u05 per-source scoping: other packs' misses serve ONLY u05-bound frames. */
-function wordForSafe(es: string): boolean {
-  try {
-    return wordFor(es).es === es;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * The session's rounds (PORT §3): R1–R4 from the a0-u05 pack waves (the
- * round's word = the seeded safe lane; lane options = the word's own curated
- * decoys first — the pack pairs piedra/roca, camino/castillo, norte/oeste),
- * then R5: up to three adaptive-replay rounds (one safe word each, from
- * progress.misses ∩ a0-u05; empty → one light review round). The safe lane is
- * identified BY LABEL (=== round.word), never a row index (invariant 2).
- */
-function buildRoadCrossRounds(frame: FrameDef, p: Progress, tier: 0 | 1 | 2, sessionId: number): RoadCrossRound[] {
-  const labeled = RC_LANES_BY_TIER[tier];
-  const rounds: RoadCrossRound[] = [];
-  const sessionWords: string[] = [];
-  for (let r = 1; r <= 4; r++) {
-    const wave = waveIds(r);
-    const word = seededShuffle(wave, `${frame.id}-r${r}-t${tier}-s${sessionId}`)[0];
-    sessionWords.push(word);
-    const decoys = nearFormDecoys([word], labeled - 1, seededShuffle, `${frame.id}-r${r}-d-t${tier}-s${sessionId}`);
-    rounds.push({ word, options: [word, ...decoys], wave: r });
-  }
-  // R5 — adaptive replay: a0-u05 misses return as safe-lane words (one round
-  // each; hit clears the miss, a decoy entry re-records it).
-  const replays = seededShuffle(missedWords(p).filter((w) => wordForSafe(w)), `${frame.id}-replay-${sessionId}`).slice(0, 3);
-  const replayWords = replays.length > 0 ? replays : [seededShuffle(sessionWords, `${frame.id}-review-${sessionId}`)[0]];
-  for (const [i, word] of replayWords.entries()) {
-    const decoys = nearFormDecoys([word], Math.min(4, labeled - 1), seededShuffle, `${frame.id}-replay${i}-t${tier}-s${sessionId}`);
-    rounds.push({ word, options: [word, ...decoys], wave: 5, isReplay: true });
-  }
-  return rounds;
-}
-
-/** Build the crossing React-side (content stays out of the scene): lane
- * labels onto seeded rows, tier-scaled speeds/clock, source car-count formula. */
-function buildRoadCrossBoard(round: RoadCrossRound, roundIdx: number, tier: 0 | 1 | 2, level: number, seed: string): RoadCrossBoard {
-  const labeledRows = seededShuffle([0, 1, 2, 3, 4], `${seed}-rows`).slice(0, Math.min(5, round.options.length));
-  const words = seededShuffle(round.options, `${seed}-words`);
-  const lanes = Array.from({ length: 5 }, (_, l): { es: string | null; safe: boolean } => {
-    const slot = labeledRows.indexOf(l);
-    const es = slot >= 0 ? words[slot % words.length] : null;
-    return { es, safe: es === round.word };
-  });
-  const tierMul = [0.6, 1, 1.4][tier];
-  const boost = Math.min(roadCrossCurve.ramp.carCap, Math.floor(level / 8)) * roadCrossCurve.ramp.carBoostPer8Levels;
-  const difficulty = roundIdx + 1 + boost;
-  return {
-    lanes,
-    carSpeeds: RC_BASE_SPEEDS.map((s) => Math.round(s * tierMul)),
-    carCount: Math.min(4, 2 + Math.floor(difficulty / 2)),
-    timeLimit: Math.round(RC_STANDARD_TIME / tierMul),
-  };
-}
 
 export function RoadCrossFrame({
   frame,
@@ -178,10 +109,22 @@ export function RoadCrossFrame({
   // only ever pass the same binding, but the resolver stays honest.
   const binding = contentBinding && packForBinding(contentBinding) ? contentBinding : "a0-u05";
 
-  const rounds = useMemo(
-    () => (p ? buildRoadCrossRounds(frame, p, tier, sessionId) : []),
+  // R5 replay pool, SNAPSHOTTED at session start (sessionId change). The
+  // rounds/board must keep their identity across the session's progress
+  // writes — a miss records a heart + miss and MUST NOT rebuild the round
+  // mid-crossing (a live QA run proved the reset loop: every miss reloaded
+  // the board with a fresh clock and a re-armed miss, draining all hearts).
+  const [sessionMisses, setSessionMisses] = useState<string[]>([]);
+  useEffect(() => {
+    if (p) setSessionMisses(missedWords(p).filter((w) => wordForSafe(w)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [p, tier, sessionId],
+  }, [sessionId]);
+
+  const pReady = !!p;
+  const rounds = useMemo(
+    () => (pReady ? buildRoadCrossRounds(frame, sessionMisses, tier, sessionId) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pReady, sessionMisses, tier, sessionId],
   );
   const round = rounds[roundIdx];
   const threshold = roundIdx < RC_THRESHOLDS.length ? RC_THRESHOLDS[roundIdx] : 3;
@@ -264,6 +207,18 @@ export function RoadCrossFrame({
     [ctrl, frame, say, sayRound],
   );
 
+  /** D2 — hearts 0: freeze the crossing (showBanner locks the scene, traffic
+   * included), speak the gentle game-over in the frame's gentle voice, and
+   * offer the same-seed retry. The hearts HUD chip (Chrome top bar) is never
+   * unmounted, so it stays in the a11y tree through the game-over. */
+  const enterGameOver = useCallback(() => {
+    const L = live.current;
+    setPhase("over");
+    [hitTimer, missTimer, roundTimer].forEach((t) => window.clearTimeout(t.current));
+    ctrl.showBanner("¡Sin corazones!", "Respira y otra vez");
+    say(frame.gentle[(L.misses - 1) % frame.gentle.length], undefined, () => say("Sin corazones. Respira, escucha y otra vez."));
+  }, [ctrl, frame, say]);
+
   const handleMiss = useCallback(
     (_es: string) => {
       const L = live.current;
@@ -273,14 +228,33 @@ export function RoadCrossFrame({
       L.streak = 0;
       // One composed save: the miss records the ROUND's word (contract-
       // critical es, never a lane index) and a heart is spent; play continues.
-      updateRef.current(loseHeart(recordMiss(L.p, named, frame.id)));
+      const next = loseHeart(recordMiss(L.p, named, frame.id));
+      updateRef.current(next);
+      // D2: the last heart spent on a wrong lane ends the run — gentle,
+      // spoken game-over with a retry (hearts refill on their own).
+      if (next.hearts <= 0) {
+        enterGameOver();
+        return;
+      }
       // Gentle correction now, the command re-spoken ~1.9 s later.
       say(frame.gentle[(L.misses - 1) % frame.gentle.length]);
       window.clearTimeout(missTimer.current);
       missTimer.current = window.setTimeout(() => sayRound(composedCrossSay(named)), RC_MISS_RESPAWN_MS);
     },
-    [frame, say, sayRound],
+    [enterGameOver, frame, say, sayRound],
   );
+
+  /** D2 retry: the SAME round, SAME seed (seed-true restart, sokoban
+   * precedent — the clock-retry's twin, offered from the game-over panel). */
+  const retryFromGameOver = useCallback(() => {
+    stopSpeaking();
+    [hitTimer, missTimer, roundTimer].forEach((t) => window.clearTimeout(t.current));
+    const L = live.current;
+    L.crossings = 0;
+    setCrossings(0);
+    setPhase("play");
+    setRestartKey((k) => k + 1);
+  }, []);
 
   // Clock expiry: MECHANICAL retry — no heart, no miss; the same round reloads
   // and the command is spoken again (language vs gaming skill separation).
@@ -492,6 +466,24 @@ export function RoadCrossFrame({
                 <Gloss level={p.englishLevel} frame={frame} en={wordFor(round.word).en} />
               </div>
             </div>
+          </div>
+        )}
+
+        {phase === "over" && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 overflow-y-auto bg-white/75 px-6 py-4 text-center backdrop-blur-[2px]">
+            <div className="anim-pop text-7xl">💔</div>
+            <h1 className="text-2xl font-black text-stone-900">¡Sin corazones!</h1>
+            <p className="max-w-md rounded-3xl bg-white px-5 py-4 text-lg font-semibold text-stone-700 shadow">
+              Respira, escucha y otra vez. La calle espera.
+            </p>
+            <button
+              type="button"
+              onClick={retryFromGameOver}
+              className="rounded-2xl bg-teal-600 px-10 py-4 text-lg font-extrabold uppercase tracking-wide text-white shadow-[0_5px_0_0_#0f766e] transition hover:bg-teal-500 active:translate-y-[3px] active:shadow-[0_2px_0_0_#0f766e]"
+            >
+              Otra vez 🔁
+            </button>
+            <ExitButton embedded={embedded} onExit={onExit} />
           </div>
         )}
 
