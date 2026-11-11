@@ -954,12 +954,21 @@ function SokobanFrame({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [round, roundIdx, tier, restartKey, sessionId]);
 
+  // The board's OWN targets are the round's EFFECTIVE pairs: generateBoard's
+  // documented relaxation ladder may (target rung, last resort) return fewer
+  // target crates than the round asked for — the round then completes on what
+  // the board actually carries. Order is byte-identical (board.targets keeps
+  // the p.targets order, a prefix-subset of round.pairs); with no relaxation
+  // this IS round.pairs.
+  const effPairs = useMemo(() => (board ? board.targets.map((t) => t.es) : round?.pairs ?? []), [board, round]);
+
   // Live mirror: handlers are stable closures reading fresh state.
   const live = useRef({
     p: null as Progress | null,
     phase: "greet" as Phase,
     rounds: [] as SokobanRound[],
     round: null as SokobanRound | null,
+    effPairs: [] as string[],
     roundIdx: 0,
     namedIdx: 0,
     completed: new Set<string>(),
@@ -999,6 +1008,9 @@ function SokobanFrame({
     (es: string) => {
       const L = live.current;
       const r = L.round;
+      // Effective pairs = the board's own targets (relaxation-ladder aware —
+      // a target-rung board returns fewer crates; the round completes on it).
+      const eff = L.effPairs.length > 0 ? L.effPairs : (r?.pairs ?? []);
       if (L.phase !== "play" || !r || !L.p || L.completed.has(es)) return;
       L.completed.add(es);
       L.hits += 1;
@@ -1009,7 +1021,7 @@ function SokobanFrame({
         updateRef.current(clearMiss(L.p, es));
       }
       window.clearTimeout(missTimer.current);
-      if (L.completed.size >= r.pairs.length) {
+      if (L.completed.size >= eff.length) {
         if (L.roundIdx >= L.rounds.length - 1) {
           const accuracy = L.hits + L.misses > 0 ? Math.round((L.hits / (L.hits + L.misses)) * 100) : 100;
           handleWinRef.current(accuracy);
@@ -1029,12 +1041,12 @@ function SokobanFrame({
       }
       setPairsDone(L.completed.size);
       sayRound(es, () => say(frame.praise[(L.hits - 1) % frame.praise.length]));
-      if (es === r.pairs[L.namedIdx]) {
-        const nextIdx = r.pairs.findIndex((w) => !L.completed.has(w));
+      if (es === eff[L.namedIdx]) {
+        const nextIdx = eff.findIndex((w) => !L.completed.has(w));
         if (nextIdx >= 0) {
           L.namedIdx = nextIdx;
           setNamedIdx(nextIdx);
-          const next = r.pairs[nextIdx];
+          const next = eff[nextIdx];
           // hit confirm → then the next pair is named (composed say, ≤38)
           window.clearTimeout(hitTimer.current);
           hitTimer.current = window.setTimeout(() => sayRound(composedSay(next)), 900);
@@ -1089,7 +1101,9 @@ function SokobanFrame({
         accuracy,
         maxStreak: L.maxStreak,
         replayHits: L.replayHits,
-        replayTotal: L.rounds.filter((r) => r.isReplay).reduce((a, r) => a + r.pairs.length, 0),
+        // The win fires only on the LAST round — the replay board — whose
+        // effective pairs are live in the mirror (target rung may trim it).
+        replayTotal: L.effPairs.length || L.rounds.filter((r) => r.isReplay).reduce((a, r) => a + r.pairs.length, 0),
         isScriptureBinding: false,
       });
       gp0.current = gw.progress;
@@ -1121,11 +1135,12 @@ function SokobanFrame({
     live.current.round = round ?? null;
     live.current.roundIdx = roundIdx;
     live.current.namedIdx = namedIdx;
-    live.current.namedEs = round ? (round.pairs[namedIdx] ?? null) : null;
+    live.current.effPairs = effPairs;
+    live.current.namedEs = round ? (effPairs[namedIdx] ?? null) : null;
     live.current.tier = tier;
     bridge.params.speed = [0.6, 1, 1.4][tier];
     bridge.params.difficulty = 2;
-    bridge.params.masteryThreshold = round?.pairs.length ?? 3;
+    bridge.params.masteryThreshold = effPairs.length > 0 ? effPairs.length : 3;
     updateRef.current = update;
     handleHitRef.current = handleHit;
     handleMissRef.current = handleMiss;
@@ -1149,23 +1164,23 @@ function SokobanFrame({
   // pair is spoken (composed say). Re-points use namePair, never a rebuild.
   useEffect(() => {
     if (phase !== "play" || !round || !board) return;
-    const named = round.pairs[namedIdx] ?? round.pairs[0] ?? null;
+    const named = effPairs[namedIdx] ?? effPairs[0] ?? null;
     ctrl.playBoard(board, named);
     setBudgetLeft(board.moveBudget > 0 ? board.moveBudget : null);
-    sayRound(composedSay(named ?? round.pairs[0]));
+    sayRound(composedSay(named ?? effPairs[0]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, board]);
 
   // Named-pair re-point (no board rebuild — completed crates stay merged).
   useEffect(() => {
     if (phase !== "play" || !round) return;
-    ctrl.namePair(round.pairs[namedIdx] ?? null);
+    ctrl.namePair(effPairs[namedIdx] ?? null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, namedIdx, round]);
 
   const levelBadge = computeLevelProgress(gp0.current, baseXp);
   const progressPct =
-    phase === "done" ? 100 : phase === "greet" ? 0 : ((roundIdx + (round ? pairsDone / round.pairs.length : 0)) / Math.max(1, rounds.length)) * 100;
+    phase === "done" ? 100 : phase === "greet" ? 0 : ((roundIdx + (round ? pairsDone / effPairs.length : 0)) / Math.max(1, rounds.length)) * 100;
 
   if (!p || rounds.length === 0) {
     return (
@@ -1190,7 +1205,7 @@ function SokobanFrame({
     setPhase("greet");
   };
 
-  const namedEs = round?.pairs[namedIdx] ?? null;
+  const namedEs = effPairs[namedIdx] ?? null;
 
   return (
     <FrameShell frame={frame} p={p} progressPct={progressPct} embedded={embedded} onExit={onExit}>
@@ -1255,7 +1270,7 @@ function SokobanFrame({
                 Tablero {roundIdx + 1}/{rounds.length}
               </span>
               <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wide text-teal-700">
-                Emparejados {pairsDone}/{round.pairs.length}
+                Emparejados {pairsDone}/{effPairs.length}
               </span>
               {budgetLeft !== null && (
                 <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wide text-rose-700">

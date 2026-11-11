@@ -51,23 +51,97 @@ export type BoardParams = {
 };
 
 const MAX_ATTEMPTS = 200;
+/** Per-rung budget once knobs have relaxed (each rung is a fresh PRNG stream). */
+const RELAX_ATTEMPTS = 50;
+/** A board always carries at least ONE target crate (0 is a data bug, not a
+ * tier seed — guarded in generateBoard). */
+const TARGET_FLOOR = 1;
 
-/** Generate + validate a board. Throws (loud) if 200 attempts all fail —
- * that is a data bug, never a child's unsolvable board. */
+/** One rung of the relaxation ladder: the knobs as they stand for a pass. */
+type Knobs = { wallDensity: number; decoyCount: number; targetCount: number };
+
+/**
+ * The knob-relaxation ladder, in the DOCUMENTED ORDER every seed follows
+ * (board-4 dead-end fix, R7-QA): a legitimate tier seed must always return a
+ * board, never throw to the error boundary. When a pass exhausts its attempt
+ * budget, the knobs relax one rung and generation retries — walls first
+ * (the purest port-side feature; 0 walls is the source-true room), then
+ * decoys (obstacles go before objectives), then — LAST resort — targets
+ * toward the floor of 1. Later rungs keep earlier relaxations. The last-rung
+ * room (no walls, no decoys, 1 target) validates with probability ≈1, so the
+ * ladder does not bottom out; if it ever does, the throw is a data-bug
+ * report, not a child's unsolvable board. Rungs are pure functions of the
+ * params — the same seed always walks the same ladder and returns the same
+ * board (the frame reads the returned board's targets back as the round's
+ * effective pairs when the target rung fires).
+ */
+function relaxLadder(p: BoardParams): Knobs[] {
+  const rungs: Knobs[] = [
+    { wallDensity: p.wallDensity, decoyCount: p.decoys.length, targetCount: p.targets.length },
+  ];
+  // 1. wall density DOWN: halve per rung until 0 (≤0.03 rounds to 0).
+  let wd = p.wallDensity;
+  while (wd > 0) {
+    wd = wd <= 0.03 ? 0 : Math.round((wd / 2) * 1000) / 1000;
+    rungs.push({ wallDensity: wd, decoyCount: p.decoys.length, targetCount: p.targets.length });
+  }
+  // 2. decoys DOWN: one per rung toward the floor of 0 (walls stay 0).
+  for (let d = p.decoys.length - 1; d >= 0; d--) {
+    rungs.push({ wallDensity: 0, decoyCount: d, targetCount: p.targets.length });
+  }
+  // 3. targets DOWN: one per rung toward the TARGET_FLOOR (last resort).
+  for (let t = p.targets.length - 1; t >= TARGET_FLOOR; t--) {
+    rungs.push({ wallDensity: 0, decoyCount: 0, targetCount: t });
+  }
+  return rungs;
+}
+
+/** Generate + validate a board. Never throws for a legitimate tier seed:
+ * the relaxation ladder above relaxes knobs rung by rung until one pass
+ * validates. A throw means a data bug (e.g. zero pairs) or a ladder that
+ * bottomed out — a loud generation-time error, never an unsolvable room. */
 export function generateBoard(p: BoardParams): SokobanBoard {
+  if (p.targets.length < TARGET_FLOOR) {
+    throw new Error(`sokoban-board: seed "${p.seed}" has ${p.targets.length} targets — a data bug, not a tier seed`);
+  }
   const base = hashSeed(p.seed);
   let lastError = "no attempt";
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-    const rand = mulberry32(base + Math.imul(attempt + 1, 0x9e3779b9));
-    try {
-      return buildOnce(p, rand);
-    } catch (e) {
-      lastError = e instanceof Error ? e.message : String(e);
+  const ladder = relaxLadder(p);
+  for (let rung = 0; rung < ladder.length; rung++) {
+    const k = ladder[rung];
+    const relaxed = rung > 0;
+    const attempts = relaxed ? RELAX_ATTEMPTS : MAX_ATTEMPTS;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      // Rung 0 keeps the exact historical stream (rung term is 0), so seeds
+      // that already generated stay byte-identical; relaxed rungs shift the
+      // stream so each rung explores fresh placements.
+      const rand = mulberry32(base + Math.imul(attempt + 1, 0x9e3779b9) + Math.imul(rung, 0x85ebca6b));
+      try {
+        const board = buildOnce(
+          {
+            ...p,
+            wallDensity: k.wallDensity,
+            decoys: p.decoys.slice(0, k.decoyCount),
+            targets: p.targets.slice(0, k.targetCount),
+          },
+          rand,
+        );
+        if (relaxed) {
+          console.warn(
+            `sokoban-board: relaxed knobs for seed "${p.seed}" (rung ${rung}: walls ${k.wallDensity}, ` +
+              `${k.decoyCount} decoys, ${k.targetCount} targets) — first rung error: ${lastError}`,
+          );
+        }
+        return board;
+      } catch (e) {
+        lastError = e instanceof Error ? e.message : String(e);
+      }
     }
   }
   throw new Error(
-    `sokoban-board: no valid board for seed "${p.seed}" (${p.size}×${p.size}, ${p.targets.length} targets, ` +
-      `${p.decoys.length} decoys, walls ${p.wallDensity}) — last error: ${lastError}`,
+    `sokoban-board: relaxation ladder exhausted for seed "${p.seed}" ` +
+      `(${p.size}×${p.size}, ${p.targets.length} targets, ${p.decoys.length} decoys) — data bug, please report; ` +
+      `last error: ${lastError}`,
   );
 }
 
