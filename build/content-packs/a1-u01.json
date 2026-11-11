@@ -1,82 +1,893 @@
 {
-  "packId": "a1-u01",
-  "unitId": "a1-u01",
-  "cefr": "A1",
-  "optional": false,
-  "priority": "P0",
-  "theme": "La ciudad y el camino / David escogido (1 Samuel 16)",
-  "storyThread": "David escogido — Dios mira el corazón (1 Samuel 16:7). L1 = el puente de la Ciudad de Destrucción (re-pass de los 13 palabras del spec).",
-  "grammarTargets": ["-er/-ir present (3rd person forms as ids)", "negation (no/nada/nadie/nunca/tampoco)", "copula están", "question words (re-pass a0-u06) + por qué / porque", "plural articles los/las in sight"],
-  "waves": {
-    "l1": ["ciudad", "calle", "casa", "gente", "tienda", "pan", "agua", "moneda", "puerta", "camino", "muro", "piedra", "perdición", "están"],
-    "l2": ["aprende", "come", "bebe", "vive", "escribe", "lee", "escoge", "cree", "obedece"],
-    "l3": ["no", "nada", "nadie", "nunca", "tampoco", "miedo"],
-    "l4": ["qué", "cómo", "dónde", "quién", "cuándo", "cuál", "por qué", "porque"]
-  },
-  "words": [
-    { "id": "ciudad", "es": "ciudad", "en": "city", "say": "La ciudad es grande.", "caption": "La ciudad", "sign": "La ciudad", "options": ["ciudad", "calle", "casa"], "new": false, "poolSource": "a0-signs-regions" },
-    { "id": "calle", "es": "calle", "en": "street", "say": "Hay gente en la calle.", "caption": "La calle", "sign": "La calle", "options": ["calle", "ciudad", "gente"], "new": true, "poolSource": "a1-u01" },
-    { "id": "casa", "es": "casa", "en": "house", "say": "Mi casa está aquí.", "caption": "La casa", "sign": "Mi casa", "options": ["casa", "tienda", "ciudad"], "new": false, "poolSource": "a0-u03" },
-    { "id": "gente", "es": "gente", "en": "people", "say": "Hay gente en la calle.", "caption": "La gente", "sign": "La gente", "options": ["gente", "ciudad", "calle"], "new": true, "poolSource": "a1-u01" },
-    { "id": "tienda", "es": "tienda", "en": "shop", "say": "La tienda está en la calle.", "caption": "La tienda", "sign": "La tienda", "options": ["tienda", "casa", "calle"], "new": false, "poolSource": "a0-u03" },
-    { "id": "pan", "es": "pan", "en": "bread", "say": "El pan está en la tienda.", "caption": "El pan", "sign": "El pan", "options": ["pan", "agua", "moneda"], "new": false, "poolSource": "a0-u04" },
-    { "id": "agua", "es": "agua", "en": "water", "say": "El agua está en la casa.", "caption": "El agua", "sign": "El agua", "options": ["agua", "pan", "leche"], "new": false, "poolSource": "a0-u04" },
-    { "id": "moneda", "es": "moneda", "en": "coin", "say": "La moneda está en la tienda.", "caption": "La moneda", "sign": "La moneda", "options": ["moneda", "tienda", "pan"], "new": false, "poolSource": "a0-u03" },
-    { "id": "puerta", "es": "puerta", "en": "door", "say": "La puerta está en la casa.", "caption": "La puerta", "sign": "La puerta", "options": ["puerta", "muro", "casa"], "new": false, "poolSource": "a0-u03" },
-    { "id": "camino", "es": "camino", "en": "path, road", "say": "El camino va a la ciudad.", "caption": "El camino", "sign": "El camino", "options": ["camino", "calle", "ciudad"], "new": false, "poolSource": "a0-u05" },
-    { "id": "muro", "es": "muro", "en": "wall (city, outer)", "say": "El muro está junto a la puerta.", "caption": "El muro", "sign": "El muro", "options": ["muro", "puerta", "piedra"], "new": true, "poolSource": "a1-u01" },
-    { "id": "piedra", "es": "piedra", "en": "stone", "say": "El muro es de piedra.", "caption": "La piedra", "sign": "La piedra", "options": ["piedra", "muro", "roca"], "new": false, "poolSource": "a0-u05" },
-    { "id": "perdición", "es": "perdición", "en": "perdition", "say": "El camino ancho lleva a perdición.", "caption": "El camino ancho", "sign": "El camino ancho", "options": ["perdición", "ciudad", "calle", "muro"], "new": true, "poolSource": "a1-u01", "csaNote": "OWNER DIRECTIVE 21:00 — truth plainly: the word may appear plainly in tiles/signs/world voice (no confinement). The verse card remains its primary context. LIFTED: the earlier verse-card-only confinement ruling." },
-    { "id": "están", "es": "están", "en": "are (they are)", "say": "Las tiendas están en la calle.", "caption": "Están en la calle", "sign": "Están aquí", "options": ["están", "está", "hay"], "new": true, "poolSource": "a1-u01", "csaNote": "LEAD RULING 20:58: kept as id (F5) — a0-verbs binds hay/está as ids; an unbound spoken form is the phantom-decoy hole in reverse." },
-    { "id": "aprende", "es": "aprende", "en": "learns", "say": "David aprende de Samuel.", "caption": "David aprende", "sign": "Aprende", "options": ["aprende", "come", "vive"], "new": true, "poolSource": "a1-u01" },
-    { "id": "come", "es": "come", "en": "eats", "say": "David come pan en casa.", "caption": "David come pan", "sign": "Come", "options": ["come", "bebe", "vive"], "new": true, "poolSource": "a1-u01" },
-    { "id": "bebe", "es": "bebe", "en": "drinks", "say": "David bebe agua.", "caption": "David bebe", "sign": "Bebe", "options": ["bebe", "come", "cree"], "new": true, "poolSource": "a1-u01" },
-    { "id": "vive", "es": "vive", "en": "lives", "say": "David vive en Belén.", "caption": "Vive en Belén", "sign": "Vive", "options": ["vive", "vivo", "come"], "new": true, "poolSource": "a1-u01" },
-    { "id": "escribe", "es": "escribe", "en": "writes", "say": "Samuel escribe la palabra.", "caption": "Escribe la palabra", "sign": "Escribe", "options": ["escribe", "lee", "aprende"], "new": true, "poolSource": "a1-u01" },
-    { "id": "lee", "es": "lee", "en": "reads", "say": "David lee la palabra.", "caption": "David lee", "sign": "Lee", "options": ["lee", "escribe", "aprende"], "new": true, "poolSource": "a1-u01" },
-    { "id": "escoge", "es": "escoge", "en": "chooses", "say": "Dios escoge a David.", "caption": "Dios escoge a David", "sign": "Escoge", "options": ["escoge", "cree", "obedece"], "new": true, "poolSource": "a1-u01" },
-    { "id": "cree", "es": "cree", "en": "believes", "say": "David cree en Dios.", "caption": "Cree en Dios", "sign": "Cree", "options": ["cree", "escoge", "aprende"], "new": true, "poolSource": "a1-u01", "note": "-er: creer → cree. Near-form rule keeps crece/creó out of this set — the pair IS the point in exam pattern p3" },
-    { "id": "obedece", "es": "obedece", "en": "obeys", "say": "David obedece a su padre.", "caption": "Obedece", "sign": "Obedece", "options": ["obedece", "escoge", "cree"], "new": true, "poolSource": "a1-u01" },
-    { "id": "no", "es": "no", "en": "no, not", "say": "David no come pan.", "caption": "No", "sign": "No", "options": ["no", "nada", "nunca"], "new": true, "poolSource": "a1-u01" },
-    { "id": "nada", "es": "nada", "en": "nothing", "say": "No hay nada aquí.", "caption": "Nada", "sign": "Nada", "options": ["nada", "nadie", "no"], "new": true, "poolSource": "a1-u01" },
-    { "id": "nadie", "es": "nadie", "en": "nobody", "say": "No hay nadie en la casa.", "caption": "Nadie", "sign": "Nadie", "options": ["nadie", "nada", "gente"], "new": true, "poolSource": "a1-u01" },
-    { "id": "nunca", "es": "nunca", "en": "never", "say": "David nunca tiene miedo.", "caption": "Nunca", "sign": "Nunca", "options": ["nunca", "no", "tampoco"], "new": true, "poolSource": "a1-u01" },
-    { "id": "tampoco", "es": "tampoco", "en": "neither, not either", "say": "David no come. Tampoco bebe.", "caption": "Tampoco", "sign": "Tampoco", "options": ["tampoco", "nunca", "nada"], "new": true, "poolSource": "a1-u01" },
-    { "id": "miedo", "es": "miedo", "en": "fear", "say": "David no tiene miedo.", "caption": "Sin miedo", "sign": "Sin miedo", "options": ["miedo", "paz", "frío"], "new": true, "poolSource": "a1-u01", "note": "CSA-2: fear is answered by God's help, never used as pressure. Decoys paz (a0-verbs) + frío (a0-u06), both union ids" },
-    { "id": "qué", "es": "qué", "en": "what", "say": "¿Qué lee David?", "caption": "¿Qué?", "sign": "¿Qué?", "options": ["qué", "quién", "dónde"], "new": false, "poolSource": "a0-u06" },
-    { "id": "cómo", "es": "cómo", "en": "how", "say": "¿Cómo está David?", "caption": "¿Cómo?", "sign": "¿Cómo?", "options": ["cómo", "qué", "cuándo"], "new": false, "poolSource": "a0-u06" },
-    { "id": "dónde", "es": "dónde", "en": "where", "say": "¿Dónde vive David?", "caption": "¿Dónde?", "sign": "¿Dónde?", "options": ["dónde", "quién", "cuándo"], "new": false, "poolSource": "a0-u06" },
-    { "id": "quién", "es": "quién", "en": "who", "say": "¿Quién escoge a David?", "caption": "¿Quién?", "sign": "¿Quién?", "options": ["quién", "qué", "dónde"], "new": false, "poolSource": "a0-u06" },
-    { "id": "cuándo", "es": "cuándo", "en": "when", "say": "¿Cuándo viene Samuel?", "caption": "¿Cuándo?", "sign": "¿Cuándo?", "options": ["cuándo", "dónde", "qué"], "new": false, "poolSource": "a0-u06" },
-    { "id": "cuál", "es": "cuál", "en": "which", "say": "¿Cuál es la puerta?", "caption": "¿Cuál?", "sign": "¿Cuál?", "options": ["cuál", "qué", "cómo"], "new": false, "poolSource": "a0-u06" },
-    { "id": "por qué", "es": "por qué", "en": "why", "say": "¿Por qué escoge Dios a David?", "caption": "¿Por qué?", "sign": "¿Por qué?", "options": ["por qué", "porque", "qué"], "new": true, "poolSource": "a1-u01" },
-    { "id": "porque", "es": "porque", "en": "because", "say": "Porque Dios ve el corazón.", "caption": "Porque", "sign": "Porque", "options": ["porque", "por qué", "no"], "new": true, "poolSource": "a1-u01" }
+ "packId": "a1-u01",
+ "unitId": "a1-u01",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P0",
+ "theme": "La ciudad y el camino / David escogido (1 Samuel 16)",
+ "storyThread": "David escogido — Dios mira el corazón (1 Samuel 16:7). L1 = el puente de la Ciudad de Destrucción (re-pass de los 13 palabras del spec).",
+ "grammarTargets": [
+  "-er/-ir present (3rd person forms as ids)",
+  "negation (no/nada/nadie/nunca/tampoco)",
+  "copula están",
+  "question words (re-pass a0-u06) + por qué / porque",
+  "plural articles los/las in sight"
+ ],
+ "waves": {
+  "l1": [
+   "ciudad",
+   "calle",
+   "casa",
+   "gente",
+   "tienda",
+   "pan",
+   "agua",
+   "moneda",
+   "puerta",
+   "camino",
+   "muro",
+   "piedra",
+   "perdición",
+   "están"
   ],
-  "scripture": {
+  "l2": [
+   "aprende",
+   "come",
+   "bebe",
+   "vive",
+   "escribe",
+   "lee",
+   "escoge",
+   "cree",
+   "obedece"
+  ],
+  "l3": [
+   "no",
+   "nada",
+   "nadie",
+   "nunca",
+   "tampoco",
+   "miedo"
+  ],
+  "l4": [
+   "qué",
+   "cómo",
+   "dónde",
+   "quién",
+   "cuándo",
+   "cuál",
+   "por qué",
+   "porque"
+  ]
+ },
+ "words": [
+  {
+   "id": "ciudad",
+   "es": "ciudad",
+   "en": "city",
+   "say": "La ciudad es grande.",
+   "caption": "La ciudad",
+   "sign": "La ciudad",
+   "options": [
+    "ciudad",
+    "calle",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-signs-regions"
+  },
+  {
+   "id": "calle",
+   "es": "calle",
+   "en": "street",
+   "say": "Hay gente en la calle.",
+   "caption": "La calle",
+   "sign": "La calle",
+   "options": [
+    "calle",
+    "ciudad",
+    "gente"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "casa",
+   "es": "casa",
+   "en": "house",
+   "say": "Mi casa está aquí.",
+   "caption": "La casa",
+   "sign": "Mi casa",
+   "options": [
+    "casa",
+    "tienda",
+    "ciudad"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "gente",
+   "es": "gente",
+   "en": "people",
+   "say": "Hay gente en la calle.",
+   "caption": "La gente",
+   "sign": "La gente",
+   "options": [
+    "gente",
+    "ciudad",
+    "calle"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "tienda",
+   "es": "tienda",
+   "en": "shop",
+   "say": "La tienda está en la calle.",
+   "caption": "La tienda",
+   "sign": "La tienda",
+   "options": [
+    "tienda",
+    "casa",
+    "calle"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "pan",
+   "es": "pan",
+   "en": "bread",
+   "say": "El pan está en la tienda.",
+   "caption": "El pan",
+   "sign": "El pan",
+   "options": [
+    "pan",
+    "agua",
+    "moneda"
+   ],
+   "new": false,
+   "poolSource": "a0-u04"
+  },
+  {
+   "id": "agua",
+   "es": "agua",
+   "en": "water",
+   "say": "El agua está en la casa.",
+   "caption": "El agua",
+   "sign": "El agua",
+   "options": [
+    "agua",
+    "pan",
+    "leche"
+   ],
+   "new": false,
+   "poolSource": "a0-u04"
+  },
+  {
+   "id": "moneda",
+   "es": "moneda",
+   "en": "coin",
+   "say": "La moneda está en la tienda.",
+   "caption": "La moneda",
+   "sign": "La moneda",
+   "options": [
+    "moneda",
+    "tienda",
+    "pan"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "puerta",
+   "es": "puerta",
+   "en": "door",
+   "say": "La puerta está en la casa.",
+   "caption": "La puerta",
+   "sign": "La puerta",
+   "options": [
+    "puerta",
+    "muro",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "camino",
+   "es": "camino",
+   "en": "path, road",
+   "say": "El camino va a la ciudad.",
+   "caption": "El camino",
+   "sign": "El camino",
+   "options": [
+    "camino",
+    "calle",
+    "ciudad"
+   ],
+   "new": false,
+   "poolSource": "a0-u05"
+  },
+  {
+   "id": "muro",
+   "es": "muro",
+   "en": "wall (city, outer)",
+   "say": "El muro está junto a la puerta.",
+   "caption": "El muro",
+   "sign": "El muro",
+   "options": [
+    "muro",
+    "puerta",
+    "piedra"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "piedra",
+   "es": "piedra",
+   "en": "stone",
+   "say": "El muro es de piedra.",
+   "caption": "La piedra",
+   "sign": "La piedra",
+   "options": [
+    "piedra",
+    "muro",
+    "roca"
+   ],
+   "new": false,
+   "poolSource": "a0-u05"
+  },
+  {
+   "id": "perdición",
+   "es": "perdición",
+   "en": "perdition",
+   "say": "El camino ancho lleva a perdición.",
+   "caption": "El camino ancho",
+   "sign": "El camino ancho",
+   "options": [
+    "perdición",
+    "ciudad",
+    "calle",
+    "muro"
+   ],
+   "new": true,
+   "poolSource": "a1-u01",
+   "csaNote": "OWNER DIRECTIVE 21:00 — truth plainly: the word may appear plainly in tiles/signs/world voice (no confinement). The verse card remains its primary context. LIFTED: the earlier verse-card-only confinement ruling."
+  },
+  {
+   "id": "están",
+   "es": "están",
+   "en": "are (they are)",
+   "say": "Las tiendas están en la calle.",
+   "caption": "Están en la calle",
+   "sign": "Están aquí",
+   "options": [
+    "están",
+    "está",
+    "hay"
+   ],
+   "new": true,
+   "poolSource": "a1-u01",
+   "csaNote": "LEAD RULING 20:58: kept as id (F5) — a0-verbs binds hay/está as ids; an unbound spoken form is the phantom-decoy hole in reverse."
+  },
+  {
+   "id": "aprende",
+   "es": "aprende",
+   "en": "learns",
+   "say": "David aprende de Samuel.",
+   "caption": "David aprende",
+   "sign": "Aprende",
+   "options": [
+    "aprende",
+    "come",
+    "vive"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "come",
+   "es": "come",
+   "en": "eats",
+   "say": "David come pan en casa.",
+   "caption": "David come pan",
+   "sign": "Come",
+   "options": [
+    "come",
+    "bebe",
+    "vive"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "bebe",
+   "es": "bebe",
+   "en": "drinks",
+   "say": "David bebe agua.",
+   "caption": "David bebe",
+   "sign": "Bebe",
+   "options": [
+    "bebe",
+    "come",
+    "cree"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "vive",
+   "es": "vive",
+   "en": "lives",
+   "say": "David vive en Belén.",
+   "caption": "Vive en Belén",
+   "sign": "Vive",
+   "options": [
+    "vive",
+    "vivo",
+    "come"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "escribe",
+   "es": "escribe",
+   "en": "writes",
+   "say": "Samuel escribe la palabra.",
+   "caption": "Escribe la palabra",
+   "sign": "Escribe",
+   "options": [
+    "escribe",
+    "lee",
+    "aprende"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "lee",
+   "es": "lee",
+   "en": "reads",
+   "say": "David lee la palabra.",
+   "caption": "David lee",
+   "sign": "Lee",
+   "options": [
+    "lee",
+    "escribe",
+    "aprende"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "escoge",
+   "es": "escoge",
+   "en": "chooses",
+   "say": "Dios escoge a David.",
+   "caption": "Dios escoge a David",
+   "sign": "Escoge",
+   "options": [
+    "escoge",
+    "cree",
+    "obedece"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "cree",
+   "es": "cree",
+   "en": "believes",
+   "say": "David cree en Dios.",
+   "caption": "Cree en Dios",
+   "sign": "Cree",
+   "options": [
+    "cree",
+    "escoge",
+    "aprende"
+   ],
+   "new": true,
+   "poolSource": "a1-u01",
+   "note": "-er: creer → cree. Near-form rule keeps crece/creó out of this set — the pair IS the point in exam pattern p3"
+  },
+  {
+   "id": "obedece",
+   "es": "obedece",
+   "en": "obeys",
+   "say": "David obedece a su padre.",
+   "caption": "Obedece",
+   "sign": "Obedece",
+   "options": [
+    "obedece",
+    "escoge",
+    "cree"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "no",
+   "es": "no",
+   "en": "no, not",
+   "say": "David no come pan.",
+   "caption": "No",
+   "sign": "No",
+   "options": [
+    "no",
+    "nada",
+    "nunca"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "nada",
+   "es": "nada",
+   "en": "nothing",
+   "say": "No hay nada aquí.",
+   "caption": "Nada",
+   "sign": "Nada",
+   "options": [
+    "nada",
+    "nadie",
+    "no"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "nadie",
+   "es": "nadie",
+   "en": "nobody",
+   "say": "No hay nadie en la casa.",
+   "caption": "Nadie",
+   "sign": "Nadie",
+   "options": [
+    "nadie",
+    "nada",
+    "gente"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "nunca",
+   "es": "nunca",
+   "en": "never",
+   "say": "David nunca tiene miedo.",
+   "caption": "Nunca",
+   "sign": "Nunca",
+   "options": [
+    "nunca",
+    "no",
+    "tampoco"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "tampoco",
+   "es": "tampoco",
+   "en": "neither, not either",
+   "say": "David no come. Tampoco bebe.",
+   "caption": "Tampoco",
+   "sign": "Tampoco",
+   "options": [
+    "tampoco",
+    "nunca",
+    "nada"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "miedo",
+   "es": "miedo",
+   "en": "fear",
+   "say": "David no tiene miedo.",
+   "caption": "Sin miedo",
+   "sign": "Sin miedo",
+   "options": [
+    "miedo",
+    "paz",
+    "frío"
+   ],
+   "new": true,
+   "poolSource": "a1-u01",
+   "note": "CSA-2: fear is answered by God's help, never used as pressure. Decoys paz (a0-verbs) + frío (a0-u06), both union ids"
+  },
+  {
+   "id": "qué",
+   "es": "qué",
+   "en": "what",
+   "say": "¿Qué lee David?",
+   "caption": "¿Qué?",
+   "sign": "¿Qué?",
+   "options": [
+    "qué",
+    "quién",
+    "dónde"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "cómo",
+   "es": "cómo",
+   "en": "how",
+   "say": "¿Cómo está David?",
+   "caption": "¿Cómo?",
+   "sign": "¿Cómo?",
+   "options": [
+    "cómo",
+    "qué",
+    "cuándo"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "dónde",
+   "es": "dónde",
+   "en": "where",
+   "say": "¿Dónde vive David?",
+   "caption": "¿Dónde?",
+   "sign": "¿Dónde?",
+   "options": [
+    "dónde",
+    "quién",
+    "cuándo"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "quién",
+   "es": "quién",
+   "en": "who",
+   "say": "¿Quién escoge a David?",
+   "caption": "¿Quién?",
+   "sign": "¿Quién?",
+   "options": [
+    "quién",
+    "qué",
+    "dónde"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "cuándo",
+   "es": "cuándo",
+   "en": "when",
+   "say": "¿Cuándo viene Samuel?",
+   "caption": "¿Cuándo?",
+   "sign": "¿Cuándo?",
+   "options": [
+    "cuándo",
+    "dónde",
+    "qué"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "cuál",
+   "es": "cuál",
+   "en": "which",
+   "say": "¿Cuál es la puerta?",
+   "caption": "¿Cuál?",
+   "sign": "¿Cuál?",
+   "options": [
+    "cuál",
+    "qué",
+    "cómo"
+   ],
+   "new": false,
+   "poolSource": "a0-u06"
+  },
+  {
+   "id": "por qué",
+   "es": "por qué",
+   "en": "why",
+   "say": "¿Por qué escoge Dios a David?",
+   "caption": "¿Por qué?",
+   "sign": "¿Por qué?",
+   "options": [
+    "por qué",
+    "porque",
+    "qué"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  },
+  {
+   "id": "porque",
+   "es": "porque",
+   "en": "because",
+   "say": "Porque Dios ve el corazón.",
+   "caption": "Porque",
+   "sign": "Porque",
+   "options": [
+    "porque",
+    "por qué",
+    "no"
+   ],
+   "new": true,
+   "poolSource": "a1-u01"
+  }
+ ],
+ "scripture": {
+  "verseId": "mat-7-13",
+  "verseEnd": 14,
+  "reference": "Mateo 7:13-14 (RV1909)",
+  "verse": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+  "verseModern": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva a perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+  "captionSplit": [
+   "Entrad por la puerta estrecha: porque ancha",
+   "es la puerta, y espacioso el camino que lleva",
+   "á perdición, y muchos son los que entran por ella.",
+   "Porque estrecha es la puerta, y angosto el camino",
+   "que lleva á la vida, y pocos son los que la hallan."
+  ],
+  "say": "«Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.»",
+  "teaches": "perdición",
+  "teachesForm": "perdición",
+  "decoys": [
+   "ciudad",
+   "calle",
+   "muro"
+  ],
+  "verify": "VERIFIED 2026-11-10 by lead against primary source (verses/MAT/007/013.json + /014.json, RV1909M); v13 quoted FULL (draft truncation corrected), v14 byte-exact. SCRIPTURE-rv1909-verified.md #1.",
+  "ledger": "First cover was exam-a0 (teaches puerta); this is revisit 1 of max 2 per band, purpose reinforcement, different binding target (a1-u01 pack + casa-rosa-verse)."
+ },
+ "qna": {
+  "sayMax": 37,
+  "captionMax": 24,
+  "signMax": 16,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only)",
+  "nearFormRule": "Never in the same word-round option set: cómo/como, vivo/vive, cree/crece/creó, por qué/porque; muro/pared never each other's decoy (pared not in this pack). DOCUMENTED EXCEPTION (lead ruling 20:58): está/están IS the wave-1 grammar-contrast pair (están's set) — the spoken sentence carries the subject, tile-size distinctness is the enforced mitigation (DEFECTS #20 family). DOCUMENTED EXCEPTION: por qué/porque appear TOGETHER in this pack's question-word set — the unit's grammar point, tiles visually distinct (cuántos/cuándo precedent, lead 21:10).",
+  "targetLeadsOptions": true,
+  "pagination": "l1 = 14 ids > 12 threshold → render as two pages of 7 (DEFECTS #18)",
+  "englishLevel": "A1 — caption gloss optional, fades"
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "n": 1,
+    "type": "hear-choose",
+    "es": "nunca",
+    "en": "never",
+    "say": "David nunca tiene miedo.",
+    "options": [
+     "nunca",
+     "no",
+     "tampoco"
+    ],
+    "formSeed": 101
+   },
+   {
+    "n": 2,
+    "type": "hear-choose",
+    "es": "nadie",
+    "en": "nobody",
+    "say": "No hay nadie en la casa.",
+    "options": [
+     "nadie",
+     "nada",
+     "gente"
+    ],
+    "formSeed": 102
+   },
+   {
+    "n": 3,
+    "type": "hear-choose",
+    "es": "tampoco",
+    "en": "neither, not either",
+    "say": "David no come. Tampoco bebe.",
+    "options": [
+     "tampoco",
+     "nunca",
+     "nada"
+    ],
+    "formSeed": 103
+   },
+   {
+    "n": 4,
+    "type": "hear-choose",
+    "es": "cree",
+    "en": "believes",
+    "say": "David cree en Dios.",
+    "options": [
+     "cree",
+     "escoge",
+     "aprende"
+    ],
+    "formSeed": 104
+   },
+   {
+    "n": 5,
+    "type": "hear-choose",
+    "es": "obedece",
+    "en": "obeys",
+    "say": "David obedece a su padre.",
+    "options": [
+     "obedece",
+     "escoge",
+     "cree"
+    ],
+    "formSeed": 105
+   },
+   {
+    "n": 6,
+    "type": "hear-choose",
+    "es": "por qué",
+    "en": "why",
+    "say": "¿Por qué escoge Dios a David?",
+    "options": [
+     "por qué",
+     "porque",
+     "qué"
+    ],
+    "formSeed": 106,
+    "note": "THE U1 QUESTION-WORD CONTRAST (por qué / porque) — set byte-identical to the pack's own shipped round. R-1 resolves the nearFormRule conflict: the documented exception clause is added to a1-u01.qna.nearFormRule and this item ships as authored."
+   },
+   {
+    "n": 7,
+    "type": "hear-act",
+    "es": "puerta",
+    "en": "door",
+    "say": "Toca la puerta.",
+    "sprite": "puerta",
+    "options": [
+     "puerta",
+     "casa",
+     "camino"
+    ],
+    "formSeed": 107
+   },
+   {
+    "n": 8,
+    "type": "hear-act",
+    "es": "moneda",
+    "en": "coin",
+    "say": "Toca la moneda.",
+    "sprite": "moneda",
+    "options": [
+     "moneda",
+     "pan",
+     "cesta"
+    ],
+    "formSeed": 108
+   },
+   {
+    "n": 9,
+    "type": "gap-fill",
+    "es": "nada",
+    "sentence": "La gente no dice ___.",
+    "choices": [
+     "nada",
+     "nadie",
+     "tampoco"
+    ],
+    "formSeed": 109,
+    "note": "NEGATION ITEM (R2). Grammatically forced: only nada is well-formed after no dice (dice = a0-verbs id). Every word in the sentence is a bound id (la, gente a1-u01, no a1-u01, dice a0-verbs). Alternate if dice is ever unbound: «David no bebe ___.» (David, no, bebe, nada — all u01 ids)."
+   },
+   {
+    "n": 10,
+    "type": "gap-fill",
+    "es": "come",
+    "sentence": "David ___ pan en casa.",
+    "choices": [
+     "come",
+     "bebe",
+     "vive"
+    ],
+    "formSeed": 110,
+    "note": "-ER/-IR 3RD PERSON ITEM (R2). Sentence = the pack's own say for come with the target blanked; choices = the pack's own option set."
+   },
+   {
+    "n": 11,
+    "type": "verse-complete",
     "verseId": "mat-7-13",
     "verseEnd": 14,
     "reference": "Mateo 7:13-14 (RV1909)",
     "verse": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
     "verseModern": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva a perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
-    "captionSplit": ["Entrad por la puerta estrecha: porque ancha", "es la puerta, y espacioso el camino que lleva", "á perdición, y muchos son los que entran por ella.", "Porque estrecha es la puerta, y angosto el camino", "que lleva á la vida, y pocos son los que la hallan."],
+    "missing": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á ___, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+    "missingModern": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva a ___, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+    "captionSplit": [
+     "Entrad por la puerta estrecha: porque ancha",
+     "es la puerta, y espacioso el camino que lleva",
+     "á ___, y muchos son los que entran por ella.",
+     "Porque estrecha es la puerta, y angosto el camino",
+     "que lleva á la vida, y pocos son los que la hallan."
+    ],
+    "gapCount": 1,
+    "oneTapFillsAll": false,
+    "es": "perdición",
+    "en": "perdition",
     "say": "«Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.»",
-    "teaches": "perdición",
-    "teachesForm": "perdición",
-    "decoys": ["ciudad", "calle", "muro"],
-    "verify": "VERIFIED 2026-11-10 by lead against primary source (verses/MAT/007/013.json + /014.json, RV1909M); v13 quoted FULL (draft truncation corrected), v14 byte-exact. SCRIPTURE-rv1909-verified.md #1.",
-    "ledger": "First cover was exam-a0 (teaches puerta); this is revisit 1 of max 2 per band, purpose reinforcement, different binding target (a1-u01 pack + casa-rosa-verse)."
+    "options": [
+     "perdición",
+     "ciudad",
+     "calle",
+     "muro"
+    ],
+    "formSeed": 111,
+    "note": "R3 FLAGSHIP — the only binding that teaches perdición (0 exam bindings today). verse/verseModern/captionSplit/say are BYTE-IDENTICAL to a1-u01.json scripture (verified lead 2026-11-10, ledger #1/#4); missing/missingModern/captionSplit-line-3 derived by blanking the single occurrence of perdición (occurs ×1). Decoys ciudad/calle/muro are bound ids and verse-free. Display line: captionSplit ships 1909 orthography (á) per the u05/u06/u07 convention; the modern line is served via verseModern/missingModern — the owner's RV pick decides which renders (R5). Ledger field: exam-a0 already served this passage (verseId mat-7-14, es puerta) — this is revisit 1 of max 2 per band, new binding target teaches=perdición."
+   },
+   {
+    "n": 12,
+    "type": "reading-item",
+    "passage": "La ciudad es grande. Hay gente en la calle. El muro es de piedra. La tienda está en la calle. El pan está en la tienda. David aprende en la casa.",
+    "question": "¿Dónde está el pan?",
+    "answer": "en la tienda",
+    "choices": [
+     "en la tienda",
+     "en la casa",
+     "en la calle"
+    ],
+    "formSeed": 112,
+    "note": "READING-ITEM RULE applied: answer attested verbatim in the passage («El pan está en la tienda.»); every content word in the choices is a bound pool id (tienda, casa, calle); all three phrases are locative-free phrases per the rule. Passage uses only bound ids (ciudad, grande a0-verbs, hay, gente, calle, muro, piedra, tienda, pan, casa, aprende) + the proper noun David (u07 gap-fill renders David precedent). NOT SAMPLED in v1: R1 allocates the 3 reading items to u02/u04/u06."
+   },
+   {
+    "n": 13,
+    "type": "speak",
+    "target": "David obedece a su padre.",
+    "translation": "David obeys his father.",
+    "minScore": 60,
+    "deferred": true,
+    "formSeed": 113,
+    "note": "SPEAK-REF ONLY — R1: speak 0 in v1 (no scorer exists; never ship a dead slot). Authored so the channel has a U1 item the day the scorer lands. Carries the unit's -er/-ir 3rd person + character-formation line; no CSA exposure."
+   }
+  ],
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
   },
-  "qna": {
-    "sayMax": 37,
-    "captionMax": 24,
-    "signMax": 16,
-    "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only)",
-    "nearFormRule": "Never in the same word-round option set: cómo/como, vivo/vive, cree/crece/creó, por qué/porque; muro/pared never each other's decoy (pared not in this pack). DOCUMENTED EXCEPTION (lead ruling 20:58): está/están IS the wave-1 grammar-contrast pair (están's set) — the spoken sentence carries the subject, tile-size distinctness is the enforced mitigation (DEFECTS #20 family).",
-    "targetLeadsOptions": true,
-    "pagination": "l1 = 14 ids > 12 threshold → render as two pages of 7 (DEFECTS #18)",
-    "englishLevel": "A1 — caption gloss optional, fades"
-  },
-  "examContribution": { "unit": "exam-a1", "items": 13, "patternsRef": "build/CONTENT-a1-pack.md §B (patterns p1-p8, session 0ace231c)" },
-  "provenance": { "author": "curriculum-author session 0ace231c", "validatedBy": "lead 2026-11-10", "rulings": "build/A1-SPEC-updates.md LEAD RULINGS section (F1-F6)" },
-  "newIdsMustLandInSharedPoolFirst": ["calle", "gente", "muro", "perdición", "están", "aprende", "come", "bebe", "vive", "escribe", "lee", "escoge", "cree", "obedece", "no", "nada", "nadie", "nunca", "tampoco", "miedo", "por qué", "porque"]
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02…a1-u07; lead maps them onto the p1-p8 shapes when exam-a1 is authored. exam-a0's es=object shape applied to hear-act at filing.",
+  "artDebt": "hear-act #7-8 use ONLY exam-a0's confirmed sprite set (puerta, casa, camino, moneda, pan, cesta) — no new art required. toca/señala action icons remain owed by DEFECTS #17. If either sprite is missing, swap that item to its hear-choose twin (same es/say/options) — pattern slot unchanged (R6).",
+  "sampling": "exam-a1 samples 6 of these 13 authored items (3 hear-choose + 1 hear-act + 1 gap-fill + 1 verse-complete); 7 are reserve. A unit's pack may contribute 13 authored items while the exam samples 6 — this is sampling, not a coverage defect (R8)."
+ },
+ "provenance": {
+  "author": "curriculum-author session 0ace231c",
+  "validatedBy": "lead 2026-11-10",
+  "rulings": "build/A1-SPEC-updates.md LEAD RULINGS section (F1-F6)",
+  "examItems": "Filed from build/EXAM-a1-u01-draft-and-pool-spec.md §1 (curriculum-author prep, delegation 64c74cc5) per LEAD RULING R-3; R-1 exception clause added to qna.nearFormRule verbatim; item 6 ships as authored."
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "calle",
+  "gente",
+  "muro",
+  "perdición",
+  "están",
+  "aprende",
+  "come",
+  "bebe",
+  "vive",
+  "escribe",
+  "lee",
+  "escoge",
+  "cree",
+  "obedece",
+  "no",
+  "nada",
+  "nadie",
+  "nunca",
+  "tampoco",
+  "miedo",
+  "por qué",
+  "porque"
+ ]
 }
