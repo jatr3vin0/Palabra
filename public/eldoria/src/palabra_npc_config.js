@@ -63,7 +63,7 @@ window.PALABRA_MISSIONS = {
     proficiency: {
       cefr: 'A0',
       unit: 'u01',
-      vocab: ['Dios', 'cielos', 'tierra'],
+      vocab: ['Dios', 'cielo', 'tierra'],  // round KEY migrated cielos→cielo (ruling 3; verse text keeps "los cielos")
       masteryThreshold: 3,
     },
     reward: { gems: 15 },

@@ -1305,7 +1305,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
             {filled ? (
               <>
                 {round.verse.slice(0, round.verse.indexOf("___"))}
-                <span className="mx-0.5 inline-block rounded-lg bg-amber-200 px-1">{round.word}</span>
+                <span className="mx-0.5 inline-block rounded-lg bg-amber-200 px-1">{round.label ?? round.word}</span>
                 {round.verse.slice(round.verse.indexOf("___") + 3)}
               </>
             ) : (
@@ -1320,6 +1320,9 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
         {balloons.map((word, i) => {
           const gone = popped.includes(word);
           const isAnswer = word === round.word;
+          // The answer balloon displays the verse form when the KEY migrated
+          // (word "cielo" shows as "cielos" inside the RV1909 verse).
+          const text = isAnswer && round.label ? round.label : word;
           return (
             <div
               key={`${word}-${i}`}
@@ -1341,7 +1344,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
                   isAnswer && allWrongPopped && !filled ? "ring-4 ring-amber-400" : ""
                 }`}
               >
-                {word}
+                {text}
                 {gone && <span className="absolute -inset-3 -z-10 text-5xl">💥</span>}
               </button>
             </div>

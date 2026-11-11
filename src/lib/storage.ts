@@ -64,10 +64,27 @@ export function loadProgress(): Progress {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return fresh();
-    return regenHearts({ ...fresh(), ...(JSON.parse(raw) as Progress) });
+    return regenHearts(migrateMissKeys({ ...fresh(), ...(JSON.parse(raw) as Progress) }));
   } catch {
     return fresh();
   }
+}
+
+/**
+ * One-time miss-key repair: the casa frame's third round used to record its
+ * miss under the verse form "cielos"; the round KEY migrated to the canonical
+ * unit vocab id "cielo" (GAME-ROADMAP §ruling 3 — the KEY migrates, the verse
+ * text keeps "los cielos"). Miss matching is EXACT, so a stale "cielos" key
+ * would never be cleared or re-served — rename it once on load.
+ */
+function migrateMissKeys(p: Progress): Progress {
+  const stale = p.misses.cielos;
+  if (!stale) return p;
+  const misses = { ...p.misses };
+  delete misses.cielos;
+  const cur = misses.cielo;
+  misses.cielo = cur ? { n: Math.max(cur.n, stale.n), game: cur.game } : stale;
+  return { ...p, misses };
 }
 
 export function saveProgress(p: Progress): void {
@@ -223,8 +240,10 @@ export function recordMiss(p: Progress, word: string, game: string): Progress {
 
 /**
  * Clear a miss once the word is answered correctly somewhere else — "repeat
- * the lesson in different games". Accepts a near-miss match, so clearing on a
- * correct answer still works when the frame stores e.g. "cielos" for "cielo".
+ * the lesson in different games". Matching is EXACT on the miss key: the key
+ * recorded is the canonical vocab id the round carries (e.g. "cielo" — the
+ * old verse-form key "cielos" is renamed once in loadProgress, above), so
+ * record/clear always agree on the same string.
  */
 export function clearMiss(p: Progress, word: string): Progress {
   if (!p.misses[word]) return p;

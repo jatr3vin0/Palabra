@@ -31,7 +31,18 @@ export type ShooterRound = {
 };
 
 export type ScriptureRound = {
+  /**
+   * The miss/replay KEY — the canonical vocab id (e.g. "cielo", never the
+   * verse's inflected form). The ruling (GAME-ROADMAP §ruling 3): the KEY
+   * migrates, the verse text keeps "los cielos".
+   */
   word: string;
+  /**
+   * Display text for the answer balloon + the verse gap when it differs from
+   * the KEY (e.g. "cielos" — the RV1909 plural in the verse). Defaults to
+   * word.
+   */
+  label?: string;
   en: string;
   /** RV1909 text with a ___ gap; the gap is what the balloons fill. */
   verse: string;
@@ -339,12 +350,13 @@ export const frames: Record<string, FrameDef> = {
         balloons: ["Dios", "noche", "hombre", "jardín", "padre"],
       },
       {
-        word: "cielos",
+        word: "cielo",
+        label: "cielos",
         en: "sky; los cielos = the heavens",
         verse: "En el principio creó Dios los ___ y la tierra.",
         reference: "Génesis 1:1 (RV1909)",
         say: "«En el principio creó Dios los… cielos… y la tierra.»",
-        balloons: ["cielos", "días", "hermanos", "hijos", "tardes"],
+        balloons: ["cielo", "días", "hermanos", "hijos", "tardes"],
       },
     ] satisfies ScriptureRound[],
   },
