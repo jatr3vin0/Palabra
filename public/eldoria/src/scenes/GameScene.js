@@ -595,6 +595,9 @@ window.GameScene = class GameScene extends Phaser.Scene {
     opts = opts || {};
     const p = this.player;
     if (!spec) return;
+    // No live session (e.g. a missionResult lands while the world sits on the
+    // title screen): pay nothing, crash nothing — GS.gems would throw on null.
+    if (!window.GS) return;
     if (spec.gems) {
       GS.gems = Math.min(CONFIG.CAPS.gems, GS.gems + spec.gems);
       this.sfx('gem'); this.floatText(p.x, p.y, '+' + spec.gems, '#7fe9ff');
@@ -672,6 +675,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
 
   autoSave() {
     if (this._dying) return false;   // never snapshot a dead/falling player
+    if (!window.GS) return false;    // no live session: nothing to snapshot
     const T = CONFIG.TILE;
     if (this.mapId === 'overworld') {
       GS.checkpoint = {

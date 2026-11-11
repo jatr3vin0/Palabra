@@ -85,7 +85,10 @@ window.Palabra = {
     const gs = window.GameScene && window.game && window.game.scene
       ? window.game.scene.getScene('Game')
       : null;
-    if (m && msg.won) {
+    // Session guard: a result can land with no live world save (title screen,
+    // torn-down session) — the world side then stays a graceful no-op: no pay,
+    // no banner, no crash. Legit in-session results always have GS live.
+    if (m && msg.won && window.GS) {
       // Gem-farming gate: the world reward pays ONCE per mission — a replay
       // (win after the doneFlag is already set) earns XP/coins in Palabra but
       // no world gems, so the banner says so instead of paying again.
