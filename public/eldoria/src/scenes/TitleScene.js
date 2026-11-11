@@ -51,7 +51,7 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
     if (this._spoke) return;
     this._spoke = true;
     if (window.Palabra) {
-      window.Palabra.speak('Palabra. Elige una casilla para empezar tu aventura.', 'narrator');
+      window.Palabra.speak('Palabra, aprende español jugando. Elige una casilla para empezar tu aventura.', 'narrator');
     }
   }
 
@@ -146,6 +146,8 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
       this.eraseArmed = this.sel;
       AUDIO.sfx('denied');
       const t = this.text(160, 184, '¡Toca E otra vez para borrar!', '#ff8080', 8, true);
+      // Readable⇒heard (owner rule): the erase-warning banner speaks itself.
+      if (window.Palabra) window.Palabra.speak('¡Toca E otra vez para borrar!', 'narrator');
       this.time.delayedCall(2000, () => { t.destroy(); if (this.eraseArmed === this.sel) this.eraseArmed = -1; });
     }
   }

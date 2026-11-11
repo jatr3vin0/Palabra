@@ -37,6 +37,12 @@ window.VictoryScene = class VictoryScene extends Phaser.Scene {
     }).setOrigin(0.5).setAlpha(0).setResolution(CONFIG.ZOOM * 2);
     this.tweens.add({ targets: st, alpha: 1, delay: 5600, duration: 600 });
 
+    // Readable⇒heard (owner rule): the narrator reads the victory lines as
+    // they fade in — one passage, so the lines can never cut each other.
+    this.time.delayedCall(1400, () => {
+      if (window.Palabra) window.Palabra.speak(lines.map((l) => l[0]).join(' '), 'narrator');
+    });
+
     const hint = this.add.text(160, 192, 'ENTER: inicio (¡tu partida sigue ahí!)', {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: '#666688',
     }).setOrigin(0.5).setAlpha(0).setResolution(CONFIG.ZOOM * 2);

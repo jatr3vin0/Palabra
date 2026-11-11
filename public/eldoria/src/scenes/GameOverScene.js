@@ -27,6 +27,12 @@ window.GameOverScene = class GameOverScene extends Phaser.Scene {
     const go = () => this.choose();
     this.input.keyboard.on('keydown-ENTER', go);
     this.input.keyboard.on('keydown-SPACE', go);
+    // Readable⇒heard (owner rule): the defeat title and encouragement speak on
+    // arrival, then the highlighted option (same voice as the UP/DOWN moves).
+    if (window.Palabra) {
+      window.Palabra.speak('FIN DEL JUEGO. ¡No te rindas, héroe!', 'narrator');
+      this.time.delayedCall(2200, () => sayOpt());
+    }
   }
 
   refresh() {
