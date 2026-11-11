@@ -1,0 +1,137 @@
+{
+  "schema": "palabra.content-packs.v1",
+  "cefr": "A0",
+  "voice": {
+    "signNarrator": "ef_dora 0.88 (narrator)",
+    "npcDefault": "ef_dora 0.92",
+    "childNpc": "ef_dora 1.05",
+    "scripture": "em_santa 0.85",
+    "villain": "em_santa -3 st"
+  },
+  "constraints": {
+    "say_maxChars": 38,
+    "caption_maxChars": 38,
+    "grammar": "present tense + affirmative imperatives only; no past, no subjunctive, no subjunctive formulas",
+    "charset": "ASCII + á é í ó ú ñ ¿ ¡ only in RENDERED fields (captions, signs, dialogue lines); spoken-only fields (say, scripture.say) may carry « » — LEAD RULING 19:41: guillemets allowed in spoken-only fields, banned in rendered fields",
+    "roundMapping": "each word is a GameRound/ShooterRound: word=es, en=en, say=say, caption=caption, options=options",
+    "noDuplicates": "checked against unit-01.json vocab (llave, jardín, mañana, luz, tierra, cielo, día, noche are NOT re-taught)"
+  },
+  "packs": [
+    {
+      "packId": "a0-u03",
+      "unitId": "a0-u03",
+      "contentBinding": "a0-u03-l1",
+      "theme": "La casa y la tienda — home and shop objects, colours",
+      "storyThread": "El huerto (Génesis 2)",
+      "words": [
+        { "id": "casa",    "es": "casa",    "en": "house",   "say": "Mira mi casa. Es blanca.",      "caption": "Mi casa: blanca y bonita", "options": ["casa", "tienda", "cama"] },
+        { "id": "mesa",    "es": "mesa",    "en": "table",   "say": "Mira la mesa. Es grande.",      "caption": "La mesa es grande",        "options": ["mesa", "silla", "ventana"] },
+        { "id": "silla",   "es": "silla",   "en": "chair",   "say": "Aquí hay una silla.",           "caption": "Aquí hay una silla",       "options": ["silla", "mesa", "cama"] },
+        { "id": "cama",    "es": "cama",    "en": "bed",     "say": "Yo duermo en mi cama.",         "caption": "Duermo en mi cama",        "options": ["cama", "silla", "puerta"] },
+        { "id": "ventana", "es": "ventana", "en": "window",  "say": "Yo abro la ventana.",           "caption": "La ventana abierta",       "options": ["ventana", "puerta", "mesa"] },
+        { "id": "puerta",  "es": "puerta",  "en": "door",    "say": "Toca la puerta, por favor.",    "caption": "La puerta de la casa",     "options": ["puerta", "ventana", "pared"] },
+        { "id": "tienda",  "es": "tienda",  "en": "shop",    "say": "Vamos a la tienda.",            "caption": "La tienda del pueblo",     "options": ["tienda", "casa", "moneda"] },
+        { "id": "moneda",  "es": "moneda",  "en": "coin",    "say": "Yo tengo una moneda.",          "caption": "Una moneda en mi mano",    "options": ["moneda", "tienda", "cesta"] },
+        { "id": "olla",    "es": "olla",    "en": "pot",     "say": "La olla está en la mesa.",      "caption": "La olla está en la mesa",  "note": "ll sounds like the y in «yes»", "options": ["olla", "cesta", "saco"] },
+        { "id": "cesta",   "es": "cesta",   "en": "basket",  "say": "Mira mi cesta. Es verde.",      "caption": "Mi cesta es verde",        "options": ["cesta", "saco", "olla"] },
+        { "id": "saco",    "es": "saco",    "en": "sack",    "say": "Mira el saco. Es grande.",      "caption": "El saco grande",           "options": ["saco", "cesta", "moneda"] },
+        { "id": "pared",   "es": "pared",   "en": "wall (inside)",    "say": "Toca la pared.",                "caption": "La pared blanca",          "options": ["pared", "puerta", "ventana"] },
+        { "id": "verde",   "es": "verde",   "en": "green",   "say": "La cesta es verde.",            "caption": "Verde, como la cesta",     "options": ["verde", "blanco", "cesta"] },
+        { "id": "blanco",  "es": "blanco",  "en": "white",   "say": "La pared es blanca.",           "caption": "Blanco, como la pared",    "note": "blanca before a feminine word", "options": ["blanco", "verde", "pared"] }
+      ],
+      "waves": { "1": ["casa", "mesa", "silla", "cama"], "2": ["ventana", "puerta", "tienda", "moneda"], "3": ["olla", "cesta", "saco", "pared"], "4": ["verde", "blanco"], "5": "adaptive replay from progress.misses" },
+      "scripture": {
+        "reference": "Josué 24:15 (RV1909)",
+        "verse": "que yo y mi casa serviremos á Jehová.",
+        "captionSplit": ["que yo y mi casa", "serviremos á Jehová."],
+        "say": "«que yo y mi casa serviremos á Jehová.»",
+        "teaches": "casa",
+        "verify": "VERIFIED 2026-11-10 against RV1909 primary source (danielmiranda/rv1909hispano); clause form, 1909 orthography 'á' kept"
+      }
+    },
+    {
+      "packId": "a0-u04",
+      "unitId": "a0-u04",
+      "contentBinding": "a0-u04-l1",
+      "theme": "La comida — food and drink, meals, me gusta",
+      "storyThread": "El pan y el compartir",
+      "words": [
+        { "id": "pan",     "es": "pan",     "en": "bread",   "say": "Me gusta el pan.",              "caption": "El pan en la mesa",        "options": ["pan", "queso", "plato"] },
+        { "id": "agua",    "es": "agua",    "en": "water",   "say": "Bebo agua. Es buena.",          "caption": "Agua fresca",              "note": "agua is feminine but takes el: el agua", "options": ["agua", "leche", "miel"] },
+        { "id": "sal",     "es": "sal",     "en": "salt",    "say": "La sal está en la mesa.",       "caption": "La sal blanca",            "options": ["sal", "miel", "pan"] },
+        { "id": "miel",    "es": "miel",    "en": "honey",   "say": "La miel es dulce.",             "caption": "Miel dulce",               "options": ["miel", "sal", "leche"] },
+        { "id": "leche",   "es": "leche",   "en": "milk",    "say": "Bebo leche por la mañana.",     "caption": "Leche por la mañana",      "options": ["leche", "agua", "queso"] },
+        { "id": "queso",   "es": "queso",   "en": "cheese",  "say": "Como queso y pan.",             "caption": "Queso y pan",              "options": ["queso", "pan", "huevo"] },
+        { "id": "huevo",   "es": "huevo",   "en": "egg",     "say": "Hay un huevo aquí.",            "caption": "Un huevo aquí",            "note": "the h is silent: WEH-vo", "options": ["huevo", "uva", "plato"] },
+        { "id": "plato",   "es": "plato",   "en": "plate",   "say": "El plato está limpio.",         "caption": "El plato limpio",          "options": ["plato", "huevo", "pan"] },
+        { "id": "uva",     "es": "uva",     "en": "grape",   "say": "La uva es pequeña.",            "caption": "Una uva pequeña",          "options": ["uva", "fruta", "huevo"] },
+        { "id": "fruta",   "es": "fruta",   "en": "fruit",   "say": "Como fruta. ¡Es dulce!",        "caption": "Fruta dulce",              "options": ["fruta", "uva", "maíz"] },
+        { "id": "trigo",   "es": "trigo",   "en": "wheat",   "say": "El pan es de trigo.",           "caption": "El trigo: pan",            "options": ["trigo", "maíz", "pan"] },
+        { "id": "maíz",    "es": "maíz",    "en": "corn",    "say": "Mira el maíz. Es amarillo.",    "caption": "Maíz amarillo",            "note": "í takes the stress: ma-EEZ", "options": ["maíz", "trigo", "uva"] }
+      ],
+      "waves": { "1": ["pan", "agua", "sal", "miel"], "2": ["leche", "queso", "huevo", "plato"], "3": ["uva", "fruta"], "4": ["trigo", "maíz"], "5": "adaptive replay from progress.misses" },
+      "scripture": {
+        "reference": "Mateo 6:11 (RV1909)",
+        "verse": "Danos hoy nuestro pan cotidiano.",
+        "captionSplit": ["Danos hoy", "nuestro pan cotidiano."],
+        "say": "«Danos hoy nuestro pan cotidiano.»",
+        "teaches": "pan",
+        "verify": "VERIFIED 2026-11-10 against RV1909 primary source; replaced the RV1960 draft wording ('El pan nuestro de cada día, dánoslo hoy')"
+      }
+    },
+    {
+      "packId": "a0-u05",
+      "unitId": "a0-u05",
+      "contentBinding": "a0-u05-l1",
+      "theme": "El campo y el camino — nature and directions",
+      "storyThread": "El trabajo y el día de reposo",
+      "words": [
+        { "id": "campo",     "es": "campo",     "en": "field, country", "say": "El trigo crece en el campo.",  "caption": "El campo verde",           "options": ["campo", "planta", "castillo"] },
+        { "id": "planta",    "es": "planta",    "en": "plant",          "say": "La planta es verde.",          "caption": "La planta verde",          "options": ["planta", "campo", "árbol"] },
+        { "id": "árbol",     "es": "árbol",     "en": "tree",           "say": "El árbol es grande.",          "caption": "Un árbol grande",          "note": "ár-bol: stress on the first syllable", "options": ["árbol", "planta", "roca"] },
+        { "id": "río",       "es": "río",       "en": "river",          "say": "El río tiene agua fría.",      "caption": "El río: agua fría",        "options": ["río", "hielo", "barro"] },
+        { "id": "piedra",    "es": "piedra",    "en": "stone",          "say": "La piedra es dura.",           "caption": "Una piedra dura",          "options": ["piedra", "roca", "barro"] },
+        { "id": "roca",      "es": "roca",      "en": "rock",           "say": "Mira la roca grande.",         "caption": "La roca grande",           "options": ["roca", "piedra", "castillo"] },
+        { "id": "barro",     "es": "barro",     "en": "mud, clay",      "say": "Hay barro en el camino.",      "caption": "Barro en el camino",       "options": ["barro", "hielo", "río"] },
+        { "id": "hielo",     "es": "hielo",     "en": "ice",            "say": "El hielo es frío.",            "caption": "El hielo frío",            "note": "the h is silent: YEH-lo", "options": ["hielo", "barro", "río"] },
+        { "id": "serpiente", "es": "serpiente", "en": "snake",          "say": "La serpiente vive aquí.",      "caption": "La serpiente vive aquí",   "options": ["serpiente", "árbol", "planta"] },
+        { "id": "camino",    "es": "camino",    "en": "path, road",     "say": "El camino va al pueblo.",      "caption": "El camino al pueblo",      "options": ["camino", "castillo", "campo"] },
+        { "id": "norte",     "es": "norte",     "en": "north",          "say": "El norte es frío.",            "caption": "Al norte",                 "options": ["norte", "sur", "este"] },
+        { "id": "sur",       "es": "sur",       "en": "south",          "say": "El sur es caliente.",          "caption": "Al sur",                   "options": ["sur", "norte", "oeste"] },
+        { "id": "este",      "es": "este",      "en": "this (m.); also east as a direction", "say": "El este está aquí.",       "caption": "Al este",                  "note": "as a direction it takes el: el este. Gloss widened at source for the a1-u04 demonstrative re-pass (lead ruling E1, pared/muro precedent).", "options": ["este", "oeste", "norte"] },
+        { "id": "oeste",     "es": "oeste",     "en": "west",           "say": "El oeste está allí.",          "caption": "Al oeste",                 "options": ["oeste", "este", "sur"] },
+        { "id": "castillo",  "es": "castillo",  "en": "castle",         "say": "El castillo es muy grande.",   "caption": "El castillo grande",       "note": "ll sounds like the y in «yes»", "options": ["castillo", "roca", "camino"] }
+      ],
+      "waves": { "1": ["campo", "planta", "árbol", "río"], "2": ["piedra", "roca", "barro", "hielo"], "3": ["serpiente", "camino", "castillo"], "4": ["norte", "sur", "este", "oeste"], "5": "adaptive replay from progress.misses" },
+      "scripture": {
+        "reference": "Juan 14:6 (RV1909)",
+        "verse": "Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.",
+        "captionSplit": ["Jesús le dice: Yo soy el camino,", "y la verdad, y la vida:", "nadie viene al Padre, sino por mí."],
+        "say": "«Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.»",
+        "teaches": "camino",
+        "verify": "VERIFIED 2026-11-10 against RV1909 primary source; FULL verse quoted including the opening 'Jesús le dice:' (draft had the clause only)"
+      }
+    },
+    {
+      "packId": "a0-signs-regions",
+      "unitId": "a0-u05",
+      "contentBinding": "a0-u05-l8",
+      "optional": true,
+      "why": "closes the 8 Eldoria sign word-sets the three unit packs do not cover",
+      "theme": "Lugares del mapa — places of the world map",
+      "words": [
+        { "id": "ciudad",    "es": "ciudad",    "en": "city",      "say": "La ciudad es grande.",        "caption": "La ciudad grande",     "options": ["ciudad", "castillo", "campo"] },
+        { "id": "bosque",    "es": "bosque",    "en": "forest",    "say": "Hay árboles en el bosque.",   "caption": "El bosque: árboles",   "options": ["bosque", "campo", "cueva"] },
+        { "id": "lago",      "es": "lago",      "en": "lake",      "say": "El lago tiene agua.",         "caption": "El lago: agua",        "options": ["lago", "río", "pantano"] },
+        { "id": "desierto",  "es": "desierto",  "en": "desert",    "say": "El desierto es seco.",        "caption": "El desierto seco",     "options": ["desierto", "colina", "campo"] },
+        { "id": "colina",    "es": "colina",    "en": "hill",      "say": "Mira la colina verde.",       "caption": "La colina verde",      "options": ["colina", "cueva", "roca"] },
+        { "id": "cueva",     "es": "cueva",     "en": "cave",      "say": "La cueva es oscura.",         "caption": "La cueva oscura",      "options": ["cueva", "colina", "bosque"] },
+        { "id": "pantano",   "es": "pantano",   "en": "swamp",     "say": "Hay agua en el pantano.",     "caption": "El pantano: agua",     "options": ["pantano", "lago", "barro"] },
+        { "id": "santuario", "es": "santuario", "en": "sanctuary", "say": "El santuario está aquí.",     "caption": "El santuario santo",   "options": ["santuario", "ciudad", "castillo"] }
+      ],
+      "waves": { "1": ["ciudad", "bosque", "lago", "desierto"], "2": ["colina", "cueva", "pantano", "santuario"], "5": "adaptive replay" },
+      "WAVE_NOTE": "this pack has NO scripture block and waves 3-4 are intentionally absent — the wave loop must not assume keys 1-4 exist"
+    }
+  ],
+  "NOTES": "Canonical pack JSON (curriculum author 2026-11-10, session f65248d1). Changes vs 84717b10 originals: 3 scripture fields corrected per SCRIPTURE-rv1909-verified.md; cueva options fixed (was ['cueva','cueva','colina'] duplicate decoy); packId a0-signs-regions confirmed. A0-U5 retitled 'El campo y el camino' per lead ruling."
+}
