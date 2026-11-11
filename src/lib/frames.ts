@@ -111,20 +111,12 @@ export const frames: Record<string, FrameDef> = {
     xp: 10,
     voice: "villagerM",
     greeting: {
-      es: "¡Hola! Soy el Capitán Rico. Mi jet dispara palabras del cielo. ¡Escucha y toca la palabra buena!",
-      en: "Hi! I'm Captain Rico. My jet shoots words from the sky. Listen and tap the right word!",
+      es: "¡Hola! Soy el Capitán Rico. ¡A volar!",
+      en: "Hi! I'm Captain Rico. Let's fly!",
     },
     howto: {
-      es: [
-        "Mira el cielo. Las palabras bajan.",
-        "Escucha bien y toca la palabra que oíste.",
-        "Si tocas otra, pierdes un corazón. ¡Pero sigues!",
-      ],
-      en: [
-        "Look at the sky. The words come down.",
-        "Listen well and tap the word you heard.",
-        "Tap a different one and you lose a heart. But you keep going!",
-      ],
+      es: ["Mira el cielo. Bajan palabras.", "Escucha y toca la que oíste."],
+      en: ["Look up. Words fall.", "Listen and tap the word you heard."],
     },
     praise: PRAISE,
     gentle: GENTLE,
@@ -316,20 +308,12 @@ export const frames: Record<string, FrameDef> = {
     voice: "villagerF",
     roundVoice: "scripture",
     greeting: {
-      es: "¡Hola, cariño! Soy Ana. Hoy hablamos de la Palabra: «En el principio creó Dios los cielos y la tierra». Revienta los globos que no van, y guarda el bueno.",
-      en: "Hello, dear! I'm Ana. Today we talk about the Word: “In the beginning God created the heavens and the earth.” Pop the balloons that don't belong, and keep the right one.",
+      es: "¡Hola, cariño! Soy Ana. Hoy jugamos con la Palabra.",
+      en: "Hi, dear! I'm Ana. Today we play with the Word.",
     },
     howto: {
-      es: [
-        "Mira el versículo. Falta una palabra.",
-        "Revienta los globos que no van.",
-        "Al final queda uno: toca el globo bueno.",
-      ],
-      en: [
-        "Look at the verse. One word is missing.",
-        "Pop the balloons that do not belong.",
-        "At the end one is left: tap the good balloon.",
-      ],
+      es: ["Revienta los globos que no van.", "Al final, toca el bueno."],
+      en: ["Pop the balloons that are wrong.", "Then tap the right one."],
     },
     praise: PRAISE,
     gentle: GENTLE,

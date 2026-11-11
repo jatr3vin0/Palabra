@@ -49,11 +49,10 @@ export const REWARD_COPY = {
   ],
   // Spoken in the narrator voice after the farewell line. Never the letters
   // "XP" aloud (kokoro spells it) — say "puntos de experiencia".
+  // W2C compressed copy (lead-approved, DIALOGUE-sweep-playtest2.md): 2 lines.
   spoken: [
-    "¡Muy bien! Ganaste puntos, gemas y monedas.",
-    "Los puntos son de aprender. Más puntos, más sabes.",
-    "Las gemas son del mundo. Las monedas son de Palabra.",
-    "Todo queda guardado. ¡Hasta la próxima!",
+    "¡Muy bien! Puntos, gemas y monedas.",
+    "Puntos de aprender. Gemas del mundo. Monedas de Palabra. Todo guardado.",
   ],
 };
 
@@ -761,19 +760,14 @@ function ClassicFrame({
   }, []);
 
   // The villager speaks their greeting when the frame opens (heard first),
-  // then the how-to; on scripture frames the verse follows in the narrator's
-  // voice — all BEFORE ¡Jugar! (quality bar: instructions precede play).
+  // then the how-to — all BEFORE ¡Jugar! (quality bar: instructions precede
+  // play). W2C ruling: the greet-tail verse is GONE — the ScriptureMoment
+  // between ¡Jugar! and round 1 is the verse's one hearing.
   useEffect(() => {
     if (phase === "greet" && frame) {
-      if (frame.kind === "scripture") {
-        say(frame.greeting.es, castParams(frame.voice), () =>
-          say(frame.howto.es.join(" "), castParams(frame.voice), () => sayVerse(GENESIS_1_1)),
-        );
-      } else {
-        say(frame.greeting.es, castParams(frame.voice), () =>
-          say(frame.howto.es.join(" "), castParams(frame.voice)),
-        );
-      }
+      say(frame.greeting.es, castParams(frame.voice), () =>
+        say(frame.howto.es.join(" "), castParams(frame.voice)),
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, frame]);
@@ -846,17 +840,11 @@ function ClassicFrame({
           <HowtoCard frame={frame} showEn={glossMode(p.englishLevel, frame) !== "none"} />
           <button
             type="button"
-            onClick={() => {
-              if (frame.kind === "scripture") {
-                say(frame.greeting.es, castParams(frame.voice), () =>
-                  say(frame.howto.es.join(" "), castParams(frame.voice), () => sayVerse(GENESIS_1_1)),
-                );
-              } else {
-                say(frame.greeting.es, castParams(frame.voice), () =>
-                  say(frame.howto.es.join(" "), castParams(frame.voice)),
-                );
-              }
-            }}
+            onClick={() =>
+              say(frame.greeting.es, castParams(frame.voice), () =>
+                say(frame.howto.es.join(" "), castParams(frame.voice)),
+              )
+            }
             aria-label="Escuchar las instrucciones otra vez"
             className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
           >
@@ -1264,7 +1252,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
           </button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-black text-stone-800">
-              Revienta los que no van. Al final, toca el bueno.
+              {allWrongPopped ? "¡Toca el bueno!" : "Revienta los que no van."}
             </p>
             <Gloss level={p.englishLevel} frame={frame} en={round.en} />
           </div>
