@@ -43,6 +43,9 @@ type OutMsg =
 export type SpeakOpts = {
   /** kokoro voice id, e.g. "ef_dora" / "em_alex" / "em_santa". */
   voice?: string;
+  /** Cast-table shape (castParams() returns { voiceId, ... }) — normalized to
+   * `voice` in speakSpanish so the table edit is what the engine actually uses. */
+  voiceId?: string;
   /** Audible rate: 1.05 = a touch fast, 0.85 = slow. */
   speed?: number;
   /** Pitch shift in semitones (+2 = child-bright, -3 = villain-deep). */
@@ -406,6 +409,8 @@ export function speakSpanish(
   onEnd?: () => void,
 ): void {
   const o: SpeakOpts = typeof opts === "object" && opts !== null ? opts : { slow: opts === true };
+  // castParams() hands over { voiceId, speed, pitch } — accept that shape too
+  if (!o.voice && o.voiceId) o.voice = o.voiceId;
   stopSpeaking();
   const id = ++speakId;
   speechEndCb = onEnd ?? null;
