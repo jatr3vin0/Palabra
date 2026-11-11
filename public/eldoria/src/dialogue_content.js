@@ -7,64 +7,66 @@
 // Pip and Ana keep their gate-slice blocks — already Spanish, missions bound.)
 
 // ---------------------------------------------------------------------------
-// Elder Rowan — quest giver, Aldea Sauce (elder_house)
+// Evangelista (elder_rowan) — quest giver, Ciudad de Destrucción (elder_house)
+// W3 reskin: the Bunyan story layer. Conditions/keys byte-identical, order
+// unchanged — display text only (Burden → Roll of the King → the narrow gate).
 // ---------------------------------------------------------------------------
 DIALOGUE.elder_rowan = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['¡La corona está entera!', 'Eldoria está a salvo. ¡Gracias!'],
-      ['Descansa, héroe de la aldea.', 'Te ganaste una siesta. Grande.'] ],
+      ['¡A casa llegaste, peregrino!', '¡Gracias por tu historia!'],
+      ['Descansa. La Ciudad Celestial', 'te espera. Tú llegaste.'] ],
     gloss: [
-      ['The crown is whole again!', 'Eldoria is safe. Thank you!'],
-      ['Rest, hero of the village.', 'You earned a nap. A big one.'] ] },
+      ['You made it home, pilgrim!', 'Thank you for your story!'],
+      ['Rest. The Celestial City', 'awaits. You arrived.'] ] },
   { if: { shardsMin: 3 }, lines: [
-      ['¡Tres pedazos! ¡Lo lograste!', 'Tienen magia antigua.'],
-      ['Ve al noreste, a los Yermos', 'de Ceniza. Los pedazos abren paso.'],
-      ['Morgrath espera en su ciudadela.', '¡Cree en ti! ¡Ve, valiente!'] ],
+      ['¡Los tres sellos! ¡Lo lograste!', 'El Rollo del Rey está entero.'],
+      ['El sello abre la barrera.', 'Ve al noreste: el Valle de', 'la Humillación.'],
+      ['Apollyon espera en su fortaleza.', '¡Cree en ti! ¡Ve, valiente!'] ],
     gloss: [
-      ['Three shards! You did it!', 'They have old magic.'],
-      ['Go northeast, to the Ashen', 'Wastes. The shards open the way.'],
-      ['Morgrath waits in his citadel.', 'Believe in yourself! Go, brave one!'] ] },
+      ['The three seals! You did it!', 'The King\'s Roll is whole.'],
+      ['The seal opens the barrier.', 'Go northeast: the Valley of', 'Humiliation.'],
+      ['Apollyon waits in his fortress.', 'Believe in yourself! Go, brave one!'] ] },
   { if: { flagsAll: ['d3_complete'], flagsNone: ['d2_complete'] }, lines: [
-      ['¡El pedazo de zafiro! ¡Bien!', 'Y esas botas... ¡qué rápidas!'],
-      ['Falta uno: las Ruinas de Piedra,', 'al sureste, lejos.'],
+      ['¡El sello de zafiro! ¡Bien!', 'Y el calzado del evangelio...', '¡qué rápido vas!'],
+      ['Falta uno: la Mina de Demas,', 'al sureste, lejos.'],
       ['Un ojo de piedra cierra la puerta.', 'Tu arco lo despierta.'] ],
     gloss: [
-      ['The sapphire shard! Good!', 'And those boots... how fast!'],
-      ['One left: the Sandstone Ruins,', 'far to the southeast.'],
+      ['The sapphire seal! Good!', 'And the footwear of the gospel...', 'how fast you go!'],
+      ['One left: the Mine of Demas,', 'far to the southeast.'],
       ['A stone eye seals the door.', 'Your bow wakes it.'] ] },
   { if: { flagsAll: ['d2_complete'], flagsNone: ['d3_complete'] }, lines: [
-      ['¡El pedazo de rubí! ¡Muy bien!', 'Y bombas. ¡Cuida mis cortinas!'],
-      ['Falta uno: el Hueco del Glaciar,', 'al norte, tras el paso.'],
+      ['¡El sello de rubí! ¡Muy bien!', 'Y bombas. ¡Bum!'],
+      ['Falta uno: el Castillo de', 'la Duda, al norte, tras el paso.'],
       ['Una roca rota tapa la cueva.', 'Eso pide una bomba. ¡Bum!'] ],
     gloss: [
-      ['The ruby shard! Very good!', 'And bombs. Mind my curtains!'],
-      ['One left: Glacier Hollow,', 'north, past the pass.'],
+      ['The ruby seal! Very good!', 'And bombs. Boom!'],
+      ['One left: the Castle of Doubt,', 'north, past the pass.'],
       ['A cracked rock blocks the cave.', 'That calls for a bomb. Boom!'] ] },
   { if: { flagsAll: ['d1_complete'] }, lines: [
-      ['¡El pedazo de esmeralda! ¡Bien!', 'Y un buen arco en tu espalda.'],
-      ['Faltan dos, valiente.', 'Ruinas al sureste, glaciar al norte.'],
-      ['Ese ojo de piedra de las ruinas...', 'dicen que el arco lo despierta.'] ],
+      ['¡El sello de esmeralda! ¡Bien!', 'Y un buen arco en tu espalda.'],
+      ['Faltan dos sellos, peregrino.', 'Mina al sureste, castillo al norte.'],
+      ['Ese ojo de piedra de la mina...', 'dicen que el arco lo despierta.'] ],
     gloss: [
-      ['The emerald shard! Good!', 'And a fine bow on your back.'],
-      ['Two are left, brave one.', 'Ruins southeast, glacier north.'],
-      ['That stone eye in the ruins...', 'they say a bow wakes it.'] ] },
+      ['The emerald seal! Good!', 'And a fine bow on your back.'],
+      ['Two seals are left, pilgrim.', 'Mine southeast, castle north.'],
+      ['That stone eye in the mine...', 'they say a bow wakes it.'] ] },
   { if: { flagsNone: ['npc_elder_met'] },
     set: { flag: 'npc_elder_met' },
     give: { gems: 30, once: 'elder_gift1' },
     lines: [
-      ['¡Ah! ¡Despertaste por fin!', 'Morgrath rompió nuestra corona', 'en tres pedazos, pequeño.'],
-      ['El roble te eligió a ti.', 'Toma estas gemas para el viaje.'],
-      ['Ve al oeste: el Templo de', 'Vinewood duerme en el bosque.', '¡Sé valiente, retoño!'] ],
+      ['¡Ah! ¡Despertaste por fin!', 'Llevas un peso en la espalda,', 'peregrino. Lo sé.'],
+      ['El Rollo del Rey tiene tres', 'sellos. Ladrones los robaron.'],
+      ['Toma estas gemas para el viaje.', 'La Puerta Angosta te espera.', 'Ve al oeste. ¡Ve, peregrino!'] ],
     gloss: [
-      ['Ah! You are awake at last!', 'Morgrath broke our crown', 'into three pieces, little one.'],
-      ['The oak chose you.', 'Take these gems for the journey.'],
-      ['Go west: the Vinewood Temple', 'sleeps in the forest.', 'Be brave, little sprout!'] ] },
+      ['Ah! You are awake at last!', 'You carry a weight on your', 'back, pilgrim. I know.'],
+      ['The King\'s Roll has three', 'seals. Thieves stole them.'],
+      ['Take these gems for the journey.', 'The Narrow Gate awaits you.', 'Go west. Go, pilgrim!'] ] },
   { lines: [
-      ['El Templo de Vinewood está al oeste,', 'en lo profundo del bosque.'],
-      ['Corta la hierba alta y tendrás', 'corazones. Truco de anciano.'] ],
+      ['La Puerta Angosta está al oeste,', 'tras el bosque. Toca la puerta.'],
+      ['Corta la hierba alta y tendrás', 'corazones. Truco de Evangelista.'] ],
     gloss: [
-      ['The Vinewood Temple is west,', 'deep in the forest.'],
-      ['Cut tall grass and you get', 'hearts. Old elder trick.'] ] },
+      ['The Narrow Gate is west,', 'past the forest. Knock. They open.'],
+      ['Cut tall grass and you get', 'hearts. Evangelista\'s trick.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -221,10 +223,10 @@ DIALOGUE.guard_tomas = [
       ['The mountain pass is north.', 'There is ice and there are wolves.', 'Pack hearts before you climb.'] ] },
   { lines: [
       ['¡Alto! Es broma. ¡Hola!', 'El paso del norte es peligroso.', 'Lobos, hielo y rocas gruñonas.'],
-      ['Empieza por el bosque, al oeste.', 'El anciano Rowan sabe el camino.'] ],
+      ['Empieza por el bosque, al oeste.', 'Evangelista sabe el camino.'] ],
     gloss: [
       ['Halt! Just kidding. Hello!', 'The north pass is dangerous.', 'Wolves, ice, grumpy rocks.'],
-      ['Start with the forest, west.', 'Elder Rowan knows the way.'] ] },
+      ['Start with the forest, west.', 'Evangelista knows the way.'] ] },
 ];
 
 // ---------------------------------------------------------------------------

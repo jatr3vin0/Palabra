@@ -13,7 +13,7 @@
 window.PALABRA_NPCS = {
   kid_pip:      { name: 'Pip',          voice: 'hero',      title: 'niño del pueblo' },
   villager_ana: { name: 'Ana',          voice: 'villagerF', title: 'vecina del pueblo' },
-  elder_rowan:  { name: 'Anciano Rowan', voice: 'elder',     title: 'anciano' },
+  elder_rowan:  { name: 'Evangelista',   voice: 'elder',     title: 'evangelista' },
   shopkeep_mira:{ name: 'Mira',         voice: 'villagerF', title: 'tienda' },
   farmer_joss:  { name: 'Joss',         voice: 'villagerM', title: 'granjero' },
   guard_tomas:  { name: 'Tomás',        voice: 'villagerM', title: 'guardia' },
