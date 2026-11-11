@@ -15,8 +15,10 @@
  * per-lane speeds + alternating directions + wrap-around, car overlap = death,
  * countdown timer, d-pad — the rules engine ports to Phaser 3; anonymous lanes
  * become the spoken-command safe lane (the plan's ONE deep change). Car hit and
- * timeout are MECHANICAL (no language event); decoy-lane entry is the ONLY
- * language miss; the goal is enterable ONLY from the safe lane.
+ * timeout are MECHANICAL (no language event); the ONLY language miss is the
+ * explicit GOAL ATTEMPT (the leap) from a non-safe lane (economy ruling
+ * 2026-11-11 — pass-through lane entry costs nothing); the goal is entered
+ * ONLY by the leap from the safe lane.
  */
 
 import type { PackWord } from "~/content/packs/a0-packs";
@@ -59,10 +61,16 @@ export type RoadCrossBoard = {
  *   onHit   → the SAFE crossing completed: ALWAYS the round's es id
  *             (CONTRACT-CRITICAL — never a lane index; replay keys on word ids);
  *             praise speech; on replay rounds clearMiss(p, word)
- *   onMiss  → decoy-lane entry: the round's es; loseHeart(recordMiss(p, word,
- *             frame.id)) + gentle speech + re-speak ~1.9 s later. Fires at most
- *             once per wrong choice (re-arms on the safe lane / respawn).
- *             Car hits and the timeout NEVER call onMiss (mechanical).
+ *   onMiss → the WRONG GOAL ATTEMPT (economy ruling 2026-11-11): the player
+ *             tried the explicit leap (tap/space/gold d-pad centre) for the
+ *             grass from a NON-SAFE lane. Payload = the WRONG lane's es
+ *             ("" when that lane is unlabeled); React speaks the gentle line
+ *             naming BOTH lanes' words (wrong + target), records the ROUND'S
+ *             word + a heart, and re-speaks the command ~1.9 s later. Fires at
+ *             most once per wrong choice (re-arms on the safe lane / respawn /
+ *             round reload). Pass-through lane entry NEVER calls onMiss
+ *             (movement is free); car hits and the timeout NEVER call onMiss
+ *             (mechanical).
  *   onWin   → completeLesson + recordGameWin (both stores) + farewell speech
  *             (fired React-side when the last round clears; scene never calls it)
  *   onProgress → HUD clock (timeLeft seconds; null limit = no timer)

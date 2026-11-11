@@ -37,6 +37,7 @@ import {
   buildRoadCrossBoard,
   buildRoadCrossRounds,
   composedCrossSay,
+  gentleMissSay,
   wordForSafe,
 } from "~/games/templates/road-cross-word/rounds";
 import { createController as createRoadCrossController, type RoadCrossRound } from "~/games/templates/road-cross-word/types";
@@ -220,8 +221,13 @@ export function RoadCrossFrame({
     say(frame.gentle[(L.misses - 1) % frame.gentle.length], undefined, () => say("Sin corazones. Respira, escucha y otra vez."));
   }, [ctrl, frame, say]);
 
+  /** The WRONG GOAL ATTEMPT (economy ruling 2026-11-11): the pilgrim leapt for
+   * the grass from a non-safe lane. `wrongEs` = the wrong lane's own word (""
+   * when that lane is unlabeled); the miss still records the ROUND'S word
+   * (contract-critical es) and spends a heart; the gentle line names BOTH
+   * lanes' words (wrong + target) and the command is re-spoken ~1.9 s later. */
   const handleMiss = useCallback(
-    (_es: string) => {
+    (wrongEs: string) => {
       const L = live.current;
       const named = L.round?.word;
       if (L.phase !== "play" || !L.p || !named) return;
@@ -237,8 +243,8 @@ export function RoadCrossFrame({
         enterGameOver();
         return;
       }
-      // Gentle correction now, the command re-spoken ~1.9 s later.
-      say(frame.gentle[(L.misses - 1) % frame.gentle.length]);
+      // Gentle correction naming BOTH lanes' words, the command re-spoken later.
+      say(gentleMissSay(wrongEs || null, named));
       window.clearTimeout(missTimer.current);
       missTimer.current = window.setTimeout(() => sayRound(composedCrossSay(named)), RC_MISS_RESPAWN_MS);
     },

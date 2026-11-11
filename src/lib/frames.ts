@@ -448,11 +448,11 @@ export const frames: Record<string, FrameDef> = {
       en: "Halt! Just kidding. I'm Tomás. Learn to cross the street!",
     },
     howto: {
-      es: ["Escucha: «cruza por…».", "Salta por la calle correcta.", "¡Cuida el tráfico!"],
-      en: ["Listen: “cross by…”.", "Hop along the right lane.", "Watch the traffic!"],
+      es: ["Escucha: «cruza por…».", "Camina libre hasta esa calle.", "¡Salta al pasto desde ella!"],
+      en: ["Listen: “cross by…”.", "Walk freely to that lane.", "Leap to the grass from it!"],
     },
     howtoSpoken:
-      "¡La calle de la Palabra! Escucha el comando: cruza por una palabra. Salta con el tablero, las flechas o deslizando el dedo hasta la calle con el dibujo de esa palabra. ¡Cuida el tráfico! Los carros no enseñan, solo estorban.",
+      "¡La calle de la Palabra! Escucha el comando: cruza por una palabra. Camina libre entre las calles con el tablero, las flechas o deslizando el dedo: pasar por otras calles no cuesta nada. Cuando estés en la calle del dibujo correcto, salta al pasto con el botón dorado, la barra espaciadora o tocando la calle. ¡Saltar desde otra calle cuesta un corazón! ¡Cuida el tráfico! Los carros no enseñan, solo estorban.",
     praise: PRAISE,
     gentle: GENTLE,
     farewell: {

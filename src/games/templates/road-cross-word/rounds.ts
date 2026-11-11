@@ -35,6 +35,14 @@ export function composedCrossSay(es: string): string {
   return `¡Cruza por ${articleFor(es)} ${es.toUpperCase()}!… ${es}.`;
 }
 
+/** The gentle correction for a WRONG GOAL ATTEMPT (economy ruling 2026-11-11):
+ * ONE line naming BOTH lanes' words — the lane the pilgrim leapt from (the
+ * wrong one; null when it carries no label) and the lane the command names. */
+export function gentleMissSay(wrongEs: string | null, targetEs: string): string {
+  const target = `¡Cruza por ${articleFor(targetEs)} ${targetEs.toUpperCase()}!`;
+  return wrongEs ? `Casi: esta calle es ${articleFor(wrongEs)} ${wrongEs}. ${target}` : `Casi: esta calle no tiene palabra. ${target}`;
+}
+
 /** a0-u05 per-source scoping: other packs' misses serve ONLY u05-bound frames. */
 export function wordForSafe(es: string): boolean {
   try {

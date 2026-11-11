@@ -8,9 +8,12 @@
  * `2 + ⌊level/2⌋` cars per lane (folded into the difficulty knob), one-tile
  * 128-px hops, car overlap = mechanical death, countdown clock with a red
  * pulse — here the ONE deep change: anonymous lanes become the
- * spoken-command safe lane («¡Cruza por X!»). The goal is enterable ONLY from
- * the safe lane; decoy-lane entry is the only language event (onMiss); car
- * hits and the clock NEVER speak (mechanical, plan §2).
+ * spoken-command safe lane («¡Cruza por X!»). Movement across the lanes is
+ * FREE (the 2026-11-11 economy ruling: pass-through decoys cost nothing —
+ * decoy-lane entry never speaks); the ONE language event is the GOAL ATTEMPT:
+ * the explicit leap (tap / space / the gold d-pad centre) from a lane —
+ * the safe lane's leap is the WIN, a non-safe lane's leap is the single
+ * language miss. Car hits and the clock NEVER speak (mechanical, plan §2).
  *
  * Every sprite is drawn here with Graphics — no external art, no CDN, no
  * webfont loader, no Phaser audio (speech is React's voice through the
@@ -86,7 +89,8 @@ class RoadCrossScene extends Phaser.Scene {
   private dead = false;
   private locked = true;
   private deathUntil = 0;
-  /** Per-crossing miss arming: a decoy entry fires ONCE, re-arms on the safe lane. */
+  /** Per-attempt miss arming: a WRONG GOAL ATTEMPT (tryLeap from a non-safe
+   * lane) fires ONCE, re-arms on the safe lane / respawn / round reload. */
   private missArmed = true;
   private timeLeft = 0;
   private progressAt = 0;
@@ -112,7 +116,7 @@ class RoadCrossScene extends Phaser.Scene {
 
     // Input registered exactly ONCE per scene lifetime (QA invariant).
     const kb = this.input.keyboard!;
-    kb.addCapture(["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D"]);
+    kb.addCapture(["UP", "DOWN", "LEFT", "RIGHT", "W", "A", "S", "D", "SPACE"]);
     kb.on("keydown-UP", () => this.tryMove(DIRS.up));
     kb.on("keydown-DOWN", () => this.tryMove(DIRS.down));
     kb.on("keydown-LEFT", () => this.tryMove(DIRS.left));
@@ -121,18 +125,25 @@ class RoadCrossScene extends Phaser.Scene {
     kb.on("keydown-S", () => this.tryMove(DIRS.down));
     kb.on("keydown-A", () => this.tryMove(DIRS.left));
     kb.on("keydown-D", () => this.tryMove(DIRS.right));
+    kb.on("keydown-SPACE", () => this.tryLeap());
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
       if (this.swipeSkip) return;
       this.swipeStart = { x: p.worldX, y: p.worldY };
     });
     this.input.on("pointerup", (p: Phaser.Input.Pointer) => {
+      // A d-pad press is never a tap-leap (captured before the reset).
+      const wasDpad = this.swipeSkip;
       this.swipeSkip = false;
       const s = this.swipeStart;
       this.swipeStart = null;
+      if (wasDpad) return;
       if (!s) return;
       const dx = p.worldX - s.x;
       const dy = p.worldY - s.y;
-      if (Math.max(Math.abs(dx), Math.abs(dy)) < 10) return;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 10) {
+        this.tryLeap(); // a tap = THE GOAL ATTEMPT (the one language decision)
+        return;
+      }
       if (Math.abs(dx) > Math.abs(dy)) this.tryMove(dx > 0 ? DIRS.right : DIRS.left);
       else this.tryMove(dy > 0 ? DIRS.down : DIRS.up);
     });
@@ -350,6 +361,21 @@ class RoadCrossScene extends Phaser.Scene {
     mk(288, 960, DIRS.down, "▼");
     mk(480, 960, DIRS.up, "▲");
     mk(672, 960, DIRS.right, "▶");
+    // THE GOLD LEAP (economy ruling 2026-11-11): the explicit GOAL ATTEMPT —
+    // a gold ring between the arrows, single-shot (no hold-to-repeat: it is
+    // one deliberate language decision, not movement).
+    const lx = 384;
+    const leapZone = this.add.zone(lx, 960, DPAD_SIZE, DPAD_SIZE).setInteractive({ useHandCursor: true });
+    const leapRing = this.add.circle(lx, 960, DPAD_SIZE / 2 - 4, GOLD, 0.9).setStrokeStyle(3, 0xb45309, 1).setDepth(30);
+    const leapLabel = this.add
+      .text(lx, 960, "⬆", { fontFamily: FONT, fontSize: "30px", color: "#7c2d12", fontStyle: "bold" })
+      .setOrigin(0.5)
+      .setDepth(31);
+    leapZone.on("pointerdown", () => {
+      this.swipeSkip = true; // a leap-button press is never the start of a swipe
+      this.tweens.add({ targets: [leapRing, leapLabel], scale: 0.88, duration: 70, yoyo: true });
+      this.tryLeap();
+    });
   }
 
   // ── board lifecycle ────────────────────────────────────────────────────────
@@ -576,6 +602,11 @@ class RoadCrossScene extends Phaser.Scene {
     return { col: this.col, row: this.row };
   }
 
+  /** QA hook: the miss-arm state (the economy ruling's once-per-choice gate). */
+  get missArmedNow(): boolean {
+    return this.missArmed;
+  }
+
   // ── the rules engine (ported) ──────────────────────────────────────────────
 
   private speedMul(): number {
@@ -622,6 +653,33 @@ class RoadCrossScene extends Phaser.Scene {
     this.hop(nc, nr);
   }
 
+  /** THE GOAL ATTEMPT (economy ruling 2026-11-11) — the ONE real language
+   * decision, made explicit: tap / space / the gold d-pad centre from a lane
+   * leaps for the grass. From the SAFE lane it is the winning LEAP (the same
+   * distance-scaled flight as the up-leap); from any other lane it is the
+   * single language miss — the pilgrim is nudged back, React speaks the gentle
+   * line naming BOTH lanes' words, a heart is spent, and the miss re-arms on
+   * returning to the safe lane (respawn/clock-retry re-arm unchanged). An
+   * unarmed repeat and a leap from the sidewalk are mechanical nudges.
+   * Movement itself (arrows/swipe/d-pad, pass-through included) stays FREE. */
+  tryLeap(): void {
+    if (this.locked || !this.board || this.tweening || this.dead) return;
+    if (this.row === 6 || this.row === 0) {
+      this.nudge(DIRS.up); // no lane to leap from — a mechanical bump
+      return;
+    }
+    const lane = this.board.lanes[this.row - 1];
+    if (lane?.safe) {
+      this.hop(this.col, 0); // the winning leap — the D1 flight to the grass
+      return;
+    }
+    this.nudge(DIRS.up); // nudges the player back onto the wrong lane
+    if (this.missArmed) {
+      this.missArmed = false; // fires ONCE per wrong choice, re-arms on the safe lane
+      this.bridge.onMiss(lane?.es ?? ""); // the WRONG lane's word ("" when unlabeled)
+    }
+  }
+
   private nudge(dir: Dir): void {
     if (this.tweening) return;
     this.tweening = true;
@@ -661,11 +719,12 @@ class RoadCrossScene extends Phaser.Scene {
     });
   }
 
-  private onArrive(fromRow: number, toRow: number): void {
+  private onArrive(_fromRow: number, toRow: number): void {
     if (!this.board || this.dead) return; // a death mid-hop never completes a crossing
     if (toRow === 0) {
-      // SAFE CROSSING: the goal was reached through the safe lane — the ONLY
-      // language hit, and it carries the ROUND'S es id, never a lane index
+      // SAFE CROSSING: the winning leap from the safe lane (up or the explicit
+      // leap) — the ONLY language hit, and it carries the ROUND'S es id, never
+      // a lane index
       this.burst(this.player.x, this.player.y + 40, GOLD, 16);
       this.bridge.onHit(this.commandEs ?? "");
       this.respawn();
@@ -674,13 +733,11 @@ class RoadCrossScene extends Phaser.Scene {
     if (toRow >= 1 && toRow <= 5) {
       const lane = this.board.lanes[toRow - 1];
       if (lane?.safe) {
-        this.missArmed = true; // (re-)armed on the safe lane
-      } else if (lane?.es && this.missArmed && fromRow !== toRow) {
-        // decoy-lane entry: the one language miss — fires ONCE per wrong
-        // choice, re-arms on the safe lane or respawn (plan §2)
-        this.missArmed = false;
-        this.bridge.onMiss(this.commandEs ?? "");
+        this.missArmed = true; // (re-)armed on the safe lane (economy ruling)
       }
+      // ECONOMY RULING: pass-through decoy lanes cost NOTHING — movement is
+      // free; decoy-lane entry never fires the miss. The only miss is the
+      // explicit GOAL ATTEMPT (tryLeap) from a non-safe lane.
     }
   }
 
@@ -839,6 +896,13 @@ export function createGame(
     get position() {
       const s = game.scene.getScene("calle") as RoadCrossScene | null;
       return s?.crossingsPosition ?? null;
+    },
+    get missArmed() {
+      const s = game.scene.getScene("calle") as RoadCrossScene | null;
+      return s ? s.missArmedNow : null;
+    },
+    leap() {
+      (game.scene.getScene("calle") as RoadCrossScene | null)?.tryLeap();
     },
   };
   return { destroy: (removeCanvas = true) => game.destroy(removeCanvas) };
