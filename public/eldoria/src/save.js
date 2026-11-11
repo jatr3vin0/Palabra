@@ -20,6 +20,9 @@ window.SAVE = {
       keys: {},                      // mapId -> small key count
       flags: {},                     // string -> true
       musicMuted: false,             // parent music-only mute (voices stay)
+      musicVol: 0.9,                 // audio settings panel (0..1)
+      sfxVol: 1,                     // effects slider (0..1)
+      voiceVol: 1,                   // voices slider mirror (kokoro gain is app-side)
       checkpoint: Object.assign({}, CONFIG.START),
       playMs: 0,
       savedAt: 0,

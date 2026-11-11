@@ -3,6 +3,16 @@
 // docs/ARCHITECTURE.md). Everything is defensive: unknown keys are silent no-ops.
 window.AUDIO = {
   songs: {}, sfxDefs: {},
+  // Real-music loader (feat/eldoria-audio): files maps song key -> URL (see
+  // music_files.js); once decoded the buffer loops through songGain. A track
+  // whose fetch/decode fails falls back to its registered synth def FOREVER
+  // (per-track), so a missing file can never silence the game.
+  files: {}, buffers: {}, fileFailed: {}, _loading: {},
+  _fileSource: null,
+  // Volume settings (0..1) — driven by the audio settings panel (app header +
+  // pause menu) and persisted per profile/world save. Voices live app-side
+  // (kokoro gain in voice.ts); the world mirrors voiceVol for its pause panel.
+  musicVol: 0.9, sfxVol: 1, voiceVol: 1,
   ctx: null, master: null, songGain: null, sfxGain: null, jingleGain: null,
   songMute: null, jingleMute: null,
   muted: false, musicMuted: false, currentSong: null, _timer: null, _tracks: [],
@@ -30,7 +40,40 @@ window.AUDIO = {
     this.sfxGain.connect(this.master);
     this.jingleGain = this.ctx.createGain();
     this.jingleGain.connect(this.jingleMute);
+    this._applyVolumes();
     if (this._pendingSong) { const s = this._pendingSong; this._pendingSong = null; this.playSong(s); }
+  },
+
+  // ---- audio settings panel (music / voices / effects) ---------------------
+  // Voices are metered app-side (voice.ts gain); the world mirrors voiceVol so
+  // the pause panel can show and change it through the bridge.
+  setVolumes(vols) {
+    const clamp = (v) => Math.max(0, Math.min(1, +v || 0));
+    if (vols && vols.music != null) this.musicVol = clamp(vols.music);
+    if (vols && vols.sfx != null) this.sfxVol = clamp(vols.sfx);
+    if (vols && vols.voice != null) this.voiceVol = clamp(vols.voice);
+    this._applyVolumes();
+    if (window.GS) {
+      GS.musicVol = this.musicVol; GS.sfxVol = this.sfxVol; GS.voiceVol = this.voiceVol;
+    }
+  },
+
+  _applyVolumes() {
+    if (!this.ctx) return;
+    this._applySongGain();
+    if (this.sfxGain) this.sfxGain.gain.value = this.sfxVol;
+    // jingles ride the music volume (they are music, just short)
+    if (this.jingleGain) this.jingleGain.gain.value = this.musicVol;
+  },
+
+  // songGain = musicVol, scaled by ducking (voices/mission overlay hold it down)
+  _applySongGain() {
+    if (!this.ctx || !this.songGain) return;
+    const target = this._duckHeld > 0 ? 0.08 * this.musicVol : this.musicVol;
+    const g = this.songGain.gain;
+    const now = this.ctx.currentTime;
+    g.cancelScheduledValues(now);
+    g.setValueAtTime(Math.max(target, 0.0001), now);
   },
 
   toggleMute() {
@@ -57,13 +100,13 @@ window.AUDIO = {
   duck(on) {
     if (on) this._duckHeld = (this._duckHeld || 0) + 1;
     else if (this._duckHeld > 0) this._duckHeld--;
-    const target = this._duckHeld > 0 ? 0.08 : 1;
+    const target = this._duckHeld > 0 ? 0.08 * this.musicVol : this.musicVol;
     if (this.ctx && this.songGain) {
       const g = this.songGain.gain;
       const now = this.ctx.currentTime;
       g.cancelScheduledValues(now);
       g.setValueAtTime(Math.max(g.value, 0.0001), now);
-      g.linearRampToValueAtTime(target, now + 0.18);
+      g.linearRampToValueAtTime(Math.max(target, 0.0001), now + 0.18);
     }
     this._duckTarget = target;
   },
@@ -94,11 +137,25 @@ window.AUDIO = {
 
   playSong(key) {
     if (!this.ctx) { this._pendingSong = key; return; }
-    if (this.currentSong === key && this._timer) return;
+    if (this.currentSong === key && (this._timer || this._fileSource)) return;
     this.stopSong();
     const def = this.songs[key];
     if (!def) return;
     this.currentSong = key;
+    // Real-file path (feat/eldoria-audio): decoded buffers play straight into
+    // songGain (mute buses + ducking + music slider all still apply). While the
+    // first fetch/decode runs, the registered synth def covers the gap so the
+    // key never goes silent; on decode it swaps over. A failed load pins the
+    // per-track synth fallback (fileFailed) for the rest of the session.
+    const url = this.files[key];
+    if (url && !this.fileFailed[key]) {
+      if (this.buffers[key]) { this._startFileSong(key, def); return; }
+      this._loadFileSong(key, url);
+    }
+    this._startSynthSong(key, def);
+  },
+
+  _startSynthSong(key, def) {
     const beatSec = 60 / (def.bpm || 110);
     const start = this.ctx.currentTime + 0.08;
     this._tracks = (def.tracks || []).map((t) => {
@@ -129,8 +186,50 @@ window.AUDIO = {
     }, 60);
   },
 
+  _startFileSong(key, def) {
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.buffers[key];
+    src.loop = def.loop !== false;
+    src.connect(this.songGain);
+    src.onended = () => {
+      if (this._fileSource === src) { this._fileSource = null; }
+    };
+    this._fileSource = src;
+    try { src.start(); } catch (e) {
+      this.fileFailed[key] = true;
+      this._fileSource = null;
+      if (this.currentSong === key && !this._timer) this._startSynthSong(key, def);
+    }
+  },
+
+  _loadFileSong(key, url) {
+    if (this._loading[key]) return;
+    this._loading[key] = true;
+    fetch(url)
+      .then((r) => { if (!r.ok) throw new Error('http ' + r.status); return r.arrayBuffer(); })
+      .then((ab) => this.ctx.decodeAudioData(ab))
+      .then((buf) => {
+        this._loading[key] = false;
+        this.buffers[key] = buf;
+        // Swap the synth out only if this key is still the one playing
+        if (this.currentSong === key) {
+          this.stopSong(true);
+          this._startFileSong(key, this.songs[key]);
+        }
+      })
+      .catch((e) => {
+        this._loading[key] = false;
+        this.fileFailed[key] = true;
+        console.warn('MUSIC file failed, synth fallback keeps playing:', key, e);
+      });
+  },
+
   stopSong(keepName) {
     if (this._timer) { clearInterval(this._timer); this._timer = null; }
+    if (this._fileSource) {
+      try { this._fileSource.onended = null; this._fileSource.stop(); } catch (e) { /* already stopped */ }
+      this._fileSource = null;
+    }
     if (!keepName) this.currentSong = null;
     if (this.ctx && this.songGain) {
       // hard-cut anything scheduled by swapping the song bus (back through the
@@ -138,6 +237,7 @@ window.AUDIO = {
       this.songGain.disconnect();
       this.songGain = this.ctx.createGain();
       this.songGain.connect(this.songMute || this.master);
+      this._applySongGain();
     }
   },
 
@@ -159,9 +259,9 @@ window.AUDIO = {
     if (this.songGain) {
       const g = this.songGain.gain;
       g.cancelScheduledValues(start);
-      g.setValueAtTime(0.25, start);
-      g.setValueAtTime(0.25, start + total);
-      g.linearRampToValueAtTime(1, start + total + 0.4);
+      g.setValueAtTime(0.25 * this.musicVol, start);
+      g.setValueAtTime(0.25 * this.musicVol, start + total);
+      g.linearRampToValueAtTime(Math.max(this.musicVol, 0.0001), start + total + 0.4);
     }
   },
 
@@ -252,3 +352,4 @@ window.AUDIO = {
 
 window.registerSong = function (key, def) { window.AUDIO.songs[key] = def; };
 window.registerSfx = function (key, def) { window.AUDIO.sfxDefs[key] = def; };
+window.registerMusicFile = function (key, url) { window.AUDIO.files[key] = url; };

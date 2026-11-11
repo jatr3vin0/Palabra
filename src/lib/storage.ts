@@ -33,6 +33,11 @@ export type Progress = {
   englishLevel: number;
   /** Parent control: chiptune music muted (voices + SFX stay). */
   musicMuted: boolean;
+  /** Audio settings panel: music / voices / effects, each 0–1. Voices meter
+   * the kokoro gain (voice.ts); the world mirrors all three for its pause menu. */
+  musicVol: number;
+  voiceVol: number;
+  sfxVol: number;
 };
 
 function fresh(): Progress {
@@ -48,6 +53,9 @@ function fresh(): Progress {
     misses: {},
     englishLevel: 0,
     musicMuted: false,
+    musicVol: 0.9,
+    voiceVol: 1,
+    sfxVol: 1,
   };
 }
 

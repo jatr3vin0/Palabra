@@ -74,6 +74,11 @@ const fallbackIds = new Set<number>();
 /** Silent warm-up utterances (warmVoice) — never played. */
 const warmIds = new Set<number>();
 let ctx: AudioContext | null = null;
+/** Voices meter through their own gain node (audio settings panel "Voces").
+ * Every kokoro clip routes voiceGain -> destination; the browser-fallback
+ * utterances set utter.volume from the same value. 0–1, default 1. */
+let voiceGain: GainNode | null = null;
+let voiceVol = 1;
 let currentSource: AudioBufferSourceNode | null = null;
 /** Resolved when the current utterance's audio finishes (music ducking, page
  * flows). Fired once per speakSpanish call that produced audio. */
@@ -275,6 +280,10 @@ function audioContext(): AudioContext | null {
   try {
     if (!ctx) {
       ctx = new AudioContext();
+      // Voices get their own gain path (audio settings panel — "Voces").
+      voiceGain = ctx.createGain();
+      voiceGain.gain.value = voiceVol;
+      voiceGain.connect(ctx.destination);
       // A suspended context starts playing the moment any user tap resumes it;
       // the frame pages are always reached by a tap on the hub.
       const resume = () => {
@@ -304,7 +313,7 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
     // pitch-shift playback (+n semitones = 2^(n/12)); the worker generated at
     // speed/r so the duration stays what the caller asked for
     if (playbackRate !== 1) source.playbackRate.value = playbackRate;
-    source.connect(ac.destination);
+    source.connect(voiceGain ?? ac.destination);
     currentSource = source;
     source.onended = () => {
       if (currentSource === source) currentSource = null;
@@ -371,6 +380,8 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
       utter.lang = "es-ES";
       const es = esVoice();
       if (es) utter.voice = es;
+      // The fallback voice rides the same "Voces" slider as kokoro clips.
+      utter.volume = voiceVol;
       // the fallback stays single-voice (brief): speed/pitch approximate the cast
       if (opts?.speed != null) {
         utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
@@ -412,6 +423,16 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
     // speech is a bonus, never a blocker — but never silently: say what broke
     console.warn("[voice] speechSynthesis fallback failed", err);
     return false;
+  }
+}
+
+/** Audio settings panel ("Voces"): set the voice gain (0–1). Meters BOTH the
+ * kokoro clip path (voiceGain) and the browser-fallback utterances. */
+export function setVoiceVolume(v: number): void {
+  const clamped = Math.max(0, Math.min(1, Number.isFinite(v) ? v : 1));
+  voiceVol = clamped;
+  if (voiceGain && ctx) {
+    voiceGain.gain.value = clamped;
   }
 }
 
