@@ -102,6 +102,22 @@ window.UIScene = class UIScene extends Phaser.Scene {
       this.bossBar.fillStyle(0x000000, 0.7).fillRect(x - 2, y - 2, w + 4, 7);
       this.bossBar.fillStyle(0x8a1020, 1).fillRect(x, y, w, 3);
       this.bossBar.fillStyle(0xff3050, 1).fillRect(x, y, Math.max(0, w * (b.hp / b.maxHp)), 3);
+      // W3: the boss's Bunyan name — drawn above the bar and SPOKEN once per
+      // spawn (this._bossName guard; cleared when the boss is gone so the
+      // morgrath->morgrath2 transform re-announces). Never speaks per frame.
+      const def = b.bossType && window.BOSSES ? BOSSES[b.bossType] : null;
+      if (def && def.name && this._bossName !== b.bossType) {
+        this._bossName = b.bossType;
+        if (this.bossNameText) { this.bossNameText.destroy(); this.bossNameText = null; }
+        this.bossNameText = this.text(160, 192, def.name, '#ffe97f', 8);
+        this.bossNameText.setX(160 - this.bossNameText.width / 2);
+        if (window.PALABRA_VOICE_ON && window.Palabra && def.voice) {
+          window.Palabra.speak(def.name, def.voice);
+        }
+      }
+    } else if (this.bossNameText || this._bossName) {
+      if (this.bossNameText) { this.bossNameText.destroy(); this.bossNameText = null; }
+      this._bossName = null;
     }
 
     // dialogue typewriter + advance

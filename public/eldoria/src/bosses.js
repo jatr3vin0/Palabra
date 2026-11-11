@@ -134,6 +134,7 @@
   // long, generous window — the ONLY time it can be hurt.
   BOSSES.bramblehorn = {
     art: 'bramblehorn', w: 32, h: 32, hp: 14, dmg: 1,
+    name: 'el Obstinado', voice: 'villain',
 
     create: function (scene, boss) {
       boss.mem = { state: 'track', t: 0, dirX: 0, dirY: 1, animT: 0, animF: 0 };
@@ -196,6 +197,7 @@
   // vulnerable spell of spitting before diving again.
   BOSSES.sandWyrm = {
     art: 'sandWyrm', w: 32, h: 32, hp: 20, dmg: 1,
+    name: 'la Codicia', voice: 'villain',
 
     create: function (scene, boss) {
       boss.mem = { state: 'submerged', t: 0, spot: null, shotT: 0, vol: 0 };
@@ -270,6 +272,7 @@
   // hp threshold (15 and 8) — capped at 4 minions total via boss.mem.summons.
   BOSSES.frostRevenant = {
     art: 'frostRevenant', w: 32, h: 32, hp: 22, dmg: 1,
+    name: 'el Gigante Desesperación', voice: 'villain',
 
     create: function (scene, boss) {
       boss.mem = {
@@ -359,6 +362,7 @@
   // The ENGINE transforms him into BOSSES.morgrath2 when this hp reaches 0.
   BOSSES.morgrath = {
     art: 'morgrath', w: 32, h: 32, hp: 18, dmg: 1,
+    name: 'Apollyon', voice: 'villain',
 
     create: function (scene, boss) {
       boss.mem = { state: 'taunt', t: 0, atk: 0, shots: 0, shotT: 0 };
@@ -451,6 +455,7 @@
   // thresholds (18 and 9), capped at 4 minions via boss.mem.summons.
   BOSSES.morgrath2 = {
     art: 'morgrath2', w: 48, h: 48, hp: 26, dmg: 1,
+    name: 'Apollyon, el Dragón', voice: 'villain',
 
     create: function (scene, boss) {
       boss.mem = {
