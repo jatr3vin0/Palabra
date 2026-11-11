@@ -52,6 +52,16 @@ export type ScriptureRound = {
   balloons: string[];
 };
 
+/** Sokoban board def (game #7, structural stand-in — the canonical session
+ * round type lives in the template; shapes match field-for-field). */
+export type SokobanRoundDef = {
+  pairs: string[];
+  decoys: string[];
+  options: string[];
+  wave: number;
+  isReplay?: boolean;
+};
+
 export type FrameKind = "shooter" | "scripture" | "phaser";
 
 /** Mini-game template params — see GAME-ROADMAP.md: { mechanic, contentBinding, speed, difficulty, masteryThreshold }. */
@@ -62,6 +72,8 @@ export type FrameParams = {
   difficulty: number;
   /** Correct hits required to clear a wave. */
   masteryThreshold: number;
+  /** Per-game level curve base (§10.5; default 50). */
+  xpPerLevel?: number;
 };
 
 export type FrameDef = {
@@ -90,16 +102,25 @@ export type FrameDef = {
    * game explains itself before ¡Jugar! — owner play-test 2, item 6).
    */
   howto: { es: string[]; en: string[] };
+  /**
+   * The LONGER spoken how-to for mechanics with controls to name (sokoban:
+   * swipe / d-pad / keyboard). Spoken after the greeting before ¡Jugar!;
+   * the rendered card stays the short howto lines. Absent → howto is spoken.
+   */
+  howtoSpoken?: string;
   /** Spoken on a right answer. */
   praise: string[];
   /** Spoken on a wrong answer, followed by a re-speak — never a quiz screen. */
   gentle: string[];
   farewell: { es: string; en: string };
-  rounds: ShooterRound[] | ScriptureRound[];
+  rounds: ShooterRound[] | ScriptureRound[] | SokobanRoundDef[];
 };
 
 export const PLAZA_FRAME_ID = "plaza-rico-shooter";
 export const CASA_FRAME_ID = "casa-rosa-verse";
+/** «Empuja la Palabra» — sokoban (game #7, R7-6 reservation; the frame id is
+ * the warehouse, the title stays «Empuja la Palabra»). Bound to a0-u05. */
+export const ALMACEN_FRAME_ID = "almacen-palabra";
 
 /** Génesis 1:1, Reina-Valera 1909, quoted literally. */
 export const GENESIS_1_1 = "En el principio creó Dios los cielos y la tierra.";
@@ -359,6 +380,39 @@ export const frames: Record<string, FrameDef> = {
         balloons: ["cielo", "días", "hermanos", "hijos", "tardes"],
       },
     ] satisfies ScriptureRound[],
+  },
+
+  // ─── El almacén: «Empuja la Palabra» — sokoban (game #7, R7-6) ─────────────
+  // Warehouse frames do not carry inline rounds: boards are GENERATED per
+  // round from the a0-u05 pack (binder a0-u05-sokoban.ts) by the template's
+  // seeded generator + validator — never hand-authored here.
+  [ALMACEN_FRAME_ID]: {
+    id: ALMACEN_FRAME_ID,
+    kind: "phaser",
+    mechanic: "sokoban-word",
+    params: { speed: 1.0, difficulty: 2, masteryThreshold: 3, xpPerLevel: 50 },
+    villager: { name: "Mira", emoji: "📦" },
+    place: "El almacén",
+    englishLevel: 0,
+    xp: 10,
+    voice: "villagerF",
+    greeting: {
+      es: "¡Hola! Soy Mira. ¡Bienvenido al Almacén de la Palabra!",
+      en: "Hi! I'm Mira. Welcome to the Warehouse of the Word!",
+    },
+    howto: {
+      es: ["Escucha la palabra.", "Empuja su caja.", "¡Empújala a su lugar!"],
+      en: ["Listen for the word.", "Push its crate.", "Push it to its picture!"],
+    },
+    howtoSpoken:
+      "¡El Almacén de la Palabra! Escucha la palabra. Empuja la caja con esa palabra hasta el dibujo que le corresponde. ¡No empujes las cajas equivocadas! Desliza el dedo, usa el tablero o las flechas.",
+    praise: PRAISE,
+    gentle: GENTLE,
+    farewell: {
+      es: "¡Qué orden tan bonita en el almacén! ¡Hasta luego!",
+      en: "What a tidy warehouse! See you later!",
+    },
+    rounds: [] satisfies SokobanRoundDef[],
   },
 };
 

@@ -268,3 +268,190 @@ export function bumpImmersion(p: Progress): Progress {
   const finished = Object.keys(p.completed).length;
   return { ...p, englishLevel: Math.max(0, Math.min(3, Math.floor(finished / 2))) };
 }
+
+// ── Per-game levels store (pillar 1 track 2 — GAME-ROADMAP §10.5) ───────────
+//
+// Each mini-game owns an INDEPENDENT progression: levels, achievements and
+// unlocks under `palabra.game.<frameId>.v1`, written ONLY by recordGameWin at
+// the frame engine's two win call sites. Spanish mastery (palabra.progress.v1)
+// is untouched by all of it, and gameplay levels never gate Spanish content.
+
+/** One game's progress. `wins` is the lifetime win counter (lead ruling). */
+export type GameProgress = {
+  v: 1;
+  level: number;
+  xpWithinLevel: number;
+  achievements: string[];
+  unlocks: string[];
+  difficultyTier: 0 | 1 | 2;
+  updatedAt: number;
+  wins: number;
+};
+
+function gameKey(frameId: string): string {
+  return `palabra.game.${frameId}.v1`;
+}
+
+function freshGameProgress(): GameProgress {
+  return { v: 1, level: 1, xpWithinLevel: 0, achievements: [], unlocks: [], difficultyTier: 1, updatedAt: 0, wins: 0 };
+}
+
+/** Load one game's store; corrupt → fresh semantics, never a crash. */
+export function loadGameProgress(frameId: string): GameProgress {
+  if (typeof window === "undefined") return freshGameProgress();
+  try {
+    const raw = window.localStorage.getItem(gameKey(frameId));
+    if (!raw) return freshGameProgress();
+    const p = JSON.parse(raw) as Partial<GameProgress>;
+    if (p.v !== 1 || typeof p.level !== "number" || !(p.level >= 1)) return freshGameProgress();
+    return {
+      ...freshGameProgress(),
+      ...p,
+      level: Math.max(1, Math.floor(p.level)),
+      xpWithinLevel: Math.max(0, Math.floor(p.xpWithinLevel ?? 0)),
+      achievements: Array.isArray(p.achievements) ? p.achievements.filter((a) => typeof a === "string") : [],
+      unlocks: Array.isArray(p.unlocks) ? p.unlocks.filter((u) => typeof u === "string") : [],
+      difficultyTier: p.difficultyTier === 0 || p.difficultyTier === 2 ? p.difficultyTier : 1,
+      wins: Math.max(0, Math.floor(p.wins ?? 0)),
+    };
+  } catch {
+    return freshGameProgress();
+  }
+}
+
+/** §10.5 curve: xpForNextLevel(l) = round(base × min(2, 0.4 + 0.1(l−1))). */
+export function xpForNextLevel(level: number, base: number): number {
+  return Math.round(base * Math.min(2, 0.4 + 0.1 * (level - 1)));
+}
+
+/** Where the learner stands in one game: badge title «Nivel <n>» + pct. */
+export function computeLevelProgress(gp: GameProgress, base: number): { level: number; pct: number; xpToNext: number; title: string } {
+  const level = Math.min(20, gp.level);
+  const need = xpForNextLevel(level, base);
+  return {
+    level,
+    pct: level >= 20 ? 100 : Math.min(100, Math.round((gp.xpWithinLevel / need) * 100)),
+    xpToNext: level >= 20 ? 0 : Math.max(0, need - gp.xpWithinLevel),
+    title: `Nivel ${level}`,
+  };
+}
+
+/** Win stats the frame engines assemble (§10.5 — the ONE stats shape). */
+export type GameWinStats = {
+  accuracy: number;
+  maxStreak: number;
+  replayHits: number;
+  replayTotal: number;
+  isScriptureBinding: boolean;
+};
+
+/** The §10.5 achievement taxonomy (generic ids; instances are the defaults).
+ * recordGameWin is the only evaluator; unknown prefixes fail loudly. */
+const ACHIEVEMENT_PREFIXES = [
+  "primer-nivel",
+  "sin-fallos",
+  "racha-",
+  "repaso-limpio",
+  "maraton-",
+  "adulto",
+  "versiculo",
+  "coleccionista",
+] as const;
+
+function assertKnownAchievement(id: string): void {
+  if (!ACHIEVEMENT_PREFIXES.some((p) => (p.endsWith("-") ? id.startsWith(p) : id === p))) {
+    throw new Error(`recordGameWin: unknown achievement id ${id}`);
+  }
+}
+
+/** Cosmetic unlock ladder ids per level (template-declared instances). */
+const UNLOCK_LEVELS: { level: number; id: string }[] = [
+  { level: 3, id: "caja-madera" },
+  { level: 8, id: "caja-cedro" },
+  { level: 12, id: "caja-jade" },
+  { level: 20, id: "corona" },
+];
+
+/**
+ * Record ONE win in a game's own store: XP into the per-game curve (replays
+ * pay half — pass the already-halved xpGained from completeLesson), level
+ * ups, achievements evaluated from stats, cosmetic unlocks. Levels key on
+ * frame.id only and never decrease; corrupt stores parse fresh. Recognition
+ * only — achievements and unlocks unlock nothing. Returns the delta so the
+ * frame can celebrate what is new.
+ */
+export function recordGameWin(
+  frameId: string,
+  xpGained: number,
+  tier: 0 | 1 | 2,
+  stats: GameWinStats,
+): { progress: GameProgress; leveledUp: boolean; newAchievements: string[]; newUnlocks: string[] } {
+  const gp = loadGameProgress(frameId);
+  let level = gp.level;
+  let xpWithinLevel = gp.xpWithinLevel + Math.max(0, Math.round(xpGained));
+  let leveledUp = false;
+  while (level < 20 && xpWithinLevel >= xpForNextLevel(level, 50)) {
+    xpWithinLevel -= xpForNextLevel(level, 50);
+    level += 1;
+    leveledUp = true;
+  }
+  if (level >= 20) xpWithinLevel = Math.min(xpWithinLevel, xpForNextLevel(20, 50) - 1);
+
+  const earned = new Set(gp.achievements);
+  const newAchievements: string[] = [];
+  const earn = (id: string): void => {
+    assertKnownAchievement(id);
+    if (!earned.has(id)) {
+      earned.add(id);
+      newAchievements.push(id);
+    }
+  };
+  if (leveledUp) earn("primer-nivel");
+  if (stats.accuracy >= 100) earn("sin-fallos");
+  if (stats.maxStreak >= 3) earn("racha-3");
+  if (stats.replayTotal > 0 && stats.replayHits >= stats.replayTotal) earn("repaso-limpio");
+  const wins = gp.wins + 1;
+  if (wins >= 5) earn("maraton-5");
+  if (wins >= 25) earn("maraton-25");
+  if (tier === 2 && stats.accuracy >= 100) earn("adulto");
+  if (stats.isScriptureBinding) earn("versiculo");
+  // auto capstone: every other declared achievement already earned
+  const capstoneCandidates = [
+    "primer-nivel",
+    "sin-fallos",
+    "racha-3",
+    "repaso-limpio",
+    "maraton-5",
+    "maraton-25",
+    "adulto",
+  ].filter((id) => earned.has(id));
+  if (capstoneCandidates.length >= 7) earn("coleccionista");
+
+  const unlocks = new Set(gp.unlocks);
+  const newUnlocks: string[] = [];
+  for (const u of UNLOCK_LEVELS) {
+    if (level >= u.level && !unlocks.has(u.id)) {
+      unlocks.add(u.id);
+      newUnlocks.push(u.id);
+    }
+  }
+
+  const next: GameProgress = {
+    v: 1,
+    level,
+    xpWithinLevel,
+    achievements: [...earned],
+    unlocks: [...unlocks],
+    difficultyTier: tier,
+    updatedAt: Date.now(),
+    wins,
+  };
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(gameKey(frameId), JSON.stringify(next));
+    } catch {
+      // storage unavailable — the session still celebrates its win
+    }
+  }
+  return { progress: next, leveledUp, newAchievements, newUnlocks };
+}
