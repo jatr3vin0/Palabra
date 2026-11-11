@@ -35,9 +35,9 @@ type OutMsg =
   | { ev: "progress"; progress: number }
   | { ev: "ready" }
   | { ev: "warm" }
-  | { ev: "error" }
+  | { ev: "error"; reason?: string }
   | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number; playbackRate?: number }
-  | { ev: "speakError"; id: number };
+  | { ev: "speakError"; id: number; reason?: string };
 
 /** Per-character voice request (brief: voiceId in the worker protocol). */
 export type SpeakOpts = {
@@ -81,6 +81,10 @@ type EndCb = () => void;
 let speechEndCb: EndCb | null = null;
 /** Watchdog timer for the in-flight kokoro turn (see speakSpanish). */
 let speakWatchdog: number | null = null;
+/** The current kokoro turn's line, kept so a generation failure (speakError)
+ * can be rescued with the browser voice instead of leaving the player with a
+ * silently dropped line (live-build defect, 2026-11-11). */
+let inflight: { text: string; slow: boolean; opts?: SpeakOpts } | null = null;
 
 function clearSpeakWatchdog(): void {
   if (speakWatchdog != null) {
@@ -97,6 +101,7 @@ function clearSpeakWatchdog(): void {
 function fireSpeechEnd(): void {
   clearSpeakWatchdog();
   if (status.speaking || status.generating) setStatus({ speaking: false, generating: false });
+  inflight = null;
   const cb = speechEndCb;
   speechEndCb = null;
   if (cb) cb();
@@ -160,6 +165,13 @@ function handleWorkerMessage(msg: OutMsg) {
       warmed = true;
       break;
     case "error":
+      // kokoro is unusable (e.g. the phonemizer bundle has no Spanish voice
+      // data): SAY SO on the console and let the browser voice take over —
+      // silence with no explanation is what shipped broken to the owner.
+      console.error(
+        "[voice] kokoro unavailable — speechSynthesis voice takes over",
+        msg.reason ?? "",
+      );
       setStatus({ state: "error", progress: 0, fallback: true });
       break;
     case "audio": {
@@ -175,9 +187,23 @@ function handleWorkerMessage(msg: OutMsg) {
       break;
     }
     case "speakError":
-      // generation failed: nothing to wait for — release the flow, but only
-      // when it is the CURRENT turn (a stale turn's failure must not cut the
-      // newer utterance's callback short)
+      // generation failed: never leave the current line as a silently dropped
+      // 'generating' bubble — rescue it with the browser voice (live defect:
+      // every kokoro line died here with phonemize broken and the fallback
+      // gated off, so the owner heard nothing at all).
+      console.error(
+        "[voice] kokoro line failed — rescuing with the browser voice",
+        msg.reason ?? "generation",
+      );
+      if (msg.id === speakId && inflight && !status.speaking) {
+        const { text, slow, opts } = inflight;
+        inflight = null;
+        clearSpeakWatchdog();
+        setStatus({ generating: false });
+        const spoke = speakFallback(text, slow, opts);
+        if (!spoke) fireSpeechEnd();
+        return;
+      }
       if (msg.id === speakId) fireSpeechEnd();
       break;
   }
@@ -203,7 +229,11 @@ export function primeVoice(): void {
   try {
     worker = new Worker(new URL("./voice.worker.ts", import.meta.url), { type: "module" });
     worker.onmessage = (e: MessageEvent<OutMsg>) => handleWorkerMessage(e.data);
-    worker.onerror = () => setStatus({ state: "error", progress: 0, fallback: true });
+    worker.onerror = (e: ErrorEvent) => {
+      // Worker never loaded / ran (bad URL, MIME, module error) — say why.
+      console.error("[voice] voice worker failed to load or run", e.message || "unknown");
+      setStatus({ state: "error", progress: 0, fallback: true });
+    };
     setStatus({ state: "loading", progress: 0, fallback: true });
     worker.postMessage({ op: "init" });
   } catch (err) {
@@ -350,8 +380,9 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
       }
     }, 350);
     return true;
-  } catch {
-    // speech is a bonus, never a blocker
+  } catch (err) {
+    // speech is a bonus, never a blocker — but never silently: say what broke
+    console.warn("[voice] speechSynthesis fallback failed", err);
     return false;
   }
 }
@@ -435,6 +466,7 @@ export function speakSpanish(
   }
   if (kokoroNow) {
     setStatus({ generating: true, speaking: false });
+    inflight = { text, slow: o.slow ?? false, opts: o };
     // Watchdog: if the worker never replies (stalled/offline model), release
     // the flow — speech is a bonus, never a blocker. Generous window covers
     // generation plus playback of a normal line.

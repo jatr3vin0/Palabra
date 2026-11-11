@@ -109,9 +109,9 @@ type OutMsg =
   | { ev: "progress"; progress: number }
   | { ev: "ready" }
   | { ev: "warm" }
-  | { ev: "error" }
+  | { ev: "error"; reason?: string }
   | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number; playbackRate?: number }
-  | { ev: "speakError"; id: number };
+  | { ev: "speakError"; id: number; reason?: string };
 
 const sw = self as unknown as {
   postMessage(msg: unknown, transfer?: Transferable[]): void;
@@ -158,6 +158,25 @@ async function init(): Promise<void> {
       device: "wasm",
       progress_callback: onProgress,
     });
+    // Spanish phonemizer smoke test (live-build defect found 2026-11-11): the
+    // phonemizer@1.2.1 espeak bundle ships ENGLISH-only voice data, so
+    // phonemize(text, "es") threw "Invalid language identifier: es" on every
+    // real line — the worker still reported ready+warmed (the warm-up
+    // tokenizes raw text and bypasses phonemize), every dialogue line died as
+    // speakError within milliseconds, and the speechSynthesis fallback stayed
+    // permanently gated off. The owner heard ZERO voice with music playing.
+    // Prove "es" works BEFORE declaring ready: if it does not, kokoro is
+    // unusable for Spanish and the page must stay on the browser voice.
+    try {
+      await phonemize!("hola", "es");
+    } catch (err) {
+      console.warn(
+        "[voice.worker] Spanish phonemizer unavailable in this build — browser voice takes over",
+        err,
+      );
+      post({ ev: "error", reason: "phonemize-es" });
+      return;
+    }
     post({ ev: "ready" });
     // Preload every Spanish voice: kokoro fetches the .bin lazily on first
     // use, so a one-word warm-up per voice lands all three in cache now. The
@@ -221,7 +240,11 @@ sw.onmessage = (e: MessageEvent<InMsg>) => {
       ]);
     } catch (err) {
       console.warn("[voice.worker] kokoro generation failed", err);
-      post({ ev: "speakError", id: msg.id });
+      post({
+        ev: "speakError",
+        id: msg.id,
+        reason: String((err as Error)?.message ?? err).slice(0, 160),
+      });
     }
   });
 };
