@@ -18,10 +18,20 @@
  *   phonemize(text, "es") → tokenizer → tts.generate_from_ids(ids, voice)
  * `ef_dora`, `em_alex` and `em_santa` are the model repo's real Spanish voices
  * (onnx-community/Kokoro-82M-v1.0-ONNX, voices/*.bin).
+ *
+ * Spanish G2P (kokoro-es repair, 2026-11-11): the phonemizer@1.2.1 bundle
+ * embeds a ~1 MB English-only espeak-ng build AND hard-filters its voice list
+ * to ["en"], so phonemize(text, "es") always threw "Invalid language
+ * identifier: es" and every real line died (owner heard zero kokoro voice).
+ * Fix: phonemize 'es' through the FULL espeak-ng WASM build (espeak-ng@1.0.2
+ * npm, all language data compiled in — one-shot instance per line, ~150 ms,
+ * verified in-browser: phonemize + tokenizer + generate_from_ids produce real
+ * audio for all three Spanish voices). Note: espeak-ng is GPL-3 — the same
+ * licence the phonemizer's bundled espeak code already carried.
  */
 
 const KOKORO_LIB = "https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js";
-const PHONEMIZER_LIB = "https://cdn.jsdelivr.net/npm/phonemizer@1.2.1/+esm";
+const ESPEAK_LIB = "https://cdn.jsdelivr.net/npm/espeak-ng@1.0.2/dist/espeak-ng.js";
 const KOKORO_MODEL = "onnx-community/Kokoro-82M-v1.0-ONNX";
 const DEFAULT_VOICE = "ef_dora";
 const DEFAULT_SPEED = 0.9; // a touch slower for A0 ears
@@ -91,7 +101,12 @@ type KokoroModule = {
     ): Promise<KokoroTts>;
   };
 };
-type PhonemizerModule = { phonemize(text: string, lang: string): Promise<string[]> };
+type PhonemizerModule = {
+  default: (opts: { arguments: string[] }) => Promise<EspeakModule>;
+};
+/** The espeak-ng emscripten module: we only need its virtual FS to read the
+ * --phonout file back (the phonemes land there, one line per sentence). */
+type EspeakModule = { FS: { readFile(path: string, opts: { encoding: string }): string } };
 type KokoroTts = {
   tokenizer: (text: string, opts?: { truncation?: boolean }) => { input_ids: { data: unknown[] } };
   generate_from_ids(
@@ -123,12 +138,29 @@ function post(msg: OutMsg, transfer?: Transferable[]): void {
 }
 
 let tts: KokoroTts | null = null;
-let phonemize: ((text: string, lang: string) => Promise<string[]>) | null = null;
+let espeakFactory: PhonemizerModule["default"] | null = null;
 let started = false;
 /** Serialized generation queue — the wasm model does one voice at a time. */
 let chain: Promise<void> = Promise.resolve();
 /** Requests with id <= cancelledBelow are dropped (page called stopSpeaking). */
 let cancelledBelow = 0;
+
+/**
+ * Spanish phonemization, kokoro-es repair (2026-11-11): one espeak-ng WASM
+ * instance per call, CLI-style, exactly like the in-browser proof — the
+ * emscripten module runs espeak's main() with our argv and writes the IPA
+ * phonemes (one line per sentence) to --phonout. ~150 ms per line measured;
+ * kokoro generation (~1–8 s) dominates. Stateless: no shared instance to
+ * corrupt. The text rides as the final argv (no shell quoting involved).
+ */
+async function phonemizeEs(text: string): Promise<string[]> {
+  if (!espeakFactory) throw new Error("espeak-ng not loaded");
+  const espeak = await espeakFactory({
+    arguments: ["--phonout", "out", '--sep=""', "-q", "-b=1", "--ipa=3", "-v", "es", text],
+  });
+  const raw = espeak.FS.readFile("out", { encoding: "utf8" });
+  return raw.split("\n").filter((line) => line.length > 0);
+}
 
 async function init(): Promise<void> {
   if (started) return;
@@ -148,18 +180,18 @@ async function init(): Promise<void> {
       }
     };
 
-    const [kokoroMod, phonemizerMod] = await Promise.all([
+    const [kokoroMod, espeakMod] = await Promise.all([
       import(/* @vite-ignore */ KOKORO_LIB) as Promise<KokoroModule>,
-      import(/* @vite-ignore */ PHONEMIZER_LIB) as Promise<PhonemizerModule>,
+      import(/* @vite-ignore */ ESPEAK_LIB) as Promise<PhonemizerModule>,
     ]);
-    phonemize = phonemizerMod.phonemize;
+    espeakFactory = espeakMod.default;
     tts = await kokoroMod.KokoroTTS.from_pretrained(KOKORO_MODEL, {
       dtype: "q8",
       device: "wasm",
       progress_callback: onProgress,
     });
     // Spanish phonemizer smoke test (live-build defect found 2026-11-11): the
-    // phonemizer@1.2.1 espeak bundle ships ENGLISH-only voice data, so
+    // phonemizer@1.2.1 espeak bundle shipped ENGLISH-only voice data, so
     // phonemize(text, "es") threw "Invalid language identifier: es" on every
     // real line — the worker still reported ready+warmed (the warm-up
     // tokenizes raw text and bypasses phonemize), every dialogue line died as
@@ -168,7 +200,8 @@ async function init(): Promise<void> {
     // Prove "es" works BEFORE declaring ready: if it does not, kokoro is
     // unusable for Spanish and the page must stay on the browser voice.
     try {
-      await phonemize!("hola", "es");
+      const smoke = await phonemizeEs("hola");
+      if (!smoke.length) throw new Error("espeak-ng produced no phonemes");
     } catch (err) {
       console.warn(
         "[voice.worker] Spanish phonemizer unavailable in this build — browser voice takes over",
@@ -211,7 +244,7 @@ sw.onmessage = (e: MessageEvent<InMsg>) => {
   }
   // speak — queued after any in-flight turn; stale turns are dropped.
   chain = chain.then(async () => {
-    if (msg.id <= cancelledBelow || !tts || !phonemize || msg.op !== "speak") return;
+    if (msg.id <= cancelledBelow || !tts || !espeakFactory || msg.op !== "speak") return;
     const voice = msg.voice ?? DEFAULT_VOICE;
     const speed = msg.speed ?? DEFAULT_SPEED;
     const pitch = msg.pitch ?? 0;
@@ -228,7 +261,7 @@ sw.onmessage = (e: MessageEvent<InMsg>) => {
         ]);
         return;
       }
-      const pieces = await phonemize(msg.text, "es");
+      const pieces = await phonemizeEs(msg.text);
       if (msg.id <= cancelledBelow) return;
       const phonemes = pieces.join(" ").trim();
       const { input_ids } = tts.tokenizer(phonemes, { truncation: true });
