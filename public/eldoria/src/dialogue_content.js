@@ -85,8 +85,22 @@ DIALOGUE.elder_rowan = [
 
 // ---------------------------------------------------------------------------
 // Mira — village shopkeeper
+// MISSION HANDOFF (game #7 sokoban, R7-6): gated on the mission's doneFlag —
+// offered on every talk until won (first-match-wins: the handoff sits above
+// the shop lines so shard/game-complete states can never hide it). REPASO
+// variant recaps the four words after the mission. A0 copy, ≤38 chars/line.
 // ---------------------------------------------------------------------------
 DIALOGUE.shopkeep_mira = [
+  // 1) MISSION HANDOFF — not yet won → launches mission_mira_almacen
+  //    (Empuja la Palabra: campo / planta / árbol / río — a0-u05 wave 1)
+  { if: { flagsNone: ['mission_mira_almacen_done'] }, mission: 'mission_mira_almacen', lines: [
+      ['¡Mi almacén está lleno!', 'Cajas de palabras. ¡Mira!'],
+      ['El campo. La planta. El árbol.', 'El río. Empuja la palabra.'],
+      ['¿Vamos? ¡Empuja conmigo!'] ],
+    gloss: [
+      ['My warehouse is full!', 'Crates of words. Look!'],
+      ['The field. The plant. The tree.', 'The river. Push the word.'],
+      ['Shall we? Push with me!'] ] },
   { if: { flagsAll: ['game_complete'] }, lines: [
       ['¡El héroe compra AQUÍ!', 'La mejor publicidad del mundo.'] ],
     gloss: [
@@ -97,6 +111,15 @@ DIALOGUE.shopkeep_mira = [
     gloss: [
       ['A real shard hunter!', 'Stock up. Heroes break.'],
       ['Potions heal you fully.', 'Smart heroes carry four.'] ] },
+  // 2) REPASO — after the warehouse mission: the four words, once more
+  { if: { flagsAll: ['mission_mira_almacen_done'] }, lines: [
+      ['¡Mi almacén está ordenado!', '¡Tú empujaste todo! Bravo.'],
+      ['Repaso: el campo, la planta,', 'el árbol y el río. ¡Muy bien!'],
+      ['Vuelve cuando quieras, amigo.'] ],
+    gloss: [
+      ['My warehouse is tidy!', 'You pushed it all! Bravo.'],
+      ['Review: the field, the plant,', 'the tree and the river. Well done!'],
+      ['Come back anytime, friend.'] ] },
   { lines: [
       ['¡Bienvenido a mi tienda!', 'Párate junto a un objeto', 'y toca el botón de acción.'],
       ['Las pociones curan del todo.', 'Los héroes listos llevan cuatro.'],
