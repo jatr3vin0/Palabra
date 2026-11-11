@@ -19,6 +19,7 @@ import {
   clearMiss,
   completeLesson,
   computeLevelProgress,
+  HEART_MAX,
   loadGameProgress,
   loseHeart,
   missedWords,
@@ -327,6 +328,22 @@ export function RoadCrossFrame({
     handleWinRef.current = handleWin;
     handleTimeRef.current = retryRound;
   });
+
+  // NEW LEAD RULING (economy, 2026-11-11): hearts RESET to full at every round
+  // start — they measure within-round language misses only, and a session can
+  // never die from accumulated misses. Round loads are every phase→play with a
+  // fresh round identity: ¡Jugar!, the round advance, the game-over retry and
+  // the clock retry (both restartKey), and the post-win replay (restartKey +
+  // sessionId). Declared AFTER the mirror effect so live.current.p is this
+  // render's.
+  useEffect(() => {
+    if (phase !== "play") return;
+    const cur = live.current.p;
+    if (cur && cur.hearts < HEART_MAX) {
+      updateRef.current({ ...cur, hearts: HEART_MAX, heartsAt: Date.now() });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, roundIdx, restartKey, sessionId]);
 
   // Warm the voice, greet Tomás + explain the game (spoken + text BEFORE
   // play), stop speech on exit.
