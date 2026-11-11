@@ -106,5 +106,21 @@ window.PALABRA_MISSIONS = {
     },
     reward: { gems: 15 },
     doneFlag: 'mission_ana_balloons2_done',
+  },,
+    mission_mira_almacen: {
+    id: 'mission_mira_almacen',
+    npc: 'shopkeep_mira',
+    game: 'Empuja la Palabra',
+    frameId: 'almacen-palabra',          // sokoban template (game #7, R7-6)
+    contentBinding: 'a0-u05',            // pool a0-u05 (R7-2 CONFIRMED)
+    difficulty: 'child',
+    proficiency: {
+      cefr: 'A0',
+      unit: 'u05',
+      vocab: ['campo', 'planta', 'árbol', 'río'],  // wave 1 of the pack
+      masteryThreshold: 3,               // pairs per board (R3+ anchor)
+    },
+    reward: { gems: 15 },
+    doneFlag: 'mission_mira_almacen_done',
   },
 };
