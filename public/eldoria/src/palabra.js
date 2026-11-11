@@ -69,12 +69,12 @@ window.Palabra = {
   missionResult(msg) {
     const m = window.PALABRA_MISSIONS && window.PALABRA_MISSIONS[msg.missionId];
     this.freeze(false);
+    const gs = window.GameScene && window.game && window.game.scene
+      ? window.game.scene.getScene('Game')
+      : null;
     if (m && msg.won) {
       if (m.doneFlag && window.Flags) Flags.set(m.doneFlag);
       const gems = m.reward && m.reward.gems;
-      const gs = window.GameScene && window.game && window.game.scene
-        ? window.game.scene.getScene('Game')
-        : null;
       if (gs && gems) {
         gs.give({ gems: gems });
         gs.banner({
@@ -83,12 +83,15 @@ window.Palabra = {
           desc: 'XP guardado en Palabra',
         });
         if (window.AUDIO) window.AUDIO.playJingle('fanfare');
-        gs.autoSave();
       }
       if (window.UIScene && window.Palabra) {
         window.Palabra.speak('¡Misión cumplida! ¡Muy bien!', 'narrator');
       }
     }
+    // Returning to the world always writes the world save (save = world
+    // state): autoSave uses the same slot + checkpoint semantics as boot,
+    // so the live tile persists whether the mission was won or closed.
+    if (gs) gs.autoSave();
     // keyboard focus returns to the world so the child keeps adventuring
     try {
       window.focus();
