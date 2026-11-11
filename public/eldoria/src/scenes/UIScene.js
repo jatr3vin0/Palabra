@@ -263,5 +263,7 @@ window.UIScene = class UIScene extends Phaser.Scene {
     const t = this.text(0, 20, '¡Guardado!', '#9affb0', 8);
     t.setX(316 - t.width);
     this.tweens.add({ targets: t, alpha: 0, duration: 1400, onComplete: () => t.destroy() });
+    // Readable⇒heard (owner rule): the saved toast speaks its own word.
+    if (window.PALABRA_VOICE_ON && window.Palabra) window.Palabra.speak('¡Guardado!', 'narrator');
   }
 };

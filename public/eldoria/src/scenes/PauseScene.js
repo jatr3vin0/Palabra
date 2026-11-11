@@ -100,6 +100,8 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
       const ok = this.scene.get('Game').autoSave();
       this.hintText.setText(ok ? '¡Guardado!' : '¡No se pudo guardar!');
       AUDIO.sfx(ok ? 'save' : 'denied');
+      // Readable⇒heard (owner rule): the save result speaks itself.
+      if (window.Palabra) window.Palabra.speak(ok ? '¡Guardado!' : '¡No se pudo guardar!', 'narrator');
     });
     this.input.keyboard.on('keydown-Q', () => {
       this.scene.get('Game').autoSave();
@@ -121,6 +123,14 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     this.input.keyboard.on('keydown-ESC', close);
     this.input.keyboard.on('keydown-ENTER', close);
     this.input.keyboard.on('keydown-P', close);
+    // Readable⇒heard (owner rule): the pause card announces itself — title,
+    // then the equipped X-item (the menu voice re-names it on every move).
+    if (window.Palabra) {
+      window.Palabra.speak('PAUSA', 'narrator');
+      const k = this.owned[this.sel];
+      const nm = k && ITEMS[k] ? ITEMS[k].name : null;
+      if (nm) this.time.delayedCall(900, () => { if (window.Palabra) window.Palabra.speak(nm, 'narrator'); });
+    }
     AUDIO.sfx('menuSelect');
   }
 
@@ -167,6 +177,10 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     this.sliderSel = this.sliderSel === i ? -1 : i;
     AUDIO.sfx('menuMove');
     this.refreshSliders();
+    // Menu voice: a newly selected slider says its name (música/voces/efectos).
+    if (this.sliderSel >= 0 && window.Palabra) {
+      window.Palabra.speak(this.sliderDefs[this.sliderSel].label, 'narrator');
+    }
   }
 
   setSliderFromTap(row, x) {
@@ -208,6 +222,8 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     AUDIO.setMusicMuted(!AUDIO.musicMuted);
     this.refreshMusicRow();
     if (window.GS) SAVE.write();
+    // Readable⇒heard (owner rule): the music row speaks its new state.
+    if (window.Palabra) window.Palabra.speak('Música: ' + (AUDIO.musicMuted ? 'NO' : 'SÍ'), 'narrator');
   }
 
   close() {
