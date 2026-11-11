@@ -14,7 +14,7 @@
 //                  the heroSword. No boss, no bossKey, no small keys.
 WORLD.maps.shrine = {
   kind: 'dungeon',
-  name: 'Sunken Shrine',
+  name: 'La Cueva de los Dos Gigantes',
   music: 'shrine',
   rooms: {
 

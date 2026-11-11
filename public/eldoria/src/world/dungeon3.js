@@ -18,7 +18,7 @@
 
 WORLD.maps.dungeon3 = {
   kind: 'dungeon',
-  name: 'Glacier Hollow',
+  name: 'El Castillo de la Duda',
   music: 'dungeon3',
   rooms: {
 

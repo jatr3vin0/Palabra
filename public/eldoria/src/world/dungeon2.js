@@ -13,7 +13,7 @@
 
 WORLD.maps.dungeon2 = {
   kind: 'dungeon',
-  name: 'Sandstone Ruins',
+  name: 'La Mina de Demas',
   music: 'dungeon2',
   rooms: {
 

@@ -24,7 +24,7 @@
 
 WORLD.maps.citadel = {
   kind: 'dungeon',
-  name: 'Dark Citadel',
+  name: 'Fortaleza de Apollyon',
   music: 'citadel',
   rooms: {
 

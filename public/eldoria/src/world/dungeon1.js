@@ -19,7 +19,7 @@
 
 WORLD.maps.dungeon1 = {
   kind: 'dungeon',
-  name: 'Vinewood Temple',
+  name: 'La Casa del Intérprete',
   music: 'dungeon1',
   rooms: {
 

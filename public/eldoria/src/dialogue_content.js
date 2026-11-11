@@ -390,23 +390,25 @@ DIALOGUE.nutwick = [
 ];
 
 // ---------------------------------------------------------------------------
-// Signposts (BLOCK B) — read in the NARRATOR voice. Square + shop unchanged.
+// Signposts (BLOCK B) — read in the NARRATOR voice. W3: Bunyan region names
+// (Ciudad de Destrucción, Puerta Angosta, Beulah, Vanity Fair, Apollyon...).
+// Shop/farm/oasis unchanged (Mira/Joss not renamed in this build).
 // ---------------------------------------------------------------------------
 DIALOGUE.signs = {
-  sign_village_square: ['Aldea Sauce', 'Pueblo pequeño y tranquilo.'],
+  sign_village_square: ['Ciudad de Destrucción'],
   sign_village_shop:   ['La tienda de Mira', 'Pociones y flechas. ¡Bienvenido!'],
   sign_farm:           ['Granja de Joss', 'No cortes mis plantas, por favor.'],
-  sign_crossroads:     ['Oeste: el bosque. Este: el lago.', 'Norte: montañas.', 'Sur: granjas y desierto.'],
-  sign_forest_edge:    ['Bosque de Vinewood, adelante.', 'Cuidado con plantas que escupen.'],
-  sign_d1_entrance:    ['Templo de Vinewood', 'El que entra sin permiso salta.'],
-  sign_lake:           ['Lago Aria', 'No nadar. Los peces muerden.'],
-  sign_desert_edge:    ['Desierto de Piedra', 'Arena caliente, momias frías.', '¡Disfruta!'],
-  sign_d2_entrance:    ['Ruinas de Piedra', 'El ojo abre con un buen tiro.'],
+  sign_crossroads:     ['Oeste: Puerta Angosta. Este: lago.', 'Norte: Colina de la Dificultad.', 'Sur: pantano y desierto.'],
+  sign_forest_edge:    ['Camino de la Puerta Angosta.', 'Toca la puerta. Te abren.'],
+  sign_d1_entrance:    ['La Casa del Intérprete', 'Mucho que ver. Y que saltar.'],
+  sign_lake:           ['Tierra de Beulah'],
+  sign_desert_edge:    ['Feria de las Vanidades'],
+  sign_d2_entrance:    ['La Mina de Demas'],
   sign_oasis:          ['El Oasis', 'Agua fresca para héroes cansados.'],
-  sign_mountain_pass:  ['Paso de la Cumbre Fría', 'Hielo, lobos, arrepentimiento.', '¿Volver atrás?'],
-  sign_d3_entrance:    ['Hueco del Glaciar', 'Cerrado. Prueba con un gran ¡bum!'],
-  sign_swamp:          ['Pantano de Murkmire', 'Barroso. Trae calcetines de repuesto.'],
-  sign_shrine:         ['Piedras viejas sueñan bajo el barro.', 'Solo la linterna las despierta.'],
-  sign_barrier:        ['Barrera de Morgrath.', 'Tres pedazos la romperán.'],
-  sign_citadel:        ['CIUDADELA OSCURA', 'Vuelve atrás. Último aviso.'],
+  sign_mountain_pass:  ['La Colina de la Dificultad'],
+  sign_d3_entrance:    ['El Castillo de la Duda'],
+  sign_swamp:          ['El Pantano del Desaliento'],
+  sign_shrine:         ['Dos gigantes duermen bajo el barro.', 'Solo la linterna los despierta.'],
+  sign_barrier:        ['El sello del Rollo cierra el paso.', 'Tres sellos lo abren.'],
+  sign_citadel:        ['FORTALEZA DE APOLLYON'],
 };
