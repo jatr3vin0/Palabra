@@ -30,7 +30,7 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     }
 
     // --- shards + acorns ---
-    this.txt(44, 120, 'corona:', '#9999bb', 8);
+    this.txt(44, 120, 'rollo:', '#9999bb', 8);
     ['shardEmerald', 'shardRuby', 'shardSapphire'].forEach((sh, i) => {
       const img = this.add.image(64 + i * 20, 138, ART.tex(sh, 0)).setScale(1.2);
       if (GS.shards.indexOf(sh) < 0) img.setAlpha(0.15);
