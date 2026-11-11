@@ -5,10 +5,10 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
   create() {
     this.add.rectangle(160, 104, 320, 208, 0x05050c, 0.88);
     this.add.rectangle(160, 104, 260, 168, 0x10102a, 0.97).setStrokeStyle(1, 0x6868a8);
-    this.txt(160, 32, 'PAUSED', '#ffe97f', 16, true);
+    this.txt(160, 32, 'PAUSA', '#ffe97f', 16, true);
 
     // --- equippable row ---
-    this.txt(44, 48, 'X item:', '#9999bb', 8);
+    this.txt(44, 48, 'Objeto X:', '#9999bb', 8);
     this.owned = EQUIPPABLES.filter((k) => GS.items[k] || (k === 'potion' && GS.potions > 0));
     this.sel = Math.max(0, this.owned.indexOf(GS.equipped));
     this.slotImgs = [];
@@ -24,13 +24,13 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
 
     // --- passives ---
     let px = 60;
-    this.txt(44, 86, 'gear:', '#9999bb', 8);
+    this.txt(44, 86, 'equipo:', '#9999bb', 8);
     for (const k of ['sword', 'heroSword', 'boots', 'oakCharm']) {
       if (GS.items[k]) { this.add.image(px, 104, ART.tex(ITEMS[k].art, 0)); px += 24; }
     }
 
     // --- shards + acorns ---
-    this.txt(44, 120, 'crown:', '#9999bb', 8);
+    this.txt(44, 120, 'corona:', '#9999bb', 8);
     ['shardEmerald', 'shardRuby', 'shardSapphire'].forEach((sh, i) => {
       const img = this.add.image(64 + i * 20, 138, ART.tex(sh, 0)).setScale(1.2);
       if (GS.shards.indexOf(sh) < 0) img.setAlpha(0.15);
@@ -45,10 +45,10 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     // by a re-sealed door without making them die.
     const game = this.scene.get('Game');
     const inSubMap = game.mapId !== 'overworld' && game.mapEntry && game.mapEntry.map === game.mapId;
-    if (inSubMap) this.txt(160, 150, 'R: return to entrance (if stuck)', '#ffd24a', 8, true);
+    if (inSubMap) this.txt(160, 150, 'R: volver a la entrada (si atascado)', '#ffd24a', 8, true);
 
-    this.txt(160, 162, '< > equip  S save  Q save+quit', '#8888aa', 8, true);
-    this.txt(160, 174, 'ESC or ENTER: back to adventure', '#8888aa', 8, true);
+    this.txt(160, 162, '< > elegir  S guardar  Q salir', '#8888aa', 8, true);
+    this.txt(160, 174, 'ESC o ENTER: volver al juego', '#8888aa', 8, true);
     this.saveNote = this.txt(160, 188, '', '#9affb0', 8, true);
 
     this.input.keyboard.on('keydown-LEFT', () => this.move(-1));
@@ -59,7 +59,7 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     });
     this.input.keyboard.on('keydown-S', () => {
       const ok = this.scene.get('Game').autoSave();
-      this.saveNote.setText(ok ? 'Saved!' : 'Save failed!');
+      this.saveNote.setText(ok ? '¡Guardado!' : '¡No se pudo guardar!');
       AUDIO.sfx(ok ? 'save' : 'denied');
     });
     this.input.keyboard.on('keydown-Q', () => {

@@ -18,6 +18,11 @@ window.PALABRA_NPCS = {
   farmer_joss:  { name: 'Joss',         voice: 'villagerM', title: 'granjero' },
   guard_tomas:  { name: 'Tomás',        voice: 'villagerM', title: 'guardia' },
   nutwick:      { name: 'Nutwick',      voice: 'elder',     title: 'duende del roble' },
+  fisher_finn:  { name: 'Finn',         voice: 'villagerM', title: 'pescador del lago' },
+  hermit_aldous:{ name: 'Aldous',       voice: 'elder',     title: 'ermitaño de la montaña' },
+  nomad_zara:   { name: 'Zara',         voice: 'villagerF', title: 'nómada del desierto' },
+  witch_morla:  { name: 'Morla',        voice: 'villain',   title: 'bruja del pantano' },
+  fairy_aria:   { name: 'Aria',         voice: 'heroine',   title: 'hada de los estanques' },
 };
 
 // Signposts read in the NARRATOR voice (scripture/announcer type).

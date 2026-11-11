@@ -601,11 +601,11 @@ window.GameScene = class GameScene extends Phaser.Scene {
     }
     if (spec.arrows) {
       GS.arrows = Math.min(CONFIG.CAPS.arrows, GS.arrows + spec.arrows);
-      this.sfx('pickup'); this.floatText(p.x, p.y, `+${spec.arrows} arrows`, '#d8c89a');
+      this.sfx('pickup'); this.floatText(p.x, p.y, `+${spec.arrows} flechas`, '#d8c89a');
     }
     if (spec.bombs) {
       GS.bombs = Math.min(CONFIG.CAPS.bombs, GS.bombs + spec.bombs);
-      this.sfx('pickup'); this.floatText(p.x, p.y, `+${spec.bombs} bombs`, '#9ad8aa');
+      this.sfx('pickup'); this.floatText(p.x, p.y, `+${spec.bombs} bombas`, '#9ad8aa');
     }
     if (spec.hearts) {
       GS.hearts = Math.min(GS.maxHearts, GS.hearts + spec.hearts);
@@ -620,7 +620,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
     const meta = ITEMS[key] || { name: key, art: key, kind: 'special', desc: '' };
     if (key === 'smallKey') {
       GS.keys[this.mapId] = (GS.keys[this.mapId] || 0) + 1;
-      this.sfx('key'); this.floatText(p.x, p.y, 'Small Key!', '#ffe97f');
+      this.sfx('key'); this.floatText(p.x, p.y, '¡Llave pequeña!', '#ffe97f');
       return;
     }
     if (key === 'bossKey') {
@@ -637,13 +637,13 @@ window.GameScene = class GameScene extends Phaser.Scene {
     }
     if (key === 'acorn') {
       GS.acorns += 1;
-      this.sfx('secret'); this.floatText(p.x, p.y, `Golden Acorn! (${GS.acorns}/12)`, '#ffd24a');
+      this.sfx('secret'); this.floatText(p.x, p.y, `¡Bellota dorada! (${GS.acorns}/12)`, '#ffd24a');
       return;
     }
     if (key === 'potion') {
       if (GS.potions >= CONFIG.CAPS.potions) { this.give({ gems: 20 }); return; }
       GS.potions += 1;
-      this.sfx('pickup'); this.floatText(p.x, p.y, 'Red Potion!', '#ff7f7f');
+      this.sfx('pickup'); this.floatText(p.x, p.y, '¡Poción roja!', '#ff7f7f');
       return;
     }
     if (key.indexOf('shard') === 0) {
@@ -741,15 +741,23 @@ window.GameScene = class GameScene extends Phaser.Scene {
     npc.sprite.setTexture(ART.tex(npc.def.art || 'villager', 0));
     // Nutwick's acorn rewards are engine-driven
     if (id === 'nutwick') {
+      const NUT = { name: 'Nutwick', voice: 'elder' };
       const tiers = [
-        { need: 4, flag: 'nutwick_r1', give: { gems: 100 }, text: ['One hundred gems! Spend wisely.'] },
-        { need: 8, flag: 'nutwick_r2', give: { item: 'heartContainer' }, text: ['A treasure of the great oak!'] },
-        { need: 12, flag: 'nutwick_r3', give: { item: 'oakCharm' }, text: ['The Oak Charm! My finest gift.', 'You take half damage now!'] },
+        { need: 4,  flag: 'nutwick_r1', give: { gems: 100 }, text: ['¡Cien gemas! Gástalas bien.'],
+          gloss: ['One hundred gems! Spend wisely.'] },
+        { need: 8,  flag: 'nutwick_r2', give: { item: 'heartContainer' }, text: ['¡Un tesoro del roble viejo!'],
+          gloss: ['A treasure of the great oak!'] },
+        { need: 12, flag: 'nutwick_r3', give: { item: 'oakCharm' }, text: ['¡El Amuleto de Roble! Mi mejor regalo.', 'Ahora recibes la mitad del daño.'],
+          gloss: ['The Oak Charm! My finest gift.', 'You take half damage now!'] },
       ];
       for (const t of tiers) {
         if (GS.acorns >= t.need && !Flags.get(t.flag)) {
           Flags.set(t.flag);
-          this.openDialogue({ pages: [['CHIT-CHIT! ' + GS.acorns + ' acorns!'], t.text] }, () => {
+          this.openDialogue({
+            pages: [['¡CHI-CHE! ¡' + GS.acorns + ' bellotas!'], t.text],
+            gloss: [['Chit-chit! ' + GS.acorns + ' acorns!'], t.gloss],
+            speaker: NUT,
+          }, () => {
             this.give(t.give);
           });
           return;
@@ -795,35 +803,36 @@ window.GameScene = class GameScene extends Phaser.Scene {
   tryBuy(s) {
     const def = s.def;
     const price = def.price || 10;
+    const MIRA = { name: 'Mira', voice: 'villagerF' };
     if (GS.gems < price) {
       this.sfx('denied');
-      this.openDialogue({ pages: [[`That's ${price} gems.`, "You don't have enough!"]] });
+      this.openDialogue({ speaker: MIRA, pages: [[`Son ${price} gemas.`, 'No te alcanza. ¡Vuelve luego!']], gloss: [[`That is ${price} gems.`, 'You do not have enough!']] });
       return;
     }
     // already own a unique item / full on potions?
     const unique = ITEMS[def.item] && (ITEMS[def.item].kind === 'equip' || ITEMS[def.item].kind === 'passive');
     if (unique && GS.items[def.item]) {
-      this.openDialogue({ pages: [['You already have one of those!']] });
+      this.openDialogue({ speaker: MIRA, pages: [['¡Ya tienes uno de esos!']], gloss: [['You already have one of those!']] });
       return;
     }
     if (def.item === 'potion' && GS.potions >= CONFIG.CAPS.potions) {
-      this.openDialogue({ pages: [["You can't carry more potions!"]] });
+      this.openDialogue({ speaker: MIRA, pages: [['¡No puedes llevar más pociones!']], gloss: [['You cannot carry more potions!']] });
       return;
     }
     if (def.item === 'arrows' && !GS.items.bow) {
-      this.openDialogue({ pages: [['You need a bow for those, dear!', 'I hear one waits in the forest temple.']] });
+      this.openDialogue({ speaker: MIRA, pages: [['Necesitas un arco para esas.', 'Hay uno en el templo del bosque.']], gloss: [['You need a bow for those.', 'One waits in the forest temple.']] });
       return;
     }
     if (def.item === 'bombs' && !GS.items.bombBag) {
-      this.openDialogue({ pages: [['You need a Bomb Bag to carry those!', 'Treasure hunters mention the desert ruins.']] });
+      this.openDialogue({ speaker: MIRA, pages: [['Necesitas una bolsa de bombas.', 'Las ruinas del desierto tienen una.']], gloss: [['You need a Bomb Bag for those.', 'The desert ruins have one.']] });
       return;
     }
     if (def.item === 'arrows' && GS.arrows >= CONFIG.CAPS.arrows) {
-      this.openDialogue({ pages: [['Your quiver is already full!']] });
+      this.openDialogue({ speaker: MIRA, pages: [['¡Tu carcaj está lleno!']], gloss: [['Your quiver is already full!']] });
       return;
     }
     if (def.item === 'bombs' && GS.bombs >= CONFIG.CAPS.bombs) {
-      this.openDialogue({ pages: [['Your bomb bag is already full!']] });
+      this.openDialogue({ speaker: MIRA, pages: [['¡Tu bolsa de bombas está llena!']], gloss: [['Your bomb bag is already full!']] });
       return;
     }
     GS.gems -= price;
@@ -842,12 +851,12 @@ window.GameScene = class GameScene extends Phaser.Scene {
         GS.keys[this.mapId] -= 1;
         this.openDoor(d, true);
         this.sfx('unlock');
-      } else { this.sfx('denied'); this.floatText(d.sprite.x, d.sprite.y, 'Locked!', '#ffaaaa'); }
+      } else { this.sfx('denied'); this.floatText(d.sprite.x, d.sprite.y, '¡Cerrado!', '#ffaaaa'); }
     } else if (kind === 'boss') {
       if (Flags.get('bosskey_' + this.mapId)) {
         this.openDoor(d, true);
         this.sfx('unlock');
-      } else { this.sfx('denied'); this.floatText(d.sprite.x, d.sprite.y, 'Needs the Big Key!', '#ffaaaa'); }
+      } else { this.sfx('denied'); this.floatText(d.sprite.x, d.sprite.y, '¡Falta la llave grande!', '#ffaaaa'); }
     } else {
       this.sfx('denied');
     }
@@ -954,7 +963,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
       Flags.set(`tile_${this.mapId}_${this.roomKey}_${tx}_${ty}`);   // persist even for cut
       this.setTile(tx, ty, 'S');
       AUDIO.playJingle('secret');
-      this.floatText(tx * CONFIG.TILE + 8, ty * CONFIG.TILE, 'Secret!', '#ffd24a');
+      this.floatText(tx * CONFIG.TILE + 8, ty * CONFIG.TILE, '¡Secreto!', '#ffd24a');
     } else if (how === 'cut' && (ch === ',' || ch === 'B' || ch === 'O') && Math.random() < 0.22) {
       // grass/bush/pot drops
       const roll = Math.random();
@@ -974,7 +983,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
   damageEnemy(e, dmg, source) {
     if (e.def.immune && e.def.immune.indexOf(source === 'heroSword' ? 'sword' : source) >= 0) {
       this.sfx('denied');
-      this.floatText(e.x, e.y, 'clank!', '#aaaaaa');
+      this.floatText(e.x, e.y, '¡clanc!', '#aaaaaa');
       return;
     }
     e.hp -= dmg;
@@ -1023,7 +1032,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
     } catch (err) { console.error('boss onHit', err); }
     if (applied <= 0) {
       this.sfx('denied');
-      this.floatText(b.x, b.y - 14, 'clank!', '#aaaaaa');
+      this.floatText(b.x, b.y - 14, '¡clanc!', '#aaaaaa');
       return;
     }
     b.hp -= applied;
@@ -1123,7 +1132,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
       if (eq === 'potion' && GS.potions > 0) {} else { this.sfx('denied'); return; }
     }
     if (eq === 'bow') {
-      if (GS.arrows <= 0) { this.sfx('denied'); this.floatText(this.player.x, this.player.y, 'No arrows!', '#ffaaaa'); return; }
+      if (GS.arrows <= 0) { this.sfx('denied'); this.floatText(this.player.x, this.player.y, '¡Sin flechas!', '#ffaaaa'); return; }
       GS.arrows -= 1;
       const ang = { down: Math.PI / 2, up: -Math.PI / 2, left: Math.PI, right: 0 }[this.player.facing];
       const s = this.spawnShot(this.player.x, this.player.y, ang, 200, 'arrow', this.swordDamage(), false);
@@ -1131,7 +1140,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
       this.sfx('arrow');
       this.player.raiseUntil = now + 130;
     } else if (eq === 'bombBag') {
-      if (GS.bombs <= 0) { this.sfx('denied'); this.floatText(this.player.x, this.player.y, 'No bombs!', '#ffaaaa'); return; }
+      if (GS.bombs <= 0) { this.sfx('denied'); this.floatText(this.player.x, this.player.y, '¡Sin bombas!', '#ffaaaa'); return; }
       const f = Player.frontTile(this.player);
       let bx = f.tx, by = f.ty;
       if (this.blockedAt(bx * 16 + 8, by * 16 + 8, {})) { bx = Math.floor(this.player.x / 16); by = Math.floor(this.player.y / 16); }
@@ -1155,7 +1164,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
       this.player.raiseUntil = now + 160;
     } else if (eq === 'potion') {
       if (GS.potions <= 0) { this.sfx('denied'); return; }
-      if (GS.hearts >= GS.maxHearts) { this.floatText(this.player.x, this.player.y, 'Hearts are full!', '#aaffaa'); return; }
+      if (GS.hearts >= GS.maxHearts) { this.floatText(this.player.x, this.player.y, '¡Corazones llenos!', '#aaffaa'); return; }
       GS.potions -= 1;
       GS.hearts = GS.maxHearts;
       this.sfx('potion');
@@ -1519,7 +1528,7 @@ window.GameScene = class GameScene extends Phaser.Scene {
         b.destroy();
       }
       this.barrierLive.length = 0;
-      this.floatText(this.player.x, this.player.y - 12, 'The barrier dissolves!', '#caa9ff');
+      this.floatText(this.player.x, this.player.y - 12, '¡La barrera se rompe!', '#caa9ff');
       this.autoSave();
     }
 

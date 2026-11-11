@@ -1,43 +1,70 @@
-// The Shattered Crown — dialogue content.
-// Attaches ONLY to the engine-defined DIALOGUE registry.
-// Format (docs/ARCHITECTURE.md): DIALOGUE.<npc_id> = [ variants... ],
-// each variant { if:{...}, lines:[ page, page ], set?, give? }.
-// First matching variant wins; the default (no `if`) is always LAST.
-// Lines: max ~38 chars; pages: 1-3 lines; variants: 1-3 pages.
+// Dialogue content — Spanish (learner-facing), English captions as `gloss`.
+// Shape contract (dialogue.js): DIALOGUE.<npc> = variants, first match wins;
+// every `if`/`set`/`give`/`mission` key is engine logic — never edit those
+// here without the engine open. `lines` are SPOKEN by kokoro per page;
+// `gloss` is the English caption shown only at immersion level 0.
+// (W2 sweep, playtest-2 content pack: BLOCKS A+B of DIALOGUE-sweep-playtest2.
+// Pip and Ana keep their gate-slice blocks — already Spanish, missions bound.)
 
 // ---------------------------------------------------------------------------
-// Elder Rowan — quest giver, Willow Village (elder_house)
+// Elder Rowan — quest giver, Aldea Sauce (elder_house)
 // ---------------------------------------------------------------------------
 DIALOGUE.elder_rowan = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['The crown is whole again!', 'Eldoria is safe, thanks to you.'],
-      ['Rest now, hero of Willow.', 'You have earned a nap. A big one.'] ] },
+      ['¡La corona está entera!', 'Eldoria está a salvo. ¡Gracias!'],
+      ['Descansa, héroe de la aldea.', 'Te ganaste una siesta. Grande.'] ],
+    gloss: [
+      ['The crown is whole again!', 'Eldoria is safe. Thank you!'],
+      ['Rest, hero of the village.', 'You earned a nap. A big one.'] ] },
   { if: { shardsMin: 3 }, lines: [
-      ['Three shards! You truly did it!', 'They hum with old magic.'],
-      ['Go northeast to the Ashen Wastes.', 'The shards will melt the barrier.'],
-      ['Morgrath waits in his citadel.', 'We believe in you. Go!'] ] },
+      ['¡Tres pedazos! ¡Lo lograste!', 'Tienen magia antigua.'],
+      ['Ve al noreste, a los Yermos', 'de Ceniza. Los pedazos abren paso.'],
+      ['Morgrath espera en su ciudadela.', '¡Cree en ti! ¡Ve, valiente!'] ],
+    gloss: [
+      ['Three shards! You did it!', 'They have old magic.'],
+      ['Go northeast, to the Ashen', 'Wastes. The shards open the way.'],
+      ['Morgrath waits in his citadel.', 'Believe in yourself! Go, brave one!'] ] },
   { if: { flagsAll: ['d3_complete'], flagsNone: ['d2_complete'] }, lines: [
-      ['The Sapphire Shard! Wonderful!', 'Those boots look fast, too.'],
-      ['One shard left, in the Sandstone', 'Ruins far to the southeast.'],
-      ['A stone eye seals the entrance.', 'Your bow will wake it.'] ] },
+      ['¡El pedazo de zafiro! ¡Bien!', 'Y esas botas... ¡qué rápidas!'],
+      ['Falta uno: las Ruinas de Piedra,', 'al sureste, lejos.'],
+      ['Un ojo de piedra cierra la puerta.', 'Tu arco lo despierta.'] ],
+    gloss: [
+      ['The sapphire shard! Good!', 'And those boots... how fast!'],
+      ['One left: the Sandstone Ruins,', 'far to the southeast.'],
+      ['A stone eye seals the door.', 'Your bow wakes it.'] ] },
   { if: { flagsAll: ['d2_complete'], flagsNone: ['d3_complete'] }, lines: [
-      ['The Ruby Shard! Splendid work!', 'And bombs! Mind my curtains.'],
-      ['One shard left: Glacier Hollow,', 'north past the mountain pass.'],
-      ['A cracked boulder blocks the cave.', 'Sounds like a job for a bomb!'] ] },
+      ['¡El pedazo de rubí! ¡Muy bien!', 'Y bombas. ¡Cuida mis cortinas!'],
+      ['Falta uno: el Hueco del Glaciar,', 'al norte, tras el paso.'],
+      ['Una roca rota tapa la cueva.', 'Eso pide una bomba. ¡Bum!'] ],
+    gloss: [
+      ['The ruby shard! Very good!', 'And bombs. Mind my curtains!'],
+      ['One left: Glacier Hollow,', 'north, past the pass.'],
+      ['A cracked rock blocks the cave.', 'That calls for a bomb. Boom!'] ] },
   { if: { flagsAll: ['d1_complete'] }, lines: [
-      ['The Emerald Shard! Marvelous!', 'And a fine bow on your back.'],
-      ['Two shards remain, brave one.', 'Sandstone Ruins, far southeast.', 'Glacier Hollow, high up north.'],
-      ['That stone eye at the ruins?', 'I hear arrows wake it up.'] ] },
+      ['¡El pedazo de esmeralda! ¡Bien!', 'Y un buen arco en tu espalda.'],
+      ['Faltan dos, valiente.', 'Ruinas al sureste, glaciar al norte.'],
+      ['Ese ojo de piedra de las ruinas...', 'dicen que el arco lo despierta.'] ],
+    gloss: [
+      ['The emerald shard! Good!', 'And a fine bow on your back.'],
+      ['Two are left, brave one.', 'Ruins southeast, glacier north.'],
+      ['That stone eye in the ruins...', 'they say a bow wakes it.'] ] },
   { if: { flagsNone: ['npc_elder_met'] },
     set: { flag: 'npc_elder_met' },
     give: { gems: 30, once: 'elder_gift1' },
     lines: [
-      ['Ah, you are awake at last!', 'Morgrath shattered our crown', 'into three shards, child.'],
-      ['You are the one the oak chose.', 'Take these gems for supplies.'],
-      ['Start west: Vinewood Temple', 'sleeps deep in the forest.', 'Be brave, little sprout!'] ] },
+      ['¡Ah! ¡Despertaste por fin!', 'Morgrath rompió nuestra corona', 'en tres pedazos, pequeño.'],
+      ['El roble te eligió a ti.', 'Toma estas gemas para el viaje.'],
+      ['Ve al oeste: el Templo de', 'Vinewood duerme en el bosque.', '¡Sé valiente, retoño!'] ],
+    gloss: [
+      ['Ah! You are awake at last!', 'Morgrath broke our crown', 'into three pieces, little one.'],
+      ['The oak chose you.', 'Take these gems for the journey.'],
+      ['Go west: the Vinewood Temple', 'sleeps in the forest.', 'Be brave, little sprout!'] ] },
   { lines: [
-      ['The Vinewood Temple lies west,', 'deep in the forest.'],
-      ['Cut tall grass if you need hearts.', 'Old elder trick. Works every time.'] ] },
+      ['El Templo de Vinewood está al oeste,', 'en lo profundo del bosque.'],
+      ['Corta la hierba alta y tendrás', 'corazones. Truco de anciano.'] ],
+    gloss: [
+      ['The Vinewood Temple is west,', 'deep in the forest.'],
+      ['Cut tall grass and you get', 'hearts. Old elder trick.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -45,14 +72,23 @@ DIALOGUE.elder_rowan = [
 // ---------------------------------------------------------------------------
 DIALOGUE.shopkeep_mira = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['The hero shops HERE, folks!', 'Best advertising I ever had.'] ] },
+      ['¡El héroe compra AQUÍ!', 'La mejor publicidad del mundo.'] ],
+    gloss: [
+      ['The hero shops HERE!', 'Best advertising in the world.'] ] },
   { if: { shardsMin: 1 }, lines: [
-      ['A real shard hunter in my shop!', 'Stock up. Heroes break easily.'],
-      ['Potions save lives, you know.', 'Mostly yours.'] ] },
+      ['¡Un cazador de pedazos!', 'Compra. Los héroes se rompen.'],
+      ['Las pociones curan del todo.', 'Los héroes listos llevan cuatro.'] ],
+    gloss: [
+      ['A real shard hunter!', 'Stock up. Heroes break.'],
+      ['Potions heal you fully.', 'Smart heroes carry four.'] ] },
   { lines: [
-      ['Welcome to my little shop!', 'Stand by an item and press', 'the action button to buy.'],
-      ['Potions heal you all the way.', 'Smart heroes carry four.'],
-      ['Lanterns light up dark places.', 'Dungeons love the dark. Hint hint.'] ] },
+      ['¡Bienvenido a mi tienda!', 'Párate junto a un objeto', 'y toca el botón de acción.'],
+      ['Las pociones curan del todo.', 'Los héroes listos llevan cuatro.'],
+      ['La linterna alumbra lo oscuro.', 'A las cuevas les gusta el negro.'] ],
+    gloss: [
+      ['Welcome to my shop!', 'Stand by an item', 'and tap the action button.'],
+      ['Potions heal you fully.', 'Smart heroes carry four.'],
+      ['The lantern lights dark places.', 'Caves love the dark.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -143,33 +179,50 @@ DIALOGUE.villager_ana = [
       ['Come to my house, please.', 'I have a book. Look!'] ] },
 ];
 
-
 // ---------------------------------------------------------------------------
 // Joss — farmer, south meadows
 // ---------------------------------------------------------------------------
 DIALOGUE.farmer_joss = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['Crops grow tall in peace.', 'Best harvest in years. Thanks!'] ] },
+      ['Mis plantas crecen tranquilas.', 'La mejor cosecha en años. ¡Gracias!'] ],
+    gloss: [
+      ['My plants grow in peace.', 'Best harvest in years. Thank you!'] ] },
   { if: { items: ['bombBag'] }, lines: [
-      ['Bombs, eh? Heard a cracked rock', 'sits up by the crossroads.', 'Boom first, ask questions later.'] ] },
+      ['¿Bombas? Hay una roca rota', 'junto al cruce de caminos.', '¡Bum primero, preguntas después!'] ],
+    gloss: [
+      ['Bombs? There is a cracked rock', 'by the crossroads.', 'Boom first, ask later!'] ] },
   { lines: [
-      ['Slimes keep bouncing on my crops.', 'Give them a bonk for me, will you?'],
-      ['Cracked boulders hide secrets.', 'Saw one near the crossroads once.'] ] },
+      ['Los slimes saltan en mis plantas.', 'Dales un golpe por mí, ¿sí?'],
+      ['Las rocas rotas guardan secretos.', 'Vi una cerca del cruce.'] ],
+    gloss: [
+      ['Slimes bounce on my crops.', 'Give them a bonk for me, yes?'],
+      ['Cracked rocks hide secrets.', 'I saw one near the crossroads.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Tomas — village guard, north road (warns about the mountain pass)
+// Tomás — village guard, north road
 // ---------------------------------------------------------------------------
 DIALOGUE.guard_tomas = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['All quiet! Finally.', 'Now I guard mostly butterflies.'] ] },
+      ['¡Todo tranquilo! Por fin.', 'Ahora cuido mariposas.'] ],
+    gloss: [
+      ['All quiet! Finally.', 'Now I guard butterflies.'] ] },
   { if: { items: ['boots'] }, lines: [
+      ['¡Botas de poder! Mírate.', 'El paso ya no te frena.'] ],
+    gloss: [
       ['Power Boots! Look at you.', 'The pass will not slow you now.'] ] },
   { if: { items: ['bombBag'] }, lines: [
-      ['Heading north? Glacier Hollow is', 'sealed by a cracked boulder.', 'Good thing you carry bombs!'] ] },
+      ['¿Vas al norte? El Hueco del', 'Glaciar tiene una roca rota.', '¡Qué suerte que llevas bombas!'] ],
+    gloss: [
+      ['Going north? Glacier Hollow', 'has a cracked rock.', 'Lucky you carry bombs!'] ] },
   { if: { flagsAll: ['d1_complete'] }, lines: [
-      ['The mountain pass is north, but', 'it is icy and full of wolves.', 'Pack hearts before you climb.'] ] },
+      ['El paso de montaña está al norte.', 'Hay hielo y hay lobos.', 'Lleva corazones antes de subir.'] ],
+    gloss: [
+      ['The mountain pass is north.', 'There is ice and there are wolves.', 'Pack hearts before you climb.'] ] },
   { lines: [
+      ['¡Alto! Es broma. ¡Hola!', 'El paso del norte es peligroso.', 'Lobos, hielo y rocas gruñonas.'],
+      ['Empieza por el bosque, al oeste.', 'El anciano Rowan sabe el camino.'] ],
+    gloss: [
       ['Halt! Just kidding. Hello!', 'The north pass is dangerous.', 'Wolves, ice, grumpy rocks.'],
       ['Start with the forest, west.', 'Elder Rowan knows the way.'] ] },
 ];
@@ -179,118 +232,179 @@ DIALOGUE.guard_tomas = [
 // ---------------------------------------------------------------------------
 DIALOGUE.fisher_finn = [
   { if: { flagsAll: ['game_complete'] }, lines: [
-      ['Even the fish seem happier.', 'Still not biting, though.'] ] },
+      ['Hasta los peces están felices.', 'Pero no pican. Nunca pican.'] ],
+    gloss: [
+      ['Even the fish are happy.', 'But they do not bite. They never do.'] ] },
   { if: { flagsAll: ['d1_complete'] }, lines: [
-      ['Nice bow! Not for fishing though.', 'A fairy pond hides northeast.', 'Fairies fix you right up.'],
-      ['And between us? Bushes south of', 'here hide stairs to a secret.'] ] },
+      ['¡Buen arco! No es para pescar.', 'Un estanque de hadas, al noreste.', 'Las hadas te curan gratis.'],
+      ['Y entre tú y yo:', 'los arbustos del sur esconden', 'unas escaleras secretas.'] ],
+    gloss: [
+      ['Nice bow! Not for fishing.', 'A fairy pond, northeast.', 'Fairies heal you for free.'],
+      ['And between you and me:', 'the bushes to the south hide', 'some secret stairs.'] ] },
   { lines: [
-      ['Shhh. The fish can hear you.', 'They have heard me for years.', 'Zero fish so far.'],
-      ['A fairy pond lies northeast.', 'Best free healing in Eldoria.'] ] },
+      ['Shhh. Los peces te oyen.', 'Me oyen desde hace años.', 'Cero peces. Cero.'],
+      ['Un estanque de hadas, al noreste.', 'La mejor cura gratis de Eldoria.'] ],
+    gloss: [
+      ['Shhh. The fish can hear you.', 'They have heard me for years.', 'Zero fish. Zero.'],
+      ['A fairy pond, northeast.', 'The best free healing in Eldoria.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Aldous — mountain hermit (hints bombs for the D3 boulder + ice tips)
+// Aldous — mountain hermit
 // ---------------------------------------------------------------------------
 DIALOGUE.hermit_aldous = [
   { if: { flagsAll: ['d3_complete'] }, lines: [
-      ['You cleared the Hollow! Ha!', 'Fifty years I waited up here', 'for someone interesting.'] ] },
+      ['¡Limpiaste el Hueco! ¡Ja!', 'Cincuenta años esperando aquí', 'a alguien interesante.'] ],
+    gloss: [
+      ['You cleared the Hollow! Ha!', 'Fifty years waiting up here', 'for someone interesting.'] ] },
   { if: { items: ['bombBag'] }, lines: [
-      ['Bombs! Now you are talking.', 'Glacier Hollow hides west of here', 'behind a big cracked boulder.'],
-      ['Set a bomb against it and step', 'back. Boom. Doorway.'],
-      ['Ice tip: you slide until you', 'hit something. Plan each push.'] ] },
+      ['¡Bombas! Ahora hablas mi idioma.', 'El Hueco del Glaciar está al oeste,', 'tras una gran roca rota.'],
+      ['Pon una bomba y apártate.', '¡Bum! Ya hay una puerta.'],
+      ['En el hielo resbalas hasta chocar.', 'Planea cada empujón.'] ],
+    gloss: [
+      ['Bombs! Now you speak my language.', 'Glacier Hollow is west of here,', 'behind a big cracked rock.'],
+      ['Set a bomb and step back.', 'Boom! There is a doorway.'],
+      ['On ice you slide until you hit.', 'Plan every push.'] ] },
   { lines: [
-      ['A visitor! Up HERE? Wild.', 'The cave west is Glacier Hollow,', 'sealed by a cracked boulder.'],
-      ['No bomb, no entry. The desert', 'ruins hold bombs, so they say.'],
-      ['On ice you slide till you bump.', 'Aim yourself like a curling stone.'] ] },
+      ['¡Un visitante! ¿AQUÍ arriba?', 'La cueva del oeste es el Hueco', 'del Glaciar, con roca rota.'],
+      ['Sin bomba no hay entrada.', 'Las ruinas del desierto dan bombas.'],
+      ['En el hielo resbalas y chocas.', 'Apúntate antes de empujar.'] ],
+    gloss: [
+      ['A visitor! Up HERE?', 'The west cave is Glacier', 'Hollow, with a cracked rock.'],
+      ['No bomb, no entry.', 'The desert ruins give bombs.'],
+      ['On ice you slide and bump.', 'Aim yourself before you push.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Zara — desert nomad (hints the eye switch needs the bow)
+// Zara — desert nomad
 // ---------------------------------------------------------------------------
 DIALOGUE.nomad_zara = [
   { if: { flagsAll: ['d2_complete'] }, lines: [
+      ['Despertaste las ruinas y ganaste.', 'Las arenas cantarán por ti.'],
+      ['Al sureste, una roca rota', 'esconde una cueva vieja.'] ],
+    gloss: [
       ['You woke the ruins and won.', 'The sands will sing about you.'],
-      ['Far southeast a cracked boulder', 'hides an old cave. Just saying.'] ] },
+      ['To the southeast, a cracked rock', 'hides an old cave.'] ] },
   { if: { items: ['bow'] }, lines: [
-      ['The ruins southeast stay sealed.', 'A stone eye watches the door.'],
+      ['Las ruinas del sureste, cerradas.', 'Un ojo de piedra mira la puerta.'],
+      ['Los ojos parpadean con flechas.', 'Tienes arco. Guíñale un ojo.'] ],
+    gloss: [
+      ['The southeast ruins, still sealed.', 'A stone eye watches the door.'],
       ['Eyes blink when arrows fly.', 'You have a bow. Wink at it.'] ] },
   { lines: [
-      ['Welcome, sand-walker. Tea?', 'The ruins southeast hide a shard.'],
-      ['A stone eye guards the way in.', 'Only an arrow wakes it.', 'No bow? The forest temple has one.'] ] },
+      ['Bienvenido, caminante de arena.', '¿Té? Las ruinas del sureste', 'esconden un pedazo.'],
+      ['Un ojo de piedra guarda la entrada.', 'Solo una flecha lo despierta.', '¿Sin arco? Hay uno en el templo.'] ],
+    gloss: [
+      ['Welcome, sand-walker.', 'Tea? The southeast ruins', 'hide a shard.'],
+      ['A stone eye guards the way in.', 'Only an arrow wakes it.', 'No bow? The temple has one.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Morla — swamp witch (hints the Sunken Shrine)
+// Morla — swamp witch
 // ---------------------------------------------------------------------------
 DIALOGUE.witch_morla = [
   { if: { flagsAll: ['has_heroSword'] }, lines: [
-      ['So the blade chose you after all.', 'My frog owes me three flies.'],
-      ['Swing it proudly, little hero.', 'It bites twice as hard.'] ] },
+      ['Así que la espada te eligió.', 'Mi rana me debe tres moscas.'],
+      ['Úsala con orgullo, pequeño.', 'Ahora corta el doble.'] ],
+    gloss: [
+      ['So the blade chose you.', 'My frog owes me three flies.'],
+      ['Swing it proudly, little one.', 'Now it cuts twice as deep.'] ] },
   { lines: [
+      ['Je, je. ¿Perdido?', '¿O buscas algo... más?'],
+      ['Al suroeste, unas piedras viejas', 'se hunden. Debajo hay una espada,', 'y corta el doble.'],
+      ['Solo la luz de una linterna', 'despierta esas piedras.', 'Trae valor. Y calcetines secos.'] ],
+    gloss: [
       ['Hee hee. Lost, are we?', 'Or looking for something... more?'],
-      ['Southwest of here, old stones', 'drown. Beneath them sleeps a blade', 'that cuts twice as deep.'],
-      ['Only lantern-light wakes those', 'stones. Bring courage.', 'And dry socks.'] ] },
+      ['Southwest, some old stones', 'sink. Under them is a blade,', 'and it cuts twice as deep.'],
+      ['Only lantern light', 'wakes those stones.', 'Bring courage. And dry socks.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Aria — fairy of the healing ponds (gentle)
+// Aria — fairy of the healing ponds
 // ---------------------------------------------------------------------------
 DIALOGUE.fairy_aria = [
   { if: { flagsAll: ['game_complete'] }, lines: [
+      ['La luz volvió.', 'Descansa, héroe amable.'] ],
+    gloss: [
       ['The light has returned.', 'Rest now, gentle hero.'] ] },
   { if: { shardsMin: 3 }, lines: [
-      ['The shards sing in your pack.', 'Be brave a little longer.', 'We are all with you.'] ] },
+      ['Los pedazos cantan en tu bolsa.', 'Sé valiente un poco más.', 'Estamos contigo.'] ],
+    gloss: [
+      ['The shards sing in your bag.', 'Be brave a little longer.', 'We are with you.'] ] },
   { lines: [
-      ['Rest here, little one.', 'The water will mend your hurts.'],
-      ['Every brave heart needs a pause.', 'Even yours.'] ] },
+      ['Descansa aquí, pequeño.', 'El agua cura tus heridas.'],
+      ['Todo corazón valiente', 'necesita una pausa.', 'Hasta el tuyo.'] ],
+    gloss: [
+      ['Rest here, little one.', 'The water mends your hurts.'],
+      ['Every brave heart', 'needs a pause.', 'Even yours.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Nutwick — Squirrel King (acorn quest; engine grants rewards at 4/8/12
-// and sets nutwick_r1/r2/r3)
+// Nutwick — Squirrel King (engine grants rewards at 4/8/12)
 // ---------------------------------------------------------------------------
 DIALOGUE.nutwick = [
   { if: { flagsAll: ['nutwick_r3'] }, lines: [
-      ['Friend of Squirrels! That charm', 'suits you. Stay nutty.'] ] },
+      ['¡Amigo de las ardillas!', 'Ese amuleto te queda bien.', 'Sigue así, amigo mío.'] ],
+    gloss: [
+      ['Friend of the squirrels!', 'That charm suits you.', 'Keep it up, my friend.'] ] },
   { if: { acornsMin: 12 }, lines: [
+      ['¡DOCE BELLOTAS DORADAS!', '¡La docena real completa!'],
+      ['Toma el Amuleto de Roble, héroe.', 'Suaviza cada golpe.', 'Magia de ardilla. Muy rara.'] ],
+    gloss: [
       ['TWELVE GOLDEN ACORNS!', 'The full royal dozen!'],
       ['Take the Oak Charm, hero.', 'It softens every blow.', 'Squirrel magic. Very rare.'] ] },
   { if: { flagsAll: ['nutwick_r2'] }, lines: [
-      ['Four acorns left, friend.', 'Find all twelve and my greatest', 'treasure is yours.'] ] },
+      ['Faltan cuatro bellotas, amigo.', 'Si traes las doce, mi mejor', 'tesoro es tuyo.'] ],
+    gloss: [
+      ['Four acorns left, friend.', 'Bring all twelve and my best', 'treasure is yours.'] ] },
   { if: { acornsMin: 8 }, lines: [
-      ['EIGHT! You magnificent finder!', 'Take this heart of the old oak.'],
-      ['Four more remain out there.', 'Sniff harder!'] ] },
+      ['¡OCHO! ¡Qué gran buscador!', 'Toma el corazón del roble viejo.'],
+      ['Faltan cuatro por ahí.', '¡Olfatea más fuerte!'] ],
+    gloss: [
+      ['EIGHT! What a finder!', 'Take the heart of the old oak.'],
+      ['Four more are out there.', 'Sniff harder!'] ] },
   { if: { flagsAll: ['nutwick_r1'] }, lines: [
-      ['Eight acorns earns a royal gift.', 'Keep hunting, keep climbing!'] ] },
+      ['Ocho bellotas dan un regalo real.', '¡Sigue buscando, sigue subiendo!'] ],
+    gloss: [
+      ['Eight acorns earn a royal gift.', 'Keep hunting, keep climbing!'] ] },
   { if: { acornsMin: 4 }, lines: [
-      ['FOUR golden acorns! Gems for you,', 'as squirrel law demands!'],
-      ['More acorns, more rewards.', 'Eight is the next magic number.'] ] },
+      ['¡CUATRO bellotas doradas!', '¡Gemas para ti, por ley de ardilla!'],
+      ['Más bellotas, más premios.', 'Ocho es el próximo número.'] ],
+    gloss: [
+      ['FOUR golden acorns!', 'Gems for you, by squirrel law!'],
+      ['More acorns, more rewards.', 'Eight is the next number.'] ] },
   { if: { acornsMin: 1 }, lines: [
-      ['Oho! You carry golden acorns!', 'Bring me FOUR and be rewarded!'],
-      ['They hide behind bushes, in caves,', 'on islands. Squirrels see all.'] ] },
+      ['¡Oho! ¡Llevas bellotas doradas!', '¡Tráeme CUATRO y te premio!'],
+      ['Están tras arbustos, en cuevas', 'y en islas. Las ardillas ven todo.'] ],
+    gloss: [
+      ['Oho! You carry golden acorns!', 'Bring me FOUR and I reward you!'],
+      ['They hide behind bushes, in caves', 'and on islands. Squirrels see all.'] ] },
   { lines: [
+      ['¡Soy NUTWICK, Rey de las Ardillas!', '¡Inclínate! O saluda. Saludar vale.'],
+      ['Doce bellotas doradas están ocultas', 'por toda la tierra. Tráemelas', 'y tendrás premios reales.'] ],
+    gloss: [
       ['I am NUTWICK, King of Squirrels!', 'Bow! Or nod. Nodding is fine.'],
-      ['Twelve golden acorns lie hidden', 'across the land. Bring them to me', 'for royal rewards!'] ] },
+      ['Twelve golden acorns are hidden', 'across the land. Bring them to me', 'and you get royal rewards.'] ] },
 ];
 
 // ---------------------------------------------------------------------------
-// Signs — one page, 1-2 punchy lines each
+// Signposts (BLOCK B) — read in the NARRATOR voice. Square + shop unchanged.
 // ---------------------------------------------------------------------------
 DIALOGUE.signs = {
   sign_village_square: ['Aldea Sauce', 'Pueblo pequeño y tranquilo.'],
   sign_village_shop:   ['La tienda de Mira', 'Pociones y flechas. ¡Bienvenido!'],
-  sign_farm:           ["Joss's Farm", 'Please do not bonk the crops.'],
-  sign_crossroads:     ['W: Forest   E: Lake', 'N: Mountains   S: Farms, Desert'],
-  sign_forest_edge:    ['Vinewood Forest ahead.', 'Beware of plants that spit.'],
-  sign_d1_entrance:    ['Vinewood Temple', 'Trespassers will be sproinged.'],
-  sign_lake:           ['Lake Aria', 'No swimming. The fish bite back.'],
-  sign_desert_edge:    ['Sandstone Desert', 'Hot sand, cold mummies. Enjoy!'],
-  sign_d2_entrance:    ['Sandstone Ruins', 'The eye opens for a true shot.'],
-  sign_oasis:          ['The Oasis', 'Cool water for weary heroes.'],
-  sign_mountain_pass:  ['Frostpeak Pass', 'Ice, wolves, regret. Turn back?'],
-  sign_d3_entrance:    ['Glacier Hollow', 'Sealed tight. Try a big boom.'],
-  sign_swamp:          ['Murkmire Swamp', 'Squelchy. Bring spare socks.'],
-  sign_shrine:         ['Old stones dream below the mire.', 'Only lantern-light wakes them.'],
-  sign_barrier:        ["Morgrath's barrier of dread.", 'Three shards shall shatter it.'],
-  sign_citadel:        ['DARK CITADEL', 'Turn back. Final warning. -M'],
+  sign_farm:           ['Granja de Joss', 'No cortes mis plantas, por favor.'],
+  sign_crossroads:     ['Oeste: el bosque. Este: el lago.', 'Norte: montañas.', 'Sur: granjas y desierto.'],
+  sign_forest_edge:    ['Bosque de Vinewood, adelante.', 'Cuidado con plantas que escupen.'],
+  sign_d1_entrance:    ['Templo de Vinewood', 'El que entra sin permiso salta.'],
+  sign_lake:           ['Lago Aria', 'No nadar. Los peces muerden.'],
+  sign_desert_edge:    ['Desierto de Piedra', 'Arena caliente, momias frías.', '¡Disfruta!'],
+  sign_d2_entrance:    ['Ruinas de Piedra', 'El ojo abre con un buen tiro.'],
+  sign_oasis:          ['El Oasis', 'Agua fresca para héroes cansados.'],
+  sign_mountain_pass:  ['Paso de la Cumbre Fría', 'Hielo, lobos, arrepentimiento.', '¿Volver atrás?'],
+  sign_d3_entrance:    ['Hueco del Glaciar', 'Cerrado. Prueba con un gran ¡bum!'],
+  sign_swamp:          ['Pantano de Murkmire', 'Barroso. Trae calcetines de repuesto.'],
+  sign_shrine:         ['Piedras viejas sueñan bajo el barro.', 'Solo la linterna las despierta.'],
+  sign_barrier:        ['Barrera de Morgrath.', 'Tres pedazos la romperán.'],
+  sign_citadel:        ['CIUDADELA OSCURA', 'Vuelve atrás. Último aviso.'],
 };

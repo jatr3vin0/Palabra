@@ -5,16 +5,16 @@ window.GameOverScene = class GameOverScene extends Phaser.Scene {
   create() {
     this.cameras.main.setBackgroundColor('#0a0508');
     AUDIO.playSong('gameover');
-    this.add.text(160, 70, 'GAME OVER', {
+    this.add.text(160, 70, 'FIN DEL JUEGO', {
       fontFamily: CONFIG.FONT, fontSize: '16px', color: '#c03040',
     }).setShadow(2, 2, '#000000', 0).setOrigin(0.5).setResolution(CONFIG.ZOOM * 2);
 
-    this.add.text(160, 110, "Don't give up, hero!", {
+    this.add.text(160, 110, '¡No te rindas, héroe!', {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: '#aaaacc',
     }).setOrigin(0.5).setResolution(CONFIG.ZOOM * 2);
 
     this.sel = 0;
-    this.opts = ['Continue from last save', 'Back to title'];
+    this.opts = ['Seguir desde el último guardado', 'Volver al inicio'];
     this.optTexts = this.opts.map((o, i) => this.add.text(160, 140 + i * 16, o, {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: '#fff',
     }).setShadow(1, 1, '#000000', 0).setOrigin(0.5).setResolution(CONFIG.ZOOM * 2));

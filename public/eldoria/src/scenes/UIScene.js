@@ -201,7 +201,7 @@ window.UIScene = class UIScene extends Phaser.Scene {
   }
 
   savedToast() {
-    const t = this.text(0, 20, 'Saved!', '#9affb0', 8);
+    const t = this.text(0, 20, '¡Guardado!', '#9affb0', 8);
     t.setX(316 - t.width);
     this.tweens.add({ targets: t, alpha: 0, duration: 1400, onComplete: () => t.destroy() });
   }

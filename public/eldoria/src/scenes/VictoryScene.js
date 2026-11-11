@@ -16,11 +16,11 @@ window.VictoryScene = class VictoryScene extends Phaser.Scene {
     }
 
     const lines = [
-      ['MORGRATH FALLS!', 26, '#ffe97f', 16],
-      ['The Crown of Eldoria shines anew.', 104, '#e8e8ff', 8],
-      ['Light returns to the meadows,', 118, '#bbbbdd', 8],
-      ['the forest, the peaks, the sands.', 130, '#bbbbdd', 8],
-      ['YOU ARE THE HERO OF ELDORIA!', 150, '#7fe9a0', 8],
+      ['¡MORGRATH CAE!', 26, '#ffe97f', 16],
+      ['La Corona de Eldoria brilla otra vez.', 104, '#e8e8ff', 8],
+      ['La luz vuelve a las praderas,', 118, '#bbbbdd', 8],
+      ['al bosque, a las cumbres, a la arena.', 130, '#bbbbdd', 8],
+      ['¡ERES EL HÉROE DE ELDORIA!', 150, '#7fe9a0', 8],
     ];
     lines.forEach(([str, y, color, size], i) => {
       const t = this.add.text(160, y, str, {
@@ -30,14 +30,14 @@ window.VictoryScene = class VictoryScene extends Phaser.Scene {
     });
 
     const m = Math.floor((GS.playMs || 0) / 60000);
-    const stats = `time ${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}  ` +
-      `acorns ${GS.acorns}/12  hearts ${GS.maxHearts}`;
+    const stats = `tiempo ${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}  ` +
+      `bellotas ${GS.acorns}/12  corazones ${GS.maxHearts}`;
     const st = this.add.text(160, 168, stats, {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: '#8888aa',
     }).setOrigin(0.5).setAlpha(0).setResolution(CONFIG.ZOOM * 2);
     this.tweens.add({ targets: st, alpha: 1, delay: 5600, duration: 600 });
 
-    const hint = this.add.text(160, 192, 'ENTER: title (your save lives on!)', {
+    const hint = this.add.text(160, 192, 'ENTER: inicio (¡tu partida sigue ahí!)', {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: '#666688',
     }).setOrigin(0.5).setAlpha(0).setResolution(CONFIG.ZOOM * 2);
     this.tweens.add({ targets: hint, alpha: 1, delay: 6500, duration: 600 });
