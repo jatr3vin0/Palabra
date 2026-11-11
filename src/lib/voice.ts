@@ -25,11 +25,16 @@ export type VoiceStatus = {
   progress: number;
   /** True while kokoro is unavailable and speechSynthesis is speaking. */
   fallback: boolean;
+  /** True while a kokoro line is generating and nothing is audible yet. */
+  generating: boolean;
+  /** True while something is audibly speaking (kokoro clip or browser voice). */
+  speaking: boolean;
 };
 
 type OutMsg =
   | { ev: "progress"; progress: number }
   | { ev: "ready" }
+  | { ev: "warm" }
   | { ev: "error" }
   | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number; playbackRate?: number }
   | { ev: "speakError"; id: number };
@@ -46,13 +51,25 @@ export type SpeakOpts = {
   slow?: boolean;
 };
 
-let status: VoiceStatus = { state: "idle", progress: 0, fallback: false };
+let status: VoiceStatus = { state: "idle", progress: 0, fallback: false, generating: false, speaking: false };
 const listeners = new Set<() => void>();
 let worker: Worker | null = null;
 let workerStarted = false;
 /** In-flight kokoro requests, dropped on stopSpeaking() like the queued turns. */
 let speakId = 0;
 let stopToken = 0;
+/** Bumped on every stopSpeaking: fallback retry timers compare against it so
+ * a cancelled line is never re-spoken. */
+let voiceEpoch = 0;
+/** True once kokoro has produced ANY clip (warm-up included): the natural
+ * voice is hot and speakSpanish hands over from the browser voice to it.
+ * Cold-start fix: until then every line speaks instantly via speechSynthesis. */
+let warmed = false;
+/** Lines already spoken by the browser voice while kokoro was un-warmed —
+ * their late kokoro audio is dropped instead of double-speaking. */
+const fallbackIds = new Set<number>();
+/** Silent warm-up utterances (warmVoice) — never played. */
+const warmIds = new Set<number>();
 let ctx: AudioContext | null = null;
 let currentSource: AudioBufferSourceNode | null = null;
 /** Resolved when the current utterance's audio finishes (music ducking, page
@@ -76,6 +93,7 @@ function clearSpeakWatchdog(): void {
  */
 function fireSpeechEnd(): void {
   clearSpeakWatchdog();
+  if (status.speaking || status.generating) setStatus({ speaking: false, generating: false });
   const cb = speechEndCb;
   speechEndCb = null;
   if (cb) cb();
@@ -105,6 +123,26 @@ export function kokoroReady(): boolean {
   return status.state === "ready";
 }
 
+export type VoicePhase = "generating" | "speaking" | "idle";
+
+/** What the voice is doing RIGHT NOW, for the world's '🔊 …' bubble:
+ * generating = a line was requested but nothing is audible yet. */
+export function voicePhase(): VoicePhase {
+  if (status.speaking) return "speaking";
+  if (status.generating) return "generating";
+  return "idle";
+}
+
+/** Subscribe to voice-phase ticks (compare before acting — every status
+ * change, download progress included, fires listeners). */
+export function onVoicePhase(cb: (phase: VoicePhase) => void): () => void {
+  const wrapped = () => cb(voicePhase());
+  listeners.add(wrapped);
+  return () => {
+    listeners.delete(wrapped);
+  };
+}
+
 function handleWorkerMessage(msg: OutMsg) {
   switch (msg.ev) {
     case "progress":
@@ -113,23 +151,31 @@ function handleWorkerMessage(msg: OutMsg) {
     case "ready":
       setStatus({ state: "ready", progress: 1, fallback: false });
       break;
+    case "warm":
+      // The worker's first post-load warm-up clip is done: kokoro speaks
+      // naturally from here on, so the browser voice hands over.
+      warmed = true;
+      break;
     case "error":
       setStatus({ state: "error", progress: 0, fallback: true });
       break;
-    case "audio":
-      // Audio arrived: the playback path now owns the end callback.
-      if (msg.id > stopToken) {
+    case "audio": {
+      // ANY clip means the natural pipe is hot: hand over from the browser voice.
+      warmed = true;
+      // Warm-up pings and lines the browser voice already spoke are dropped —
+      // they own no callback (their flow was released when they spoke/warmed).
+      const silent = warmIds.delete(msg.id) || fallbackIds.delete(msg.id);
+      if (msg.id > stopToken && !silent) {
         clearSpeakWatchdog();
         playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
-      } else {
-        fireSpeechEnd(); // dropped turn — nothing waits on it
       }
       break;
+    }
     case "speakError":
-      // generation failed: nothing to wait for — release the flow (the browser
-      // voice already spoke this turn while the model was loading, and if
-      // kokoro was ready the worker retries on the next utterance)
-      fireSpeechEnd();
+      // generation failed: nothing to wait for — release the flow, but only
+      // when it is the CURRENT turn (a stale turn's failure must not cut the
+      // newer utterance's callback short)
+      if (msg.id === speakId) fireSpeechEnd();
       break;
   }
 }
@@ -140,6 +186,17 @@ export function primeVoice(): void {
   if (typeof window === "undefined") return;
   if (workerStarted) return;
   workerStarted = true;
+  // Browser voices load asynchronously on a cold device — remember when the
+  // list lands so the next fallback line picks a real Spanish voice.
+  if ("speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.addEventListener("voiceschanged", () => {
+        esVoiceCache = null;
+      });
+    } catch {
+      // older engines: esVoice() re-scans per line anyway
+    }
+  }
   try {
     worker = new Worker(new URL("./voice.worker.ts", import.meta.url), { type: "module" });
     worker.onmessage = (e: MessageEvent<OutMsg>) => handleWorkerMessage(e.data);
@@ -149,6 +206,27 @@ export function primeVoice(): void {
   } catch (err) {
     console.warn("[voice] no worker support, browser speech only", err);
     setStatus({ state: "error", progress: 0, fallback: true });
+  }
+}
+
+/**
+ * TTS cold-start fix (owner play-test 2): the model fetch used to begin only
+ * when a mission frame mounted, so a player walking straight into the world
+ * heard text-only pages and the generic browser voice on menus. Called at
+ * world boot: starts the worker (model fetch begins immediately) and queues a
+ * silent warm-up utterance so the FIRST kokoro generation — voice .bin fetch
+ * included — happens the instant the model lands. The warm clip is never
+ * played; the first real line already speaks via the browser voice meanwhile.
+ */
+export function warmVoice(): void {
+  primeVoice();
+  if (!worker || status.state === "error" || warmed) return;
+  const id = ++speakId;
+  warmIds.add(id);
+  try {
+    worker.postMessage({ op: "speak", id, text: "sí", voice: "ef_dora", speed: 1, pitch: 0 });
+  } catch {
+    warmIds.delete(id); // worker gone — the next real line warms instead
   }
 }
 
@@ -200,6 +278,8 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
       }
       fireSpeechEnd();
     }, 5000 + audio.length / samplingRate * 1000 + 2000);
+    // Audible from here: the world's '🔊 …' bubble can come down.
+    setStatus({ generating: false, speaking: true });
     source.start();
   } catch {
     // audio is a bonus, never a blocker
@@ -207,12 +287,34 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
   }
 }
 
-function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+/** The device's Spanish speechSynthesis voice (re-scanned until one exists —
+ * the list loads asynchronously on a first visit). */
+let esVoiceCache: SpeechSynthesisVoice | null = null;
+function esVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+  if (esVoiceCache) return esVoiceCache;
+  const es = window.speechSynthesis.getVoices().filter((v) => (v.lang || "").toLowerCase().startsWith("es"));
+  if (!es.length) return null;
+  // Prefer an actual Spanish-locale voice, deterministic across lines.
+  esVoiceCache =
+    es.find((v) => /^es[-_](es|mx|us|419)$/i.test(v.lang || "")) ??
+    es.find((v) => /spanish|espa/i.test(v.name)) ??
+    es[0];
+  return esVoiceCache;
+}
+
+/** Instant browser-voice line while kokoro is un-warmed (cold start). Cast
+ * pitch/rate are approximated cheaply (rate/pitch sliders). Returns whether
+ * anything was actually queued. */
+function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
   try {
-    window.speechSynthesis.cancel();
+    const synth = window.speechSynthesis;
+    synth.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = "es-ES";
+    const es = esVoice();
+    if (es) utter.voice = es;
     // the fallback stays single-voice (brief): speed/pitch approximate the cast
     if (opts?.speed != null) {
       utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
@@ -220,22 +322,45 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): void {
       utter.rate = slow ? 0.6 : 0.92;
     }
     if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
+    let started = false;
+    utter.onstart = () => {
+      started = true;
+      setStatus({ generating: false, speaking: true });
+    };
     // Watchdog: some browsers (and headless runners) never fire onend/onerror —
     // speech is a bonus, never a blocker, so fire the callback anyway.
     utter.onend = fireSpeechEnd;
     utter.onerror = fireSpeechEnd;
     window.setTimeout(fireSpeechEnd, 4000 + text.length * 120);
-    const es = window.speechSynthesis.getVoices().find((v) => v.lang?.toLowerCase().startsWith("es"));
-    if (es) utter.voice = es;
-    window.speechSynthesis.speak(utter);
+    // Chrome can silently drop an utterance queued right after cancel() — the
+    // exact cold-start symptom (page 1 spoke, page 2 text-only). If the engine
+    // never started it, queue it once more (unless the line was stopped since).
+    const epoch = voiceEpoch;
+    synth.speak(utter);
+    window.setTimeout(() => {
+      if (!started && !synth.speaking && !synth.pending && voiceEpoch === epoch) {
+        try {
+          synth.speak(utter);
+        } catch {
+          // nothing more to try — the flow watchdog already released it
+        }
+      }
+    }, 350);
+    return true;
   } catch {
     // speech is a bonus, never a blocker
+    return false;
   }
 }
 
 /** Stop whatever the voice is saying (browser voice + any in-flight kokoro turn). */
 export function stopSpeaking(): void {
   stopToken = speakId;
+  voiceEpoch++;
+  // Bookkeeping prune: turns at or below the stop token are cancelled — their
+  // late audio is dropped anyway (see handleWorkerMessage).
+  for (const id of warmIds) if (id <= stopToken) warmIds.delete(id);
+  for (const id of fallbackIds) if (id <= stopToken) fallbackIds.delete(id);
   // Tell the worker to drop the queued turn(s): kokoro generates serialized at
   // ~real-time per line, so without this a stale page's generation kept the
   // pipeline busy and every later dialogue page arrived late or never.
@@ -266,9 +391,11 @@ export function stopSpeaking(): void {
 
 /**
  * Speak Spanish with a per-character voice (brief: `speak` seam carries
- * voiceId+speed+pitch). kokoro (natural cast voice) once loaded;
- * speechSynthesis (es-ES, speed/pitch approximated) while the model is
- * downloading or if it failed. Calls after a stopSpeaking() are dropped.
+ * voiceId+speed+pitch). Cold-start guarantee (owner play-test 2): while kokoro
+ * is un-warmed — model downloading or first generation still pending — the
+ * browser's Spanish voice speaks the line IMMEDIATELY (cast pitch/rate
+ * approximated), and kokoro takes over the moment its first clip lands. Calls
+ * after a stopSpeaking() are dropped.
  *
  * `opts` may be `true` (legacy "slow") and `onEnd` fires when the utterance
  * finishes (or is cut) — used for music ducking and sequential lines.
@@ -282,15 +409,27 @@ export function speakSpanish(
   stopSpeaking();
   const id = ++speakId;
   speechEndCb = onEnd ?? null;
-  if (status.state === "ready" && worker) {
-    worker.postMessage({
-      op: "speak",
-      id,
-      text,
-      voice: o.voice ?? "ef_dora",
-      speed: o.speed ?? 0.9,
-      pitch: o.pitch ?? 0,
-    });
+  const kokoroNow = status.state === "ready" && worker != null && warmed;
+  if (worker && status.state !== "error") {
+    // Queue the line for kokoro in every healthy state: while the model is
+    // still loading the turns no-op, and once loaded the newest line generates
+    // immediately (warming the pipe and landing in the clip cache). Audio for
+    // a browser-voiced line is dropped on arrival — nothing double-speaks.
+    try {
+      worker.postMessage({
+        op: "speak",
+        id,
+        text,
+        voice: o.voice ?? "ef_dora",
+        speed: o.speed ?? 0.9,
+        pitch: o.pitch ?? 0,
+      });
+    } catch {
+      // worker gone — the browser voice covers this line
+    }
+  }
+  if (kokoroNow) {
+    setStatus({ generating: true, speaking: false });
     // Watchdog: if the worker never replies (stalled/offline model), release
     // the flow — speech is a bonus, never a blocker. Generous window covers
     // generation plus playback of a normal line.
@@ -298,7 +437,14 @@ export function speakSpanish(
     speakWatchdog = window.setTimeout(fireSpeechEnd, 9000 + text.length * 160);
     return;
   }
-  // Not ready yet: never wait for it — the browser voice speaks now and the
-  // next utterances get kokoro as soon as the worker reports ready.
-  speakFallback(text, o.slow ?? false, o);
+  // Un-warmed: never wait for it — the browser Spanish voice speaks now and
+  // every later utterance gets kokoro as soon as its first clip arrives.
+  if (worker && status.state !== "error") fallbackIds.add(id);
+  setStatus({ generating: true }); // nothing audible yet: show the 🔊 bubble
+  const spoke = speakFallback(text, o.slow ?? false, o);
+  if (!spoke) {
+    fallbackIds.delete(id);
+    setStatus({ generating: false });
+    fireSpeechEnd(); // nothing audible exists: release the flow immediately
+  }
 }

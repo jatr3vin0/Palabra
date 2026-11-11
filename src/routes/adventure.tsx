@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { StatsBar, useProgress } from "~/components/Chrome";
 import { FrameGame, type MissionResult } from "~/components/FrameGame";
-import { stopSpeaking, speakSpanish } from "~/lib/voice";
+import { onVoicePhase, stopSpeaking, speakSpanish, warmVoice } from "~/lib/voice";
 import { castParams, type VoiceKey } from "~/lib/voiceCast";
 import type { Progress } from "~/lib/storage";
 
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/adventure")({
  * Bridge (see public/eldoria/src/palabra.js):
  *   world → app : palabra:hello | palabra:speak | palabra:openMission
  *   app → world : palabra:context | palabra:missionOpen | palabra:missionResult
- *                 | palabra:duck
+ *                 | palabra:duck | palabra:voiceState
  * Learning records (XP/mastery/misses) live in the app's storage.ts — the
  * world only keeps Eldoria flags for its own dialogue gating.
  */
@@ -76,6 +76,27 @@ function Adventure() {
     },
     [postTo],
   );
+
+  // ── TTS cold-start fix (owner play-test 2) ─────────────────────────────
+  // The kokoro worker used to start only when a mission frame mounted, so a
+  // player walking straight into the world got text-only pages and the generic
+  // browser voice on menus. warmVoice() starts the model fetch + the silent
+  // warm-up utterance at WORLD BOOT, and every voice-phase tick is mirrored
+  // into the world so the dialogue box can show '🔊 …' while a line is
+  // generating and not yet audible.
+  useEffect(() => {
+    warmVoice();
+  }, []);
+
+  useEffect(() => {
+    let last: string | null = null;
+    const post = (phase: string) => {
+      if (phase === last) return;
+      last = phase;
+      postTo({ type: "palabra:voiceState", phase });
+    };
+    return onVoicePhase(post);
+  }, [postTo]);
 
   // ── world → app messages ────────────────────────────────────────────────
   useEffect(() => {

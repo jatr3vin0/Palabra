@@ -8,6 +8,9 @@
 //   app → Eldoria : 'palabra:context'      (learner englishLevel at boot)
 //                   'palabra:missionOpen'  (freeze + duck before the overlay)
 //                   'palabra:missionResult'(flags, reward, unfreeze, refocus)
+//                   'palabra:voiceState'   (generating | speaking | idle — the
+//                                           dialogue box shows '🔊 …' while a
+//                                           line is pending and not audible)
 //
 // Learning data never lands here: XP/mastery stay in the app's storage layer;
 // the world only keeps Eldoria flags (mission_<id>_<step> convention) so the
@@ -139,6 +142,14 @@ window.addEventListener('message', (e) => {
       break;
     case 'palabra:duck':
       Palabra.duck(!!msg.on);
+      break;
+    case 'palabra:voiceState':
+      // TTS cold-start: the app reports what the voice pipe is doing with the
+      // current line — 'generating' = requested but nothing audible yet.
+      if (window.game && window.game.scene) {
+        const ui = window.game.scene.getScene('UI');
+        if (ui && ui.voiceState) ui.voiceState(msg.phase);
+      }
       break;
     default:
       break;

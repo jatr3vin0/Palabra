@@ -8,6 +8,7 @@ window.UIScene = class UIScene extends Phaser.Scene {
     this.hudItems = [];
     this.dialogue = null;
     this.bannerGroup = null;
+    this.voicePing = null;
 
     // event-driven (a sub-frame keypress is invisible to JustDown polling)
     this.advancePressed = false;
@@ -179,9 +180,41 @@ window.UIScene = class UIScene extends Phaser.Scene {
     if (!this.dialogue) return;
     this.dialogue.group.destroy(true);
     this.dialogue = null;
+    this.hideVoicePing();
     if (!silent) {
       // the voice replaced the menu sfx as the page-close cue
       this.game.events.emit('dialogue:done');
+    }
+  }
+
+  // ── TTS cold-start feedback (owner play-test 2) ────────────────────────
+  // The app mirrors each line's voice phase here (palabra.js
+  // 'palabra:voiceState'). While a line is GENERATING — model downloading,
+  // first kokoro generation, or a pending browser-voice retry — nothing is
+  // audible yet, so a small pulsing '🔊 …' floats just above the dialogue
+  // box: nobody reads past text that has not been spoken. 'speaking'/'idle'
+  // take it back down.
+  voiceState(phase) {
+    if (phase !== 'generating' || !this.dialogue) {
+      this.hideVoicePing();
+      return;
+    }
+    if (!this.voicePing) {
+      // Game font first (guaranteed loaded in-world); the speaker emoji falls
+      // through to the system emoji font on real devices.
+      this.voicePing = this.add.text(147, 137, '🔊 ...', {
+        fontFamily: 'PressStart, Arial, sans-serif',
+        fontSize: '8px',
+        color: '#9fd8ff',
+      }).setShadow(1, 1, '#000000', 0).setResolution(CONFIG.ZOOM * 2).setDepth(21);
+      this.tweens.add({ targets: this.voicePing, alpha: 0.35, duration: 500, yoyo: true, repeat: -1 });
+    }
+  }
+
+  hideVoicePing() {
+    if (this.voicePing) {
+      this.voicePing.destroy();
+      this.voicePing = null;
     }
   }
 

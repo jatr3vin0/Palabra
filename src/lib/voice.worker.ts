@@ -7,7 +7,8 @@
  * Protocol in:  { op: "init" }
  *               { op: "speak", id, text, voice?, speed?, pitch? }
  *               { op: "stop", id }
- * Protocol out: { ev: "progress", progress } · { ev: "ready" } · { ev: "error" }
+ * Protocol out: { ev: "progress", progress } · { ev: "ready" } · { ev: "warm" }
+ *               { ev: "error" }
  *               { ev: "audio", id, audio: Float32Array, samplingRate, playbackRate }
  *               { ev: "speakError", id }
  *
@@ -107,6 +108,7 @@ type InMsg =
 type OutMsg =
   | { ev: "progress"; progress: number }
   | { ev: "ready" }
+  | { ev: "warm" }
   | { ev: "error" }
   | { ev: "audio"; id: number; audio: Float32Array; samplingRate: number; playbackRate?: number }
   | { ev: "speakError"; id: number };
@@ -158,12 +160,15 @@ async function init(): Promise<void> {
     });
     post({ ev: "ready" });
     // Preload every Spanish voice: kokoro fetches the .bin lazily on first
-    // use, so a one-word warm-up per voice lands all three in cache now.
+    // use, so a one-word warm-up per voice lands all three in cache now. The
+    // FIRST success also posts {ev:"warm"} — the page hands over from the
+    // browser voice to kokoro from that moment (cold-start handover).
     void (async () => {
       for (const v of SPANISH_VOICES) {
         try {
           const ids = tts!.tokenizer("sí", { truncation: true }).input_ids;
           await tts!.generate_from_ids(ids, { voice: v, speed: 1 });
+          post({ ev: "warm" });
         } catch (err) {
           console.warn("[voice.worker] voice warm-up failed: " + v, err);
         }
