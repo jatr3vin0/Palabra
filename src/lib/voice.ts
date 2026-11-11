@@ -14,6 +14,16 @@
  * The game NEVER waits for the model: while kokoro loads — or if the download
  * fails — speechSynthesis with a Spanish voice speaks instead, and kokoro
  * takes over the moment it is ready. See voice.worker.ts for the other half.
+ *
+ * INSTANT-FIRST (owner P0, 2026-11-11): EVERY line is spoken by the device's
+ * Spanish voice immediately — kokoro never gates audibility. kokoro only
+ * SUBSTITUTES a clip that is already cached (the worker probes IndexedDB
+ * before its generation queue) or one that completes inside a bounded window
+ * (SUBSTITUTE_WINDOW_MS); after the window the device voice owns the line and
+ * a late clip is dropped, never double-spoken. No UI waits on speech end:
+ * every onEnd chain runs under watchdogs, and end callbacks are sequence-
+ * guarded so a stale end from a replaced line can never cut the current one.
+ * See voice.worker.ts for the other half.
  */
 
 import { useSyncExternalStore } from "react";
@@ -64,6 +74,29 @@ let stopToken = 0;
 /** Bumped on every stopSpeaking: fallback retry timers compare against it so
  * a cancelled line is never re-spoken. */
 let voiceEpoch = 0;
+/** Monotonic line sequence, bumped at the TOP of every speakSpanish. Every
+ * watchdog, utterance handler and audio-source handler captures the seq it
+ * belongs to and compares before firing — a stale end from a replaced line
+ * can never fire the CURRENT line's callback (or cut a chain mid-flight). */
+let lineSeq = 0;
+/** Instant-first substitution window (owner P0): a kokoro clip replaces the
+ * speaking device voice only if it is already cached or lands within this
+ * bound; after it, the device voice owns the line and the late clip is
+ * dropped. 2.5 s: shorter than the ~real-time synthesis of any sentence,
+ * long enough to catch word-length lines and cache hits. */
+const SUBSTITUTE_WINDOW_MS = 2500;
+/** Ids whose kokoro clip may still substitute the (already speaking) device
+ * voice. Expiry moves the id to fallbackIds. */
+const substIds = new Set<number>();
+/** The utterance the device voice is speaking right now. Substitution detaches
+ * its end handlers BEFORE cancelling — synth.cancel() would otherwise fire
+ * onend and cut the onEnd chain before the natural clip even starts. */
+let activeUtter: SpeechSynthesisUtterance | null = null;
+/** True once the current line handed over to kokoro (device voice cancelled). */
+let substDone = false;
+/** True once the device voice accepted the current line — kokoro failures then
+ * never re-speak it (no double voice); the flow watchdog owns the release. */
+let deviceSpeaking = false;
 /** True once kokoro has produced ANY clip (warm-up included): the natural
  * voice is hot and speakSpanish hands over from the browser voice to it.
  * Cold-start fix: until then every line speaks instantly via speechSynthesis. */
@@ -84,15 +117,13 @@ let currentSource: AudioBufferSourceNode | null = null;
  * flows). Fired once per speakSpanish call that produced audio. */
 type EndCb = () => void;
 let speechEndCb: EndCb | null = null;
-/** Watchdog timer for the in-flight kokoro turn (see speakSpanish). */
+/** Watchdog for the voiceless-device path (kokoro is the line's only voice). */
 let speakWatchdog: number | null = null;
 /** Flow watchdog for browser-fallback lines (speakFallback) — re-armed with
  * every auto-rescue attempt so the flow waits for audio to actually start. */
 let flowWatchdog: number | null = null;
-/** The current kokoro turn's line, kept so a generation failure (speakError)
- * can be rescued with the browser voice instead of leaving the player with a
- * silently dropped line (live-build defect, 2026-11-11). */
-let inflight: { text: string; slow: boolean; opts?: SpeakOpts } | null = null;
+/** Substitution-window timer: flips the id from substIds to fallbackIds. */
+let substTimer: number | null = null;
 
 function clearSpeakWatchdog(): void {
   if (speakWatchdog != null) {
@@ -102,6 +133,10 @@ function clearSpeakWatchdog(): void {
   if (flowWatchdog != null) {
     window.clearTimeout(flowWatchdog);
     flowWatchdog = null;
+  }
+  if (substTimer != null) {
+    window.clearTimeout(substTimer);
+    substTimer = null;
   }
 }
 
@@ -113,7 +148,8 @@ function clearSpeakWatchdog(): void {
 function fireSpeechEnd(): void {
   clearSpeakWatchdog();
   if (status.speaking || status.generating) setStatus({ speaking: false, generating: false });
-  inflight = null;
+  activeUtter = null;
+  substDone = false;
   const cb = speechEndCb;
   speechEndCb = null;
   if (cb) cb();
@@ -194,29 +230,32 @@ function handleWorkerMessage(msg: OutMsg) {
       const silent = warmIds.delete(msg.id) || fallbackIds.delete(msg.id);
       if (msg.id > stopToken && !silent) {
         clearSpeakWatchdog();
-        playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
+        if (substIds.delete(msg.id)) {
+          // Instant-first substitution: the clip was cached or landed inside
+          // the bounded window — the natural voice takes the line over from
+          // the (already speaking) device voice.
+          substituteClip(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
+        } else {
+          playAudio(msg.audio, msg.samplingRate, msg.playbackRate ?? 1);
+        }
       }
       break;
     }
     case "speakError":
-      // generation failed: never leave the current line as a silently dropped
-      // 'generating' bubble — rescue it with the browser voice (live defect:
-      // every kokoro line died here with phonemize broken and the fallback
-      // gated off, so the owner heard nothing at all).
+      // generation failed: instant-first means the device voice already
+      // carries (or already carried) the line — never re-speak it. Only the
+      // voiceless-device lines (kokoro was their only voice) are released
+      // here; everything else is held by its own flow watchdog.
       console.error(
-        "[voice] kokoro line failed — rescuing with the browser voice",
+        "[voice] kokoro line failed — the device voice carries the line",
         msg.reason ?? "generation",
       );
-      if (msg.id === speakId && inflight && !status.speaking) {
-        const { text, slow, opts } = inflight;
-        inflight = null;
+      substIds.delete(msg.id);
+      fallbackIds.add(msg.id);
+      if (msg.id === speakId && !deviceSpeaking) {
         clearSpeakWatchdog();
-        setStatus({ generating: false });
-        const spoke = speakFallback(text, slow, opts);
-        if (!spoke) fireSpeechEnd();
-        return;
+        fireSpeechEnd(); // nothing audible exists or is coming: release the flow
       }
-      if (msg.id === speakId) fireSpeechEnd();
       break;
   }
 }
@@ -299,6 +338,7 @@ function audioContext(): AudioContext | null {
 }
 
 function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1): void {
+  const seq = lineSeq;
   const ac = audioContext();
   if (!ac) {
     // No AudioContext: nothing audible to wait for — release the flow.
@@ -317,7 +357,9 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
     currentSource = source;
     source.onended = () => {
       if (currentSource === source) currentSource = null;
-      fireSpeechEnd();
+      // seq guard: a stale source end (line already replaced) must never fire
+      // the CURRENT line's callback.
+      if (seq === lineSeq) fireSpeechEnd();
     };
     // Watchdog: a suspended AudioContext (no output device) never ends — never block the game.
     window.setTimeout(() => {
@@ -325,7 +367,7 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
         try { source.stop(); } catch { /* already stopped */ }
         currentSource = null;
       }
-      fireSpeechEnd();
+      if (seq === lineSeq) fireSpeechEnd();
     }, 5000 + audio.length / samplingRate * 1000 + 2000);
     // Audible from here: the world's '🔊 …' bubble can come down.
     setStatus({ generating: false, speaking: true });
@@ -334,6 +376,30 @@ function playAudio(audio: Float32Array, samplingRate: number, playbackRate = 1):
     // audio is a bonus, never a blocker
     fireSpeechEnd();
   }
+}
+
+/**
+ * Instant-first substitution (owner P0): the kokoro clip — cached, or
+ * generated within SUBSTITUTE_WINDOW_MS — replaces the device voice mid-line.
+ * The utterance's end handlers are detached BEFORE the cancel so synth.cancel()
+ * can never fire onend and cut the onEnd chain ahead of the clip.
+ */
+function substituteClip(audio: Float32Array, samplingRate: number, playbackRate: number): void {
+  const u = activeUtter;
+  if (u) {
+    u.onend = null;
+    u.onerror = null;
+  }
+  activeUtter = null;
+  substDone = true;
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // ignore
+    }
+  }
+  playAudio(audio, samplingRate, playbackRate);
 }
 
 /** The device's Spanish speechSynthesis voice (re-scanned until one exists —
@@ -371,11 +437,13 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
     const synth = window.speechSynthesis;
     synth.cancel();
     const epoch = voiceEpoch;
+    const seq = lineSeq;
     let started = false;
     // (Re)queue the line: a FRESH utterance each time — engines sometimes
     // refuse a re-used one after cancel(). `speaking`/`pending` guards stop a
     // rescue from stacking on top of an attempt that did start.
     const queue = () => {
+      if (seq !== lineSeq) return; // this line was already replaced
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = "es-ES";
       const es = esVoice();
@@ -390,13 +458,22 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
       }
       if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
       utter.onstart = () => {
+        if (seq !== lineSeq) return;
         started = true;
         setStatus({ generating: false, speaking: true });
       };
+      const utterEnd = () => {
+        // seq guard: a stale end (line replaced / cancelled) never fires the
+        // current line's callback — that is what froze the owner's screens.
+        if (seq !== lineSeq) return;
+        if (activeUtter === utter) activeUtter = null;
+        fireSpeechEnd();
+      };
       // Watchdog: some browsers (and headless runners) never fire onend/onerror —
       // speech is a bonus, never a blocker, so fire the callback anyway.
-      utter.onend = fireSpeechEnd;
-      utter.onerror = fireSpeechEnd;
+      utter.onend = utterEnd;
+      utter.onerror = utterEnd;
+      activeUtter = utter;
       try {
         synth.speak(utter);
       } catch {
@@ -405,10 +482,12 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
     };
     const armFlowWatchdog = () => {
       if (flowWatchdog != null) window.clearTimeout(flowWatchdog);
-      flowWatchdog = window.setTimeout(fireSpeechEnd, 4000 + text.length * 120);
+      flowWatchdog = window.setTimeout(() => {
+        if (seq === lineSeq) fireSpeechEnd();
+      }, 4000 + text.length * 120);
     };
     const rescue = () => {
-      if (started || voiceEpoch !== epoch) return;
+      if (seq !== lineSeq || substDone || started || voiceEpoch !== epoch) return;
       if (synth.speaking || synth.pending) return;
       queue(); // auto-rescue: exactly what the 🔊 re-speak button does
       armFlowWatchdog();
@@ -444,6 +523,7 @@ export function stopSpeaking(): void {
   // late audio is dropped anyway (see handleWorkerMessage).
   for (const id of warmIds) if (id <= stopToken) warmIds.delete(id);
   for (const id of fallbackIds) if (id <= stopToken) fallbackIds.delete(id);
+  for (const id of substIds) if (id <= stopToken) substIds.delete(id);
   // Tell the worker to drop the queued turn(s): kokoro generates serialized at
   // ~real-time per line, so without this a stale page's generation kept the
   // pipeline busy and every later dialogue page arrived late or never.
@@ -469,19 +549,26 @@ export function stopSpeaking(): void {
     }
     currentSource = null;
   }
+  // The cancelled utterance's onend goes stale (seq guard) — drop the handle.
+  activeUtter = null;
+  substDone = false;
   fireSpeechEnd();
 }
 
 /**
  * Speak Spanish with a per-character voice (brief: `speak` seam carries
- * voiceId+speed+pitch). Cold-start guarantee (owner play-test 2): while kokoro
- * is un-warmed — model downloading or first generation still pending — the
- * browser's Spanish voice speaks the line IMMEDIATELY (cast pitch/rate
- * approximated), and kokoro takes over the moment its first clip lands. Calls
- * after a stopSpeaking() are dropped.
+ * voiceId+speed+pitch). INSTANT-FIRST (owner P0, 2026-11-11): the device's
+ * Spanish voice speaks EVERY line immediately — kokoro never gates audibility
+ * and no UI ever waits on speech end (every onEnd runs under a watchdog, and
+ * end callbacks are sequence-guarded so a replaced line's late end cannot cut
+ * the current chain). kokoro's natural voice only SUBSTITUTES the speaking
+ * device voice when its clip is already cached (the worker probes IndexedDB
+ * before the generation queue) or completes within SUBSTITUTE_WINDOW_MS; after
+ * the window the clip is dropped, never double-spoken. Calls after a
+ * stopSpeaking() are dropped.
  *
- * `opts` may be `true` (legacy "slow") and `onEnd` fires when the utterance
- * finishes (or is cut) — used for music ducking and sequential lines.
+ * `opts` may be `true` (legacy "slow") and `onEnd` fires when the line finishes
+ * (or is cut) — used for music ducking and sequential lines.
  */
 export function speakSpanish(
   text: string,
@@ -491,15 +578,54 @@ export function speakSpanish(
   const o: SpeakOpts = typeof opts === "object" && opts !== null ? opts : { slow: opts === true };
   // castParams() hands over { voiceId, speed, pitch } — accept that shape too
   if (!o.voice && o.voiceId) o.voice = o.voiceId;
+  // Sequence FIRST: every handler/watchdog of the previous line goes stale the
+  // moment this line begins — a late end can never fire the new chain's slot.
+  lineSeq++;
+  const seq = lineSeq;
   stopSpeaking();
+  substDone = false;
+  deviceSpeaking = false;
   const id = ++speakId;
   speechEndCb = onEnd ?? null;
-  const kokoroNow = status.state === "ready" && worker != null && warmed;
+  // 1) INSTANT: the device Spanish voice speaks the line now. Watchdogs
+  // (flowWatchdog + utter.onend, both seq-guarded) own the release.
+  const spoke = speakFallback(text, o.slow ?? false, o);
+  deviceSpeaking = spoke;
+  if (!spoke) {
+    // No device voice exists: kokoro audio (when the worker is healthy) is
+    // this line's ONLY voice — queue it and bound the wait with a watchdog.
+    if (worker && status.state !== "error") {
+      setStatus({ generating: true }); // nothing audible yet: show the 🔊 bubble
+      try {
+        worker.postMessage({
+          op: "speak",
+          id,
+          text,
+          voice: o.voice ?? "ef_dora",
+          speed: o.speed ?? 0.9,
+          pitch: o.pitch ?? 0,
+        });
+      } catch {
+        setStatus({ generating: false });
+        fireSpeechEnd(); // worker gone, no device voice: release immediately
+        return;
+      }
+      clearSpeakWatchdog();
+      speakWatchdog = window.setTimeout(() => {
+        if (seq === lineSeq) fireSpeechEnd();
+      }, 9000 + text.length * 160);
+      return;
+    }
+    setStatus({ generating: false });
+    fireSpeechEnd(); // nothing audible exists: release the flow immediately
+    return;
+  }
+  // 2) kokoro SUBSTITUTION — never a wait: only a clip already cached (the
+  // worker probes the cache before its generation queue) or one that completes
+  // within the bounded window replaces the speaking device voice. After the
+  // window the id flips to fallbackIds and any late clip is dropped.
   if (worker && status.state !== "error") {
-    // Queue the line for kokoro in every healthy state: while the model is
-    // still loading the turns no-op, and once loaded the newest line generates
-    // immediately (warming the pipe and landing in the clip cache). Audio for
-    // a browser-voiced line is dropped on arrival — nothing double-speaks.
+    substIds.add(id);
     try {
       worker.postMessage({
         op: "speak",
@@ -510,27 +636,12 @@ export function speakSpanish(
         pitch: o.pitch ?? 0,
       });
     } catch {
-      // worker gone — the browser voice covers this line
+      substIds.delete(id); // worker gone — the device voice already spoke it
     }
-  }
-  if (kokoroNow) {
-    setStatus({ generating: true, speaking: false });
-    inflight = { text, slow: o.slow ?? false, opts: o };
-    // Watchdog: if the worker never replies (stalled/offline model), release
-    // the flow — speech is a bonus, never a blocker. Generous window covers
-    // generation plus playback of a normal line.
     clearSpeakWatchdog();
-    speakWatchdog = window.setTimeout(fireSpeechEnd, 9000 + text.length * 160);
-    return;
-  }
-  // Un-warmed: never wait for it — the browser Spanish voice speaks now and
-  // every later utterance gets kokoro as soon as its first clip arrives.
-  if (worker && status.state !== "error") fallbackIds.add(id);
-  setStatus({ generating: true }); // nothing audible yet: show the 🔊 bubble
-  const spoke = speakFallback(text, o.slow ?? false, o);
-  if (!spoke) {
-    fallbackIds.delete(id);
-    setStatus({ generating: false });
-    fireSpeechEnd(); // nothing audible exists: release the flow immediately
+    substTimer = window.setTimeout(() => {
+      if (seq !== lineSeq) return;
+      if (substIds.delete(id)) fallbackIds.add(id);
+    }, SUBSTITUTE_WINDOW_MS);
   }
 }

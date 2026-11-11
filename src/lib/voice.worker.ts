@@ -232,6 +232,51 @@ async function init(): Promise<void> {
   }
 }
 
+const cacheKey = (voice: string, speed: number, pitch: number, text: string): string =>
+  `${voice}|${speed.toFixed(2)}|${pitch}|${text}`;
+
+/** One uncached generation turn on the serialized chain (~real-time). Cached
+ * lines never reach here — the onmessage probe posts them immediately. */
+async function generate(
+  msg: { id: number; text: string },
+  voice: string,
+  speed: number,
+  pitch: number,
+  r: number,
+): Promise<void> {
+  if (!tts || !espeakFactory) return;
+  if (msg.id <= cancelledBelow) return;
+  const key = cacheKey(voice, speed, pitch, msg.text);
+  try {
+    // Re-check: a concurrent probe/cachePut may have landed the clip already.
+    const cached = await cacheGet(key);
+    if (msg.id <= cancelledBelow) return;
+    if (cached) {
+      post({ ev: "audio", id: msg.id, audio: cached, samplingRate: 24000, playbackRate: r }, [
+        cached.buffer,
+      ]);
+      return;
+    }
+    const pieces = await phonemizeEs(msg.text);
+    if (msg.id <= cancelledBelow) return;
+    const phonemes = pieces.join(" ").trim();
+    const { input_ids } = tts.tokenizer(phonemes, { truncation: true });
+    const out = await tts.generate_from_ids(input_ids, { voice, speed: speed / r });
+    if (msg.id <= cancelledBelow) return;
+    void cachePut(key, out.audio);
+    post({ ev: "audio", id: msg.id, audio: out.audio, samplingRate: out.sampling_rate, playbackRate: r }, [
+      out.audio.buffer,
+    ]);
+  } catch (err) {
+    console.warn("[voice.worker] kokoro generation failed", err);
+    post({
+      ev: "speakError",
+      id: msg.id,
+      reason: String((err as Error)?.message ?? err).slice(0, 160),
+    });
+  }
+}
+
 sw.onmessage = (e: MessageEvent<InMsg>) => {
   const msg = e.data;
   if (msg.op === "init") {
@@ -242,42 +287,37 @@ sw.onmessage = (e: MessageEvent<InMsg>) => {
     cancelledBelow = Math.max(cancelledBelow, msg.id);
     return;
   }
-  // speak — queued after any in-flight turn; stale turns are dropped.
-  chain = chain.then(async () => {
-    if (msg.id <= cancelledBelow || !tts || !espeakFactory || msg.op !== "speak") return;
-    const voice = msg.voice ?? DEFAULT_VOICE;
-    const speed = msg.speed ?? DEFAULT_SPEED;
-    const pitch = msg.pitch ?? 0;
-    // pitch lift/depth via AudioBufferSourceNode.playbackRate = 2^(n/12);
-    // kokoro generates at speed/r so the audible duration stays `speed`
-    const r = pitch ? Math.pow(2, pitch / 12) : 1;
-    const key = `${voice}|${speed.toFixed(2)}|${pitch}|${msg.text}`;
-    try {
-      const cached = await cacheGet(key);
-      if (msg.id <= cancelledBelow) return;
-      if (cached) {
-        post({ ev: "audio", id: msg.id, audio: cached, samplingRate: 24000, playbackRate: r }, [
-          cached.buffer,
-        ]);
-        return;
+  // speak — instant-first (owner P0): the IndexedDB cache probe runs OFF the
+  // generation chain (a few ms), so a repeated line's clip posts immediately
+  // and the page's speaking device voice is substituted at once. Only UNCACHED
+  // lines join the serialized ~real-time synthesis queue; the page drops
+  // whatever arrives after its bounded substitution window, so late clips can
+  // never double-speak.
+  if (msg.op !== "speak") return;
+  const voice = msg.voice ?? DEFAULT_VOICE;
+  const speed = msg.speed ?? DEFAULT_SPEED;
+  const pitch = msg.pitch ?? 0;
+  // pitch lift/depth via AudioBufferSourceNode.playbackRate = 2^(n/12);
+  // kokoro generates at speed/r so the audible duration stays `speed`
+  const r = pitch ? Math.pow(2, pitch / 12) : 1;
+  void (async () => {
+    let cached: Float32Array | null = null;
+    if (tts && espeakFactory) {
+      try {
+        cached = await cacheGet(cacheKey(voice, speed, pitch, msg.text));
+      } catch {
+        cached = null;
       }
-      const pieces = await phonemizeEs(msg.text);
-      if (msg.id <= cancelledBelow) return;
-      const phonemes = pieces.join(" ").trim();
-      const { input_ids } = tts.tokenizer(phonemes, { truncation: true });
-      const out = await tts.generate_from_ids(input_ids, { voice, speed: speed / r });
-      if (msg.id <= cancelledBelow) return;
-      void cachePut(key, out.audio);
-      post({ ev: "audio", id: msg.id, audio: out.audio, samplingRate: out.sampling_rate, playbackRate: r }, [
-        out.audio.buffer,
-      ]);
-    } catch (err) {
-      console.warn("[voice.worker] kokoro generation failed", err);
-      post({
-        ev: "speakError",
-        id: msg.id,
-        reason: String((err as Error)?.message ?? err).slice(0, 160),
-      });
     }
+    if (msg.id <= cancelledBelow) return;
+    if (cached) {
+      post({ ev: "audio", id: msg.id, audio: cached, samplingRate: 24000, playbackRate: r }, [
+        cached.buffer,
+      ]);
+      return;
+    }
+    chain = chain.then(() => generate(msg, voice, speed, pitch, r));
+  })().catch(() => {
+    // the probe never blocks a line: the device voice already spoke it
   });
 };

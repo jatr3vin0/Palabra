@@ -110,22 +110,59 @@ function ScriptureMoment({ verse, onDone }: { verse?: SessionVerse; onDone: () =
     [verse],
   );
   const [stage, setStage] = useState<"listen" | "ask">("listen");
-  const alive = useRef(true);
+  /** Token of the live chain: bumped by run(), tap-continue and unmount — a
+   * callback from a replaced chain is a no-op (no late line ever speaks over
+   * the ask screen). */
+  const runToken = useRef(0);
+  /** Outer chain watchdog: speech end may never fire on some engines — the
+   * moment opens the ask on a bound, never on a promise. */
+  const chainWatch = useRef<number | null>(null);
+  const MOMENT_WATCHDOG_MS = 30000;
+
+  const release = useCallback(() => {
+    runToken.current += 1; // no pending chain callback survives the ask
+    if (chainWatch.current != null) {
+      window.clearTimeout(chainWatch.current);
+      chainWatch.current = null;
+    }
+    setStage("ask");
+  }, []);
+
+  // Tap-to-continue (owner P0: the verse moment FROZE on a lost speech end):
+  // the player opens the ask themselves and the in-flight line is silenced.
+  const continueNow = useCallback(() => {
+    runToken.current += 1; // pending chain callbacks die first…
+    stopSpeaking(); // …then the line mid-flight is silenced
+    release();
+  }, [release]);
+
   const run = useCallback(() => {
-    alive.current = true;
+    runToken.current += 1;
+    const token = runToken.current;
     setStage("listen");
-    speakSpanish(SCRIPTURE_MOMENT.enter.es, castParams("scripture"), () =>
-      speakSpanish(v.refSay, castParams("scripture"), () =>
-        speakSpanish(v.verse, castParams("scripture"), () => {
-          if (alive.current) setStage("ask");
+    if (chainWatch.current != null) window.clearTimeout(chainWatch.current);
+    chainWatch.current = window.setTimeout(() => {
+      if (runToken.current === token) release();
+    }, MOMENT_WATCHDOG_MS);
+    const step = (text: string, next: () => void) =>
+      speakSpanish(text, castParams("scripture"), () => {
+        if (runToken.current !== token) return; // replaced by a re-run/tap
+        next();
+      });
+    step(SCRIPTURE_MOMENT.enter.es, () =>
+      step(v.refSay, () =>
+        step(v.verse, () => {
+          if (runToken.current === token) release();
         }),
       ),
     );
-  }, [v]);
+  }, [v, release]);
+
   useEffect(() => {
     run();
     return () => {
-      alive.current = false;
+      runToken.current += 1; // unmount: pending chain callbacks die
+      if (chainWatch.current != null) window.clearTimeout(chainWatch.current);
       stopSpeaking();
     };
   }, [run]);
@@ -151,14 +188,25 @@ function ScriptureMoment({ verse, onDone }: { verse?: SessionVerse; onDone: () =
           </button>
         </>
       ) : (
-        <button
-          type="button"
-          onClick={run}
-          aria-label={SCRIPTURE_MOMENT.again.es}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
-        >
-          🔊
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={run}
+            aria-label={SCRIPTURE_MOMENT.again.es}
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
+          >
+            🔊
+          </button>
+          {/* Tap-to-continue: the moment can never hold the round hostage
+              waiting on speech — the player opens the ask themselves. */}
+          <button
+            type="button"
+            onClick={continueNow}
+            className="rounded-2xl bg-amber-500 px-6 py-3 text-base font-extrabold uppercase tracking-wide text-white shadow-[0_4px_0_0_#B45309] transition hover:bg-amber-400 active:translate-y-[2px] active:shadow-[0_2px_0_0_#B45309]"
+          >
+            Continuar ▶
+          </button>
+        </div>
       )}
     </div>
   );
@@ -1727,8 +1775,10 @@ function FrameShell({
           </div>
           <StatsBar p={p} />
         </div>
-        {!embedded && (
+        {(!embedded || voice.state === "loading") && (
           <div className="mx-auto max-w-2xl px-4 pb-2">
+            {/* First-download indicator (owner P0): the ~86 MB model fetch shows
+            its progress pill EVERYWHERE — embedded mission overlays included. */}
             <VoicePill state={voice.state} progress={voice.progress} />
           </div>
         )}
