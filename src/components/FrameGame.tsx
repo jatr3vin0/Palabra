@@ -9,7 +9,9 @@ import {
   bindingScriptureRound,
   bindingShooterRounds,
   packForBinding,
+  packVerse,
   packVocab,
+  verseEn,
   type Pack,
 } from "~/content/packs/a0-packs";
 import { seededShuffle } from "~/lib/answer";
@@ -76,26 +78,42 @@ export const SCRIPTURE_MOMENT = {
   amen: { es: "Palabra de Dios. Amén.", en: "The Word of God. Amen." },
 };
 
+/** Verse data for the verse-driven UI: the reference as shown, the reference
+ * as spoken, and the verse text — all from the session's pack when a binding
+ * is active (Génesis 1:1 stays the a0-u01 default). */
+export type SessionVerse = { reference: string; refSay: string; verse: string };
+
 /**
  * The scripture moment (owner item 3): a full-screen spoken verse card —
  * enter → reference → verse, all in the narrator scripture row, text on
  * screen the whole time — before any verse fill-in is asked. Sequence is
  * strict (BLOCK F): heard AND read first, only then the ask + round.
+ * Verse-driven (INTEGRATION §2.5): the pack's own verse when a binding is
+ * active; Génesis 1:1 is the no-binding default.
  */
-function ScriptureMoment({ onDone }: { onDone: () => void }) {
+function ScriptureMoment({ verse, onDone }: { verse?: SessionVerse; onDone: () => void }) {
+  const v = useMemo<SessionVerse>(
+    () =>
+      verse ?? {
+        reference: "Génesis 1:1 · RV1909",
+        refSay: SCRIPTURE_MOMENT.reference.es,
+        verse: GENESIS_1_1,
+      },
+    [verse],
+  );
   const [stage, setStage] = useState<"listen" | "ask">("listen");
   const alive = useRef(true);
   const run = useCallback(() => {
     alive.current = true;
     setStage("listen");
     speakSpanish(SCRIPTURE_MOMENT.enter.es, castParams("scripture"), () =>
-      speakSpanish(SCRIPTURE_MOMENT.reference.es, castParams("scripture"), () =>
-        speakSpanish(SCRIPTURE_MOMENT.verse.es, castParams("scripture"), () => {
+      speakSpanish(v.refSay, castParams("scripture"), () =>
+        speakSpanish(v.verse, castParams("scripture"), () => {
           if (alive.current) setStage("ask");
         }),
       ),
     );
-  }, []);
+  }, [v]);
   useEffect(() => {
     run();
     return () => {
@@ -106,12 +124,12 @@ function ScriptureMoment({ onDone }: { onDone: () => void }) {
   return (
     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-amber-50/95 px-6 text-center">
       <p className="text-[11px] font-black uppercase tracking-widest text-amber-600">{SCRIPTURE_MOMENT.enter.es}</p>
-      <p className="text-xs font-black text-amber-700">{SCRIPTURE_MOMENT.reference.es}</p>
+      <p className="text-xs font-black text-amber-700">{v.refSay}</p>
       <p className="max-w-md rounded-2xl border-2 border-amber-300 bg-white px-5 py-4 text-xl font-black leading-snug text-stone-800 shadow">
-        «{SCRIPTURE_MOMENT.verse.es}»
+        «{v.verse}»
       </p>
       <p className="text-[10px] font-bold text-stone-400">
-        Génesis 1:1 · RV1909 · {SCRIPTURE_MOMENT.amen.es}
+        {v.reference} · {SCRIPTURE_MOMENT.amen.es}
       </p>
       {stage === "ask" ? (
         <>
@@ -783,8 +801,37 @@ function ClassicFrame({
   const [mistakes, setMistakes] = useState(0);
   const [rounds, setRounds] = useState<AnyRound[]>([]);
   const [result, setResult] = useState<{ xp: number; coins: number; accuracy: number } | null>(null);
-  // The session's pack (when the mission carried a known binding).
+  // The session's pack (when the mission carried a known binding) and its
+  // verse: every scripture-flavored screen (moment, farewell, done card) is
+  // verse-driven from the pack's scripture block — Génesis 1:1 stays the
+  // no-binding default (INTEGRATION §2.5).
   const pack = useMemo(() => packForBinding(contentBinding), [contentBinding]);
+  const pv = useMemo(() => (pack?.scripture ? packVerse(pack) : undefined), [pack]);
+  const sessionVerse: SessionVerse | undefined = useMemo(
+    () =>
+      pv
+        ? {
+            reference: pv.reference.replace(/ \(RV1909\)$/, " · RV1909"),
+            refSay: pv.refSay,
+            verse: pv.verse,
+          }
+        : undefined,
+    [pv],
+  );
+  // The farewell, verse-swapped when a pack binding is active: the frame's own
+  // farewell strings keep their shape; the Génesis quote inside them is
+  // replaced by the pack's verse bytes (the EN side by the pack's EN clause).
+  const farewell = useMemo(() => {
+    if (!frame) return { es: "", en: "" };
+    if (!pv || !pack) return { es: frame.farewell.es, en: frame.farewell.en };
+    const clause = verseEn(pack);
+    return {
+      es: frame.farewell.es.replace(`«${GENESIS_1_1}»`, `«${pv.verse}»`),
+      en: clause
+        ? frame.farewell.en.replace("In the beginning God created the heavens and the earth.", clause)
+        : frame.farewell.en,
+    };
+  }, [frame, pack, pv]);
 
   const say = useCallback(
     (text: string, opts?: SpeakOpts, onEnd?: () => void) => {
@@ -856,18 +903,19 @@ function ClassicFrame({
     update(bumpImmersion(next));
     setResult({ xp: xpGained, coins: coinsGained, accuracy });
     setPhase("done");
-    // Farewell (+ the verse on scripture frames), then the reward explanation
-    // (BLOCK E) in the narrator voice: what XP/coins/gems ARE, spoken.
+    // Farewell (+ the session's verse on scripture frames), then the reward
+    // explanation (BLOCK E) in the narrator voice: what XP/coins/gems ARE,
+    // spoken.
     if (frame.kind === "scripture") {
-      say(frame.farewell.es, castParams(frame.voice), () =>
-        sayVerse(GENESIS_1_1, () => speakReward()),
+      say(farewell.es, castParams(frame.voice), () =>
+        sayVerse(pv ? pv.verse : GENESIS_1_1, () => speakReward()),
       );
     } else {
-      say(frame.farewell.es, castParams(frame.voice), () => speakReward());
+      say(farewell.es, castParams(frame.voice), () => speakReward());
     }
     onWin?.({ xp: xpGained, coins: coinsGained, accuracy });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p, frame, total, mistakes, say, sayVerse, onWin, pack, contentBinding]);
+  }, [p, frame, total, mistakes, say, sayVerse, onWin, pack, contentBinding, pv, farewell]);
 
   const nextRound = useCallback(() => {
     stopSpeaking();
@@ -945,6 +993,7 @@ function ClassicFrame({
       <FrameShell frame={frame} p={p} progressPct={0} embedded={embedded} onExit={onExit}>
         <div className="flex h-full items-center justify-center">
           <ScriptureMoment
+            verse={sessionVerse}
             onDone={() => {
               stopSpeaking();
               setPhase("play");
@@ -964,8 +1013,10 @@ function ClassicFrame({
           <h1 className="text-3xl font-black text-stone-900">¡Muy bien!</h1>
           {frame.id === CASA_FRAME_ID && (
             <p className="max-w-md rounded-2xl bg-amber-50 px-4 py-3 text-lg font-black text-amber-800">
-              «{GENESIS_1_1}»
-              <span className="mt-1 block text-xs font-bold text-amber-600">Génesis 1:1 · RV1909</span>
+              «{pv ? pv.verse : GENESIS_1_1}»
+              <span className="mt-1 block text-xs font-bold text-amber-600">
+                {pv ? pv.reference.replace(/ \(RV1909\)$/, " · RV1909") : "Génesis 1:1 · RV1909"}
+              </span>
             </p>
           )}
           <div className="flex flex-wrap justify-center gap-3">
@@ -1262,7 +1313,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
             )}
           </p>
           {glossMode(p.englishLevel, frame) !== "none" && (
-            <p className="mt-1 text-[11px] font-semibold text-stone-400">{EN_GENESIS_1_1}</p>
+            <p className="mt-1 text-[11px] font-semibold text-stone-400">{round.en}</p>
           )}
         </div>
 
