@@ -45,6 +45,7 @@ import { generateBoard } from "~/games/templates/sokoban-word/board-data";
 import { achievementLabel, curve as sokobanCurve } from "~/games/templates/sokoban-word/curve";
 import { createController as createSokobanController, type SokobanRound } from "~/games/templates/sokoban-word/types";
 import { nearFormDecoys, waveIds, wordFor } from "~/content/packs/a0-u05-sokoban";
+import { RoadCrossFrame } from "~/components/RoadCrossFrame";
 
 export const EN_GENESIS_1_1 = "In the beginning God created the heavens and the earth. (NKJV)";
 
@@ -213,7 +214,7 @@ function ScriptureMoment({ verse, onDone }: { verse?: SessionVerse; onDone: () =
 }
 
 /** The how-to card on the greet screen: kid-simple, shown + spoken. */
-function HowtoCard({ frame, showEn }: { frame: FrameDef; showEn: boolean }) {
+export function HowtoCard({ frame, showEn }: { frame: FrameDef; showEn: boolean }) {
   return (
     <div className="w-full max-w-md rounded-2xl bg-white px-5 py-3 text-left shadow">
       <p className="text-[10px] font-black uppercase tracking-widest text-teal-600">Cómo se juega</p>
@@ -236,7 +237,7 @@ function HowtoCard({ frame, showEn }: { frame: FrameDef; showEn: boolean }) {
 }
 
 /** The reward summary: chips above, one Spanish line per reward below. */
-function RewardSummary({ embedded }: { embedded: boolean }) {
+export function RewardSummary({ embedded }: { embedded: boolean }) {
   const rows = REWARD_COPY.rows.filter((r) => r.key !== "gems" || embedded);
   return (
     <div className="w-full max-w-sm rounded-2xl bg-white px-4 py-3 text-left shadow">
@@ -307,6 +308,18 @@ export function FrameGame({
       />
     );
   }
+  if (frame?.kind === "phaser" && frame.mechanic === "road-cross-word") {
+    return (
+      <RoadCrossFrame
+        frame={frame}
+        embedded={embedded}
+        missionDifficulty={missionDifficulty}
+        contentBinding={contentBinding}
+        onWin={onWin}
+        onExit={onExit}
+      />
+    );
+  }
   return (
     <ClassicFrame
       frame={frame}
@@ -321,7 +334,7 @@ export function FrameGame({
 // ── Game 1: Capitán Rico: Sky Words — the Phaser shooter template ───────────
 
 /** Session tiers (GAME-ROADMAP §7): L1 child, L2 standard, L3 adult. */
-const TIERS = [
+export const TIERS = [
   { key: "nino", label: "Niño", emoji: "🐣", speedMul: 0.6, similar: false },
   { key: "normal", label: "Normal", emoji: "🐤", speedMul: 1.0, similar: false },
   { key: "adulto", label: "Adulto", emoji: "🦅", speedMul: 1.4, similar: true },
@@ -1721,7 +1734,7 @@ function buildScriptureRounds(base: ScriptureRound[], p: Progress | null): Scrip
 
 // ── Shared shell ────────────────────────────────────────────────────────────
 
-function FrameShell({
+export function FrameShell({
   frame,
   p,
   progressPct,
@@ -1793,7 +1806,7 @@ function FrameShell({
   );
 }
 
-function BackButton({ embedded, onExit }: { embedded: boolean; onExit?: () => void }) {
+export function BackButton({ embedded, onExit }: { embedded: boolean; onExit?: () => void }) {
   return embedded ? (
     <ExitButton embedded onExit={onExit} />
   ) : (
@@ -1806,7 +1819,7 @@ function BackButton({ embedded, onExit }: { embedded: boolean; onExit?: () => vo
   );
 }
 
-function ExitButton({ embedded, onExit }: { embedded: boolean; onExit?: () => void }) {
+export function ExitButton({ embedded, onExit }: { embedded: boolean; onExit?: () => void }) {
   if (!embedded) {
     return (
       <Link
@@ -2033,7 +2046,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
 }
 
 /** English gloss per progressive immersion: full, faded (tap ℹ️), or none. */
-function Gloss({ level, frame, en }: { level: number; frame: FrameDef; en: string }) {
+export function Gloss({ level, frame, en }: { level: number; frame: FrameDef; en: string }) {
   const mode = glossMode(level, frame);
   const [open, setOpen] = useState(false);
   if (mode === "none") return null;

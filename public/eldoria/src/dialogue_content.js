@@ -266,6 +266,19 @@ DIALOGUE.farmer_joss = [
 // Tomás — village guard, north road
 // ---------------------------------------------------------------------------
 DIALOGUE.guard_tomas = [
+  // MISSION HANDOFF (game #3 road-cross): gated on the mission's doneFlag —
+  // offered on EVERY talk until won (first-match-wins: it sits above the
+  // item/game lines so earned lines can never hide it). REPASO variant after
+  // done recaps the four wave-1 words. A0 copy, ≤30 chars/line, gloss pages
+  // mirrored (sokoban D1 pattern).
+  { if: { flagsNone: ['mission_tomas_calle_done'] }, mission: 'mission_tomas_calle', lines: [
+      ['¡Alto! Es broma. ¡Hola!', 'La calle enseña palabras.'],
+      ['El campo. La planta.', 'El árbol. El río. ¡Mira!'],
+      ['Cruza por la palabra.', '¡Tú puedes, peregrino!'] ],
+    gloss: [
+      ['Halt! Just kidding. Hi!', 'The street teaches words.'],
+      ['The field. The plant.', 'The tree. The river. Look!'],
+      ['Cross by the word.', 'You can do it, pilgrim!'] ] },
   { if: { flagsAll: ['game_complete'] }, lines: [
       ['¡Todo tranquilo! Por fin.', 'Ahora cuido mariposas.'] ],
     gloss: [
@@ -282,6 +295,15 @@ DIALOGUE.guard_tomas = [
       ['El paso de montaña está al norte.', 'Hay hielo y hay lobos.', 'Lleva corazones antes de subir.'] ],
     gloss: [
       ['The mountain pass is north.', 'There is ice and there are wolves.', 'Pack hearts before you climb.'] ] },
+  // REPASO — after the street mission: the four words, once more
+  { if: { flagsAll: ['mission_tomas_calle_done'] }, lines: [
+      ['¡Cruzaste como un pro!', 'La calle quedó tranquila.'],
+      ['Repaso: el campo, la planta,', 'el árbol y el río. ¡Muy bien!'],
+      ['Vuelve cuando quieras.'] ],
+    gloss: [
+      ['You crossed like a pro!', 'The street is calm now.'],
+      ['Review: the field, the plant,', 'the tree and the river. Well done!'],
+      ['Come back anytime.'] ] },
   { lines: [
       ['¡Alto! Es broma. ¡Hola!', 'El paso del norte es peligroso.', 'Lobos, hielo y rocas gruñonas.'],
       ['Empieza por el bosque, al oeste.', 'Evangelista sabe el camino.'] ],

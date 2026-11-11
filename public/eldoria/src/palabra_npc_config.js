@@ -125,4 +125,22 @@ window.PALABRA_MISSIONS = {
     reward: { gems: 15 },
     doneFlag: 'mission_mira_almacen_done',
   },
+  // Game #3 (road-cross): guard Tomás's street — reserved placeholder
+  // camino-road-cross reconciled to the canonical frame id at landing.
+  mission_tomas_calle: {
+    id: 'mission_tomas_calle',
+    npc: 'guard_tomas',
+    game: 'Cruza la Calle',
+    frameId: 'camino-road-cross',        // road-cross template (game #3)
+    contentBinding: 'a0-u05',            // pool a0-u05 (plan §3)
+    difficulty: 'child',
+    proficiency: {
+      cefr: 'A0',
+      unit: 'u05',
+      vocab: ['campo', 'planta', 'árbol', 'río'],  // wave 1 of the pack
+      masteryThreshold: 3,               // crossings per round (R3+ anchor)
+    },
+    reward: { gems: 15 },
+    doneFlag: 'mission_tomas_calle_done',
+  },
 };

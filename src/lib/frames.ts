@@ -62,6 +62,15 @@ export type SokobanRoundDef = {
   isReplay?: boolean;
 };
 
+/** Road-crossing round def (game #3, structural stand-in — the canonical
+ * session round type lives in the template; shapes match field-for-field). */
+export type RoadCrossRoundDef = {
+  word: string;
+  options: string[];
+  wave: number;
+  isReplay?: boolean;
+};
+
 export type FrameKind = "shooter" | "scripture" | "phaser";
 
 /** Mini-game template params — see GAME-ROADMAP.md: { mechanic, contentBinding, speed, difficulty, masteryThreshold }. */
@@ -113,7 +122,7 @@ export type FrameDef = {
   /** Spoken on a wrong answer, followed by a re-speak — never a quiz screen. */
   gentle: string[];
   farewell: { es: string; en: string };
-  rounds: ShooterRound[] | ScriptureRound[] | SokobanRoundDef[];
+  rounds: ShooterRound[] | ScriptureRound[] | SokobanRoundDef[] | RoadCrossRoundDef[];
 };
 
 export const PLAZA_FRAME_ID = "plaza-rico-shooter";
@@ -121,6 +130,10 @@ export const CASA_FRAME_ID = "casa-rosa-verse";
 /** «Empuja la Palabra» — sokoban (game #7, R7-6 reservation; the frame id is
  * the warehouse, the title stays «Empuja la Palabra»). Bound to a0-u05. */
 export const ALMACEN_FRAME_ID = "almacen-palabra";
+/** «¡Cruza la Calle!» — road-cross (game #3; the plan's placeholder
+ * `camino-road-cross` reconciled to its canonical id at landing, ruling 5).
+ * Bound to a0-u05 — joins the sokoban two-frame replay loop (R5). */
+export const CALLE_FRAME_ID = "camino-road-cross";
 
 /** Génesis 1:1, Reina-Valera 1909, quoted literally. */
 export const GENESIS_1_1 = "En el principio creó Dios los cielos y la tierra.";
@@ -413,6 +426,40 @@ export const frames: Record<string, FrameDef> = {
       en: "What a tidy warehouse! See you later!",
     },
     rounds: [] satisfies SokobanRoundDef[],
+  },
+
+  // ─── La calle: «¡Cruza la Calle!» — road-cross (game #3) ───────────────────
+  // Tomás the guard teaches the TPR crossing: lanes carry PROCEDURAL ICONS,
+  // never Spanish text (no reading needed); the spoken command «¡Cruza por X!»
+  // names the safe lane. Crossings are GENERATED per round from the a0-u05
+  // pack (binder a0-u05-sokoban.ts, R7-4 shared table) — never hand-authored.
+  [CALLE_FRAME_ID]: {
+    id: CALLE_FRAME_ID,
+    kind: "phaser",
+    mechanic: "road-cross-word",
+    params: { speed: 1.0, difficulty: 1, masteryThreshold: 3, xpPerLevel: 50 },
+    villager: { name: "Tomás", emoji: "🚦" },
+    place: "La calle",
+    englishLevel: 0,
+    xp: 10,
+    voice: "villagerM",
+    greeting: {
+      es: "¡Alto! Es broma. Soy Tomás. ¡Aprende a cruzar la calle!",
+      en: "Halt! Just kidding. I'm Tomás. Learn to cross the street!",
+    },
+    howto: {
+      es: ["Escucha: «cruza por…».", "Salta por la calle correcta.", "¡Cuida el tráfico!"],
+      en: ["Listen: “cross by…”.", "Hop along the right lane.", "Watch the traffic!"],
+    },
+    howtoSpoken:
+      "¡La calle de la Palabra! Escucha el comando: cruza por una palabra. Salta con el tablero, las flechas o deslizando el dedo hasta la calle con el dibujo de esa palabra. ¡Cuida el tráfico! Los carros no enseñan, solo estorban.",
+    praise: PRAISE,
+    gentle: GENTLE,
+    farewell: {
+      es: "¡Cruzar con cuidado es saber escuchar! ¡Hasta luego!",
+      en: "Crossing with care is listening well! See you later!",
+    },
+    rounds: [] satisfies RoadCrossRoundDef[],
   },
 };
 
