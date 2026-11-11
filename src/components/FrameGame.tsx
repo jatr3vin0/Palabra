@@ -31,11 +31,146 @@ import { createController, type SkyWordsBridge } from "~/games/sky-words-types";
 
 export const EN_GENESIS_1_1 = "In the beginning God created the heavens and the earth. (NKJV)";
 
-type Phase = "greet" | "play" | "done";
+type Phase = "greet" | "verse" | "play" | "done";
 
 type AnyRound = ShooterRound | ScriptureRound;
 
 export type MissionResult = { xp: number; coins: number; accuracy: number };
+
+// ── Quality-bar copy packs (build/DIALOGUE-sweep-playtest2.md, Blocks E+F) ──
+
+/** Reward explanation: the same words shown next to the chips are SPOKEN. */
+export const REWARD_COPY = {
+  title: { es: "¡Misión cumplida!", en: "Mission complete!" },
+  rows: [
+    { key: "xp", es: "XP: tus puntos de aprender.", en: "XP: your learning points." },
+    { key: "gems", es: "Gemas: dinero del mundo. Compra allí.", en: "Gems: world money. Spend it in the world." },
+    { key: "coins", es: "Monedas: dinero de Palabra.", en: "Coins: Palabra money." },
+  ],
+  // Spoken in the narrator voice after the farewell line. Never the letters
+  // "XP" aloud (kokoro spells it) — say "puntos de experiencia".
+  spoken: [
+    "¡Muy bien! Ganaste puntos, gemas y monedas.",
+    "Los puntos son de aprender. Más puntos, más sabes.",
+    "Las gemas son del mundo. Las monedas son de Palabra.",
+    "Todo queda guardado. ¡Hasta la próxima!",
+  ],
+};
+
+/** The scripture moment: verse HEARD and READ before any verse question. */
+export const SCRIPTURE_MOMENT = {
+  enter: { es: "Escucha la Palabra de Dios.", en: "Listen to the Word of God." },
+  reference: { es: "Génesis, capítulo uno, versículo uno.", en: "Genesis, chapter one, verse one." },
+  verse: {
+    es: GENESIS_1_1,
+    en: "In the beginning God created the heavens and the earth.",
+  },
+  ask: { es: "Ahora tú. ¿Qué palabra falta?", en: "Now you. Which word is missing?" },
+  again: { es: "Escucha otra vez.", en: "Listen again." },
+  amen: { es: "Palabra de Dios. Amén.", en: "The Word of God. Amen." },
+};
+
+/**
+ * The scripture moment (owner item 3): a full-screen spoken verse card —
+ * enter → reference → verse, all in the narrator scripture row, text on
+ * screen the whole time — before any verse fill-in is asked. Sequence is
+ * strict (BLOCK F): heard AND read first, only then the ask + round.
+ */
+function ScriptureMoment({ onDone }: { onDone: () => void }) {
+  const [stage, setStage] = useState<"listen" | "ask">("listen");
+  const alive = useRef(true);
+  const run = useCallback(() => {
+    alive.current = true;
+    setStage("listen");
+    speakSpanish(SCRIPTURE_MOMENT.enter.es, castParams("scripture"), () =>
+      speakSpanish(SCRIPTURE_MOMENT.reference.es, castParams("scripture"), () =>
+        speakSpanish(SCRIPTURE_MOMENT.verse.es, castParams("scripture"), () => {
+          if (alive.current) setStage("ask");
+        }),
+      ),
+    );
+  }, []);
+  useEffect(() => {
+    run();
+    return () => {
+      alive.current = false;
+      stopSpeaking();
+    };
+  }, [run]);
+  return (
+    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-amber-50/95 px-6 text-center">
+      <p className="text-[11px] font-black uppercase tracking-widest text-amber-600">{SCRIPTURE_MOMENT.enter.es}</p>
+      <p className="text-xs font-black text-amber-700">{SCRIPTURE_MOMENT.reference.es}</p>
+      <p className="max-w-md rounded-2xl border-2 border-amber-300 bg-white px-5 py-4 text-xl font-black leading-snug text-stone-800 shadow">
+        «{SCRIPTURE_MOMENT.verse.es}»
+      </p>
+      <p className="text-[10px] font-bold text-stone-400">
+        Génesis 1:1 · RV1909 · {SCRIPTURE_MOMENT.amen.es}
+      </p>
+      {stage === "ask" ? (
+        <>
+          <p className="text-sm font-black text-teal-700">{SCRIPTURE_MOMENT.ask.es}</p>
+          <button
+            type="button"
+            onClick={onDone}
+            className="rounded-2xl bg-teal-600 px-8 py-3 text-lg font-extrabold uppercase tracking-wide text-white shadow-[0_5px_0_0_#0f766e] transition hover:bg-teal-500 active:translate-y-[3px] active:shadow-[0_2px_0_0_#0f766e]"
+          >
+            ¡Al juego! ▶
+          </button>
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={run}
+          aria-label={SCRIPTURE_MOMENT.again.es}
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
+        >
+          🔊
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** The how-to card on the greet screen: kid-simple, shown + spoken. */
+function HowtoCard({ frame, showEn }: { frame: FrameDef; showEn: boolean }) {
+  return (
+    <div className="w-full max-w-md rounded-2xl bg-white px-5 py-3 text-left shadow">
+      <p className="text-[10px] font-black uppercase tracking-widest text-teal-600">Cómo se juega</p>
+      {frame.howto.es.map((line) => (
+        <p key={line} className="text-sm font-bold leading-snug text-stone-700">
+          <span aria-hidden className="mr-1">
+            •
+          </span>
+          {line}
+        </p>
+      ))}
+      {showEn &&
+        frame.howto.en.map((line) => (
+          <p key={line} className="text-[11px] font-semibold leading-snug text-stone-400">
+            {line}
+          </p>
+        ))}
+    </div>
+  );
+}
+
+/** The reward summary: chips above, one Spanish line per reward below. */
+function RewardSummary({ embedded }: { embedded: boolean }) {
+  const rows = REWARD_COPY.rows.filter((r) => r.key !== "gems" || embedded);
+  return (
+    <div className="w-full max-w-sm rounded-2xl bg-white px-4 py-3 text-left shadow">
+      {rows.map((r) => (
+        <p key={r.key} className="text-[13px] font-bold leading-snug text-stone-700">
+          <span aria-hidden className="mr-1">
+            •
+          </span>
+          {r.es}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 /**
  * The frame engine that plays one mini-game (route /game/$frameId AND the
@@ -105,6 +240,9 @@ function SkyWordsFrame({
   const [totalMisses, setTotalMisses] = useState(0);
   const [hitsAtWaveStart, setHitsAtWaveStart] = useState(0);
   const [result, setResult] = useState<{ xp: number; coins: number; accuracy: number } | null>(null);
+  // The Génesis wave opens with the scripture moment (once per session).
+  const [verseMoment, setVerseMoment] = useState(false);
+  const momentShownRef = useRef(false);
 
   // The frame's own voice: the villager who opens it (per-character kokoro).
   const say = useCallback(
@@ -113,8 +251,8 @@ function SkyWordsFrame({
     },
     [frame.voice],
   );
-  const sayRound = useCallback((text: string) => {
-    speakSpanish(text, castParams(frame.roundVoice ?? frame.voice));
+  const sayRound = useCallback((text: string, onEnd?: () => void) => {
+    speakSpanish(text, castParams(frame.roundVoice ?? frame.voice), onEnd);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frame.voice, frame.roundVoice]);
 
@@ -193,7 +331,8 @@ function SkyWordsFrame({
           return;
         }
         const next = L.waveIdx + 1;
-        say(`¡Onda superada! ¡Onda ${next + 1}!`);
+        // Hit confirm first (the word is heard again), then the wave line.
+        sayRound(r.word, () => say(`¡Onda superada! ¡Onda ${next + 1}!`));
         ctrl.showBanner(`¡Onda ${next + 1} de ${L.waves.length}!`, "¡Sigue así, piloto!");
         window.clearTimeout(waveTimer.current);
         waveTimer.current = window.setTimeout(() => {
@@ -203,12 +342,12 @@ function SkyWordsFrame({
           setHitsAtWaveStart(L.totalHits + 1);
         }, WAVE_BREAK_MS);
       } else {
-        say(frame.praise[L.totalHits % frame.praise.length]);
+        sayRound(r.word, () => say(frame.praise[L.totalHits % frame.praise.length]));
         window.clearTimeout(hitTimer.current);
         hitTimer.current = window.setTimeout(() => setRoundIdx((i) => i + 1), HIT_ADVANCE_MS);
       }
     },
-    [ctrl, frame, say],
+    [ctrl, frame, say, sayRound],
   );
 
   const handleMiss = useCallback(
@@ -220,13 +359,14 @@ function SkyWordsFrame({
       // One composed save: the miss is recorded against the round's word and a
       // heart is spent; play never stops for a penalty screen.
       updateRef.current(loseHeart(recordMiss(L.p, r.word, frame.id)));
-      say(frame.gentle[L.totalMisses % frame.gentle.length]);
+      // Gentle correction speaks the CORRECT word first, then the comfort line.
+      sayRound(r.word, () => say(frame.gentle[L.totalMisses % frame.gentle.length]));
       // The same round returns ~1.9 s later with a fresh formation; its entry
       // effect re-speaks round.say.
       window.clearTimeout(missTimer.current);
       missTimer.current = window.setTimeout(() => setRespawns((n) => n + 1), MISS_RESPAWN_MS);
     },
-    [frame, say],
+    [frame, say, sayRound],
   );
 
   const handleWin = useCallback(
@@ -240,7 +380,11 @@ function SkyWordsFrame({
       ctrl.clear();
       ctrl.celebrate();
       ctrl.showBanner("¡Misión cumplida!", `Precisión ${accuracy}%`);
-      say(frame.farewell.es);
+      // Farewell first, then the reward explanation (BLOCK E) in the narrator
+      // voice — the learner hears what XP/coins/gems ARE, not just that they won.
+      say(frame.farewell.es, undefined, () =>
+        speakSpanish(REWARD_COPY.spoken.join(" "), castParams("narrator")),
+      );
       // Mission bridge: the adventure host records the flag + reward in-world.
       onWin?.({ xp: xpGained, coins: coinsGained, accuracy });
     },
@@ -274,10 +418,11 @@ function SkyWordsFrame({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p, waves.length]);
 
-  // Warm the voice, greet the villager, and leave nothing running on exit.
+  // Warm the voice, greet the villager + explain the game, leave nothing
+  // running on exit. (Quality bar: instructions BEFORE play, spoken.)
   useEffect(() => {
     primeVoice();
-    say(frame.greeting.es);
+    say(frame.greeting.es, undefined, () => say(frame.howto.es.join(" ")));
     return () => {
       stopSpeaking();
       [hitTimer, missTimer, waveTimer].forEach((t) => window.clearTimeout(t.current));
@@ -295,9 +440,17 @@ function SkyWordsFrame({
 
   useEffect(() => {
     if (phase !== "play" || !round || !formation) return;
+    if (verseMoment) return;
+    // Quality bar (owner item 3): the Génesis wave opens with the spoken
+    // scripture moment — verse heard AND read before any verse round plays.
+    if (!momentShownRef.current && isScriptureWave(waves[waveIdx])) {
+      momentShownRef.current = true;
+      setVerseMoment(true);
+      return;
+    }
     sayRound(round.say);
     ctrl.playRound({ word: round.word, options: formation, isReplay: round.isReplay });
-  }, [phase, round, formation, ctrl, sayRound]);
+  }, [phase, round, formation, ctrl, sayRound, verseMoment, waveIdx, waves]);
 
   const hitsInWave = Math.min(tierParams.masteryThreshold, totalHits - hitsAtWaveStart);
   const progressPct =
@@ -319,6 +472,8 @@ function SkyWordsFrame({
 
   const replay = () => {
     stopSpeaking();
+    momentShownRef.current = false;
+    setVerseMoment(false);
     setWaves(buildShooterWaves(frame, p));
     setWaveIdx(0);
     setRoundIdx(0);
@@ -341,8 +496,10 @@ function SkyWordsFrame({
           </p>
         )}
 
+        {phase === "play" && verseMoment && <ScriptureMoment onDone={() => setVerseMoment(false)} />}
+
         {phase === "greet" && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-white/55 px-6 text-center backdrop-blur-[2px]">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-white/55 px-6 py-4 text-center backdrop-blur-[2px]">
             <div className="text-7xl anim-float">{frame.villager.emoji}</div>
             <h1 className="text-2xl font-black text-stone-900">{frame.villager.name}</h1>
             <p className="max-w-md rounded-3xl bg-white px-5 py-4 text-lg font-semibold text-stone-700 shadow">
@@ -351,6 +508,15 @@ function SkyWordsFrame({
                 <span className="mt-2 block text-sm font-semibold text-stone-400">{frame.greeting.en}</span>
               )}
             </p>
+            <HowtoCard frame={frame} showEn={glossMode(p.englishLevel, frame) !== "none"} />
+            <button
+              type="button"
+              onClick={() => say(frame.greeting.es, undefined, () => say(frame.howto.es.join(" ")))}
+              aria-label="Escuchar las instrucciones otra vez"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
+            >
+              🔊
+            </button>
             <div className="flex gap-2" role="group" aria-label="Nivel de la sesión">
               {TIERS.map((t, i) => (
                 <button
@@ -426,6 +592,7 @@ function SkyWordsFrame({
               <span className="rounded-2xl bg-yellow-100 px-4 py-2 font-black text-yellow-700">+{result.coins} 🪙</span>
               <span className="rounded-2xl bg-orange-100 px-4 py-2 font-black text-orange-700">{result.accuracy}%</span>
             </div>
+            <RewardSummary embedded={embedded} />
             <div className="flex flex-wrap justify-center gap-3 pt-2">
               <ExitButton embedded={embedded} onExit={onExit} />
               <button
@@ -446,6 +613,11 @@ function SkyWordsFrame({
 // ── Sky Words round building ────────────────────────────────────────────────
 
 const vocabPool: { es: string; en: string }[] = unit.vocab;
+
+/** True when a shooter wave is the «En el principio» scripture wave. */
+function isScriptureWave(w: ShooterRound[] | undefined): boolean {
+  return Array.isArray(w) && w.some((r) => r.caption?.startsWith("Génesis"));
+}
 
 function distractors(word: string, count: number, seed: string): string[] {
   const pool = vocabPool.map((v) => v.es).filter((w) => w !== word);
@@ -562,13 +734,17 @@ function ClassicFrame({
     },
     [frame],
   );
-  // Scripture is read reverently by the narrator cast row (Génesis 1:1).
+  // Scripture read reverently by the narrator cast row (Génesis 1:1).
   const sayVerse = useCallback(
     (text: string, onEnd?: () => void) => {
       speakSpanish(text, castParams("scripture"), onEnd);
     },
     [],
   );
+  // The reward explanation, narrator voice (REWARD_COPY.spoken).
+  const speakReward = useCallback(() => {
+    speakSpanish(REWARD_COPY.spoken.join(" "), castParams("narrator"));
+  }, []);
 
   // Rounds build once per visit: words missed earlier come back here, inside a
   // DIFFERENT frame than where they were missed (adaptive replay).
@@ -585,13 +761,18 @@ function ClassicFrame({
   }, []);
 
   // The villager speaks their greeting when the frame opens (heard first),
-  // and on scripture frames the verse follows in the narrator's voice.
+  // then the how-to; on scripture frames the verse follows in the narrator's
+  // voice — all BEFORE ¡Jugar! (quality bar: instructions precede play).
   useEffect(() => {
     if (phase === "greet" && frame) {
       if (frame.kind === "scripture") {
-        say(frame.greeting.es, castParams(frame.voice), () => sayVerse(GENESIS_1_1));
+        say(frame.greeting.es, castParams(frame.voice), () =>
+          say(frame.howto.es.join(" "), castParams(frame.voice), () => sayVerse(GENESIS_1_1)),
+        );
       } else {
-        say(frame.greeting.es);
+        say(frame.greeting.es, castParams(frame.voice), () =>
+          say(frame.howto.es.join(" "), castParams(frame.voice)),
+        );
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -608,10 +789,14 @@ function ClassicFrame({
     update(bumpImmersion(next));
     setResult({ xp: xpGained, coins: coinsGained, accuracy });
     setPhase("done");
+    // Farewell (+ the verse on scripture frames), then the reward explanation
+    // (BLOCK E) in the narrator voice: what XP/coins/gems ARE, spoken.
     if (frame.kind === "scripture") {
-      say(frame.farewell.es, castParams(frame.voice), () => sayVerse(GENESIS_1_1));
+      say(frame.farewell.es, castParams(frame.voice), () =>
+        sayVerse(GENESIS_1_1, () => speakReward()),
+      );
     } else {
-      say(frame.farewell.es);
+      say(frame.farewell.es, castParams(frame.voice), () => speakReward());
     }
     onWin?.({ xp: xpGained, coins: coinsGained, accuracy });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -649,7 +834,7 @@ function ClassicFrame({
   if (phase === "greet") {
     return (
       <FrameShell frame={frame} p={p} progressPct={0} embedded={embedded} onExit={onExit}>
-        <div className="anim-rise flex h-full flex-col items-center justify-center gap-5 px-6 text-center">
+        <div className="anim-rise flex h-full flex-col items-center justify-center gap-3 overflow-y-auto px-6 py-4 text-center">
           <div className="text-7xl anim-float">{frame.villager.emoji}</div>
           <h1 className="text-2xl font-black text-stone-900">{frame.villager.name}</h1>
           <p className="max-w-md rounded-3xl bg-white px-5 py-4 text-lg font-semibold text-stone-700 shadow">
@@ -658,16 +843,52 @@ function ClassicFrame({
               <span className="mt-2 block text-sm font-semibold text-stone-400">{frame.greeting.en}</span>
             )}
           </p>
+          <HowtoCard frame={frame} showEn={glossMode(p.englishLevel, frame) !== "none"} />
+          <button
+            type="button"
+            onClick={() => {
+              if (frame.kind === "scripture") {
+                say(frame.greeting.es, castParams(frame.voice), () =>
+                  say(frame.howto.es.join(" "), castParams(frame.voice), () => sayVerse(GENESIS_1_1)),
+                );
+              } else {
+                say(frame.greeting.es, castParams(frame.voice), () =>
+                  say(frame.howto.es.join(" "), castParams(frame.voice)),
+                );
+              }
+            }}
+            aria-label="Escuchar las instrucciones otra vez"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-2xl text-white shadow-[0_3px_0_0_#0f766e] active:translate-y-[2px]"
+          >
+            🔊
+          </button>
           <button
             type="button"
             onClick={() => {
               stopSpeaking();
-              setPhase("play");
+              // Scripture frames hear + read the verse FIRST (owner item 3):
+              // the moment sits between ¡Jugar! and the first verse round.
+              setPhase(frame.kind === "scripture" ? "verse" : "play");
             }}
             className="rounded-2xl bg-teal-600 px-10 py-4 text-lg font-extrabold uppercase tracking-wide text-white shadow-[0_5px_0_0_#0f766e] transition hover:bg-teal-500 active:translate-y-[3px] active:shadow-[0_2px_0_0_#0f766e]"
           >
             ¡Jugar! ▶
           </button>
+        </div>
+      </FrameShell>
+    );
+  }
+
+  if (phase === "verse") {
+    return (
+      <FrameShell frame={frame} p={p} progressPct={0} embedded={embedded} onExit={onExit}>
+        <div className="flex h-full items-center justify-center">
+          <ScriptureMoment
+            onDone={() => {
+              stopSpeaking();
+              setPhase("play");
+            }}
+          />
         </div>
       </FrameShell>
     );
@@ -691,6 +912,7 @@ function ClassicFrame({
             <span className="rounded-2xl bg-yellow-100 px-4 py-2 font-black text-yellow-700">+{result.coins} 🪙</span>
             <span className="rounded-2xl bg-orange-100 px-4 py-2 font-black text-orange-700">{result.accuracy}%</span>
           </div>
+          <RewardSummary embedded={embedded} />
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <ExitButton embedded={embedded} onExit={onExit} />
             <button
@@ -701,7 +923,7 @@ function ClassicFrame({
                 setIdx(0);
                 setMistakes(0);
                 setResult(null);
-                setPhase("play");
+                setPhase(frame.kind === "scripture" ? "verse" : "play");
               }}
               className="rounded-xl bg-teal-600 px-8 py-3 font-extrabold uppercase tracking-wide text-white shadow-[0_4px_0_0_#0f766e] transition hover:bg-teal-500 active:translate-y-[2px]"
             >
@@ -898,6 +1120,8 @@ const VERSE_SLOTS: [number, number][] = [
 function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: ViewProps<ScriptureRound>) {
   const [popped, setPopped] = useState<string[]>([]);
   const [filled, setFilled] = useState(false);
+  // Streak = good pops in a row this round (an early answer-tap breaks it).
+  const [streak, setStreak] = useState(0);
   const timer = useRef<number | null>(null);
 
   // Every verse line is SPOKEN in the narrator cast row; praise stays in the
@@ -921,6 +1145,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
   useEffect(() => {
     setPopped([]);
     setFilled(false);
+    setStreak(0);
     sayRound(round.say);
     return () => {
       if (timer.current) window.clearTimeout(timer.current);
@@ -934,6 +1159,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
       if (!allWrongPopped) {
         // Popping the answer early: gentle correction, the balloon stays.
         onMiss();
+        setStreak(0);
         update(loseHeart(recordMiss(p, round.word, frame.id)));
         sayPraise("¡Esa es la palabra que falta! Escucha el versículo otra vez.");
         window.setTimeout(() => sayRound(round.say), 2000);
@@ -947,8 +1173,13 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
       timer.current = window.setTimeout(onNext, 3400);
       return;
     }
-    // A wrong balloon: hear it, pop it, it goes away.
+    // A wrong balloon: hear it, pop it, it goes away — and the streak grows.
     setPopped((ps) => [...ps, word]);
+    setStreak((s) => {
+      const next = s + 1;
+      if (next === 3) sayPraise("¡Tres seguidas! ¡Muy bien!");
+      return next;
+    });
     sayRound(word);
     if (missedWords(p).includes(word)) update(clearMiss(p, word));
   }
@@ -959,8 +1190,16 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
         {/* the verse card */}
         <div className="mx-3 rounded-2xl border-2 border-amber-300 bg-white px-4 py-3 text-center shadow">
           <p className="text-[11px] font-black uppercase tracking-widest text-amber-600">{round.reference}</p>
-          <p className="mt-1 text-xl font-black leading-snug text-stone-800">
-            {filled ? round.verse.replace("___", round.word) : round.verse.replace("___", "____")}
+          <p className={`mt-1 text-xl font-black leading-snug text-stone-800 ${filled ? "anim-pop" : ""}`}>
+            {filled ? (
+              <>
+                {round.verse.slice(0, round.verse.indexOf("___"))}
+                <span className="mx-0.5 inline-block rounded-lg bg-amber-200 px-1">{round.word}</span>
+                {round.verse.slice(round.verse.indexOf("___") + 3)}
+              </>
+            ) : (
+              round.verse.replace("___", "____")
+            )}
           </p>
           {glossMode(p.englishLevel, frame) !== "none" && (
             <p className="mt-1 text-[11px] font-semibold text-stone-400">{EN_GENESIS_1_1}</p>
@@ -980,8 +1219,12 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
                 type="button"
                 onClick={() => pop(word)}
                 disabled={gone}
-                style={{ animationDelay: `${i * 0.35}s` }}
-                className={`anim-float relative rounded-full border-b-4 px-4 py-2 text-lg font-black text-white shadow-lg ${
+                style={{
+                  animationDelay: `${i * 0.35}s`,
+                  // varied float tempo: every balloon drifts at its own speed
+                  animationDuration: `${2.4 + (i % 4) * 0.55}s`,
+                }}
+                className={`anim-float relative rounded-full border-b-4 px-4 py-2 text-lg font-black text-white shadow-lg transition active:scale-95 ${
                   BALLOON_COLORS[i % BALLOON_COLORS.length]
                 } ${gone ? "balloon-burst pointer-events-none" : ""} ${
                   isAnswer && allWrongPopped && !filled ? "ring-4 ring-amber-400" : ""
@@ -994,10 +1237,22 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
           );
         })}
 
+        {filled && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-6xl anim-pop">
+            ✨
+          </div>
+        )}
         <div className="absolute bottom-2 left-3 text-5xl anim-float">{frame.villager.emoji}</div>
       </div>
 
       <div className="border-t-2 border-amber-200 bg-white/95 px-3 py-3">
+        <div className="mb-1.5 flex flex-wrap items-center gap-2">
+          {streak >= 2 && (
+            <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wide text-rose-700">
+              Racha {streak} 🔥
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -1009,7 +1264,7 @@ function ScriptureView({ frame, p, round, idx, phase, update, onMiss, onNext }: 
           </button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-black text-stone-800">
-              Revienta los globos que no van y guarda el bueno
+              Revienta los que no van. Al final, toca el bueno.
             </p>
             <Gloss level={p.englishLevel} frame={frame} en={round.en} />
           </div>

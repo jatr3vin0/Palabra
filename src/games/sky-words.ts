@@ -194,23 +194,25 @@ class SkyScene extends Phaser.Scene {
     if (!round) return;
 
     const n = Math.max(1, round.options.length);
-    const margin = 120;
+    const margin = 70; // wider spread than 120: capsules are 214px and must not stack
     const step = n > 1 ? (W - margin * 2) / (n - 1) : 0;
+    // Big formations shrink so labels never overlap (6 capsules × 214px > W).
+    const fit = n >= 6 ? 0.68 : n === 5 ? 0.82 : 1;
     const vy = DESCENT * Math.max(0.3, this.bridge.params.speed);
     round.options.forEach((word, i) => {
       const isTarget = word === round.word;
       const x = n > 1 ? margin + i * step : W / 2;
       const y = -110 - i * 150;
-      const foe = this.makeFoe(word, isTarget, x, y, vy);
+      const foe = this.makeFoe(word, isTarget, x, y, vy, fit);
       this.enemies.push(foe);
     });
   }
 
-  private makeFoe(word: string, isTarget: boolean, x: number, y: number, vy: number): Enemy {
+  private makeFoe(word: string, isTarget: boolean, x: number, y: number, vy: number, fit: number): Enemy {
     const tex = `foe${Phaser.Math.Between(0, FOE_COLORS.length - 1)}`;
     const capsule = this.add.image(0, 8, tex);
     const label = this.add
-      .text(0, 62, word, {
+      .text(0, 30, word, {
         fontFamily: FONT,
         fontSize: `${word.length <= 4 ? 40 : word.length <= 8 ? 34 : word.length <= 12 ? 28 : 24}px`,
         color: "#0f172a",
@@ -224,16 +226,17 @@ class SkyScene extends Phaser.Scene {
     foe.word = word;
     foe.isTarget = isTarget;
     foe.baseX = x;
-    foe.amp = Phaser.Math.Between(14, 30);
+    // sway shrinks with the formation so neighbours never kiss
+    foe.amp = Math.round(Phaser.Math.Between(14, 30) * fit);
     foe.freq = Phaser.Math.FloatBetween(0.8, 1.6);
     foe.phase = Math.random() * Math.PI * 2;
     foe.prop = propImg;
     foe.dead = false;
-    foe.w = 214;
-    foe.h = 100;
+    foe.w = Math.round(214 * fit);
+    foe.h = Math.round(100 * fit);
     foe.setData("vy", vy);
-    foe.setScale(0.6);
-    this.tweens.add({ targets: foe, scale: 1, duration: 320, ease: "Back.Out" });
+    foe.setScale(0.6 * fit);
+    this.tweens.add({ targets: foe, scale: fit, duration: 320, ease: "Back.Out" });
     if (isTarget) {
       // The target gently glows so spoken + visual cues agree.
       this.tweens.add({ targets: capsule, alpha: { from: 1, to: 0.82 }, yoyo: true, repeat: -1, duration: 700 });
@@ -348,7 +351,7 @@ class SkyScene extends Phaser.Scene {
     for (const e of this.enemies) {
       if (e.dead) continue;
       const halfW = e.w / 2 + 12; // a little forgiveness for small fingers
-      const halfH = e.h / 2 + 10;
+      const halfH = e.h / 2 + 22; // covers the label band + finger forgiveness
       if (Math.abs(x - e.x) <= halfW && Math.abs(y - e.y) <= halfH) found = e;
     }
     return found;
@@ -475,7 +478,7 @@ class SkyScene extends Phaser.Scene {
       }
       for (const e of this.enemies) {
         if (e.dead) continue;
-        if (Math.abs(b.x - e.x) < e.w * 0.42 && Math.abs(b.y - e.y) < e.h * 0.46) {
+        if (Math.abs(b.x - e.x) < e.w * 0.42 && Math.abs(b.y - e.y) < e.h * 0.58) {
           this.bullets = this.bullets.filter((x) => x !== b);
           b.destroy();
           this.resolveEnemy(e);
@@ -492,7 +495,9 @@ class SkyScene extends Phaser.Scene {
       e.x = e.baseX + Math.sin(time / 1000 * e.freq * Math.PI * 2 + e.phase) * e.amp;
       if (e.prop) e.prop.rotation += 14 * dt;
       if (e.isTarget) {
-        if (e.y > H - 150) {
+        // H-190 (was H-150): the escape line stays clear of the jet — the
+        // target used to slip past right through the jet's label zone.
+        if (e.y > H - 190) {
           this.escape(e);
           continue;
         }

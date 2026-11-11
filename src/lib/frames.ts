@@ -74,6 +74,11 @@ export type FrameDef = {
   roundVoice?: string;
   /** Spoken when the villager opens the frame. */
   greeting: { es: string; en: string };
+  /**
+   * Spoken + shown BEFORE the first round, kid-simple (quality bar: every
+   * game explains itself before ¡Jugar! — owner play-test 2, item 6).
+   */
+  howto: { es: string[]; en: string[] };
   /** Spoken on a right answer. */
   praise: string[];
   /** Spoken on a wrong answer, followed by a re-speak — never a quiz screen. */
@@ -108,6 +113,18 @@ export const frames: Record<string, FrameDef> = {
     greeting: {
       es: "¡Hola! Soy el Capitán Rico. Mi jet dispara palabras del cielo. ¡Escucha y toca la palabra buena!",
       en: "Hi! I'm Captain Rico. My jet shoots words from the sky. Listen and tap the right word!",
+    },
+    howto: {
+      es: [
+        "Mira el cielo. Las palabras bajan.",
+        "Escucha bien y toca la palabra que oíste.",
+        "Si tocas otra, pierdes un corazón. ¡Pero sigues!",
+      ],
+      en: [
+        "Look at the sky. The words come down.",
+        "Listen well and tap the word you heard.",
+        "Tap a different one and you lose a heart. But you keep going!",
+      ],
     },
     praise: PRAISE,
     gentle: GENTLE,
@@ -301,6 +318,18 @@ export const frames: Record<string, FrameDef> = {
     greeting: {
       es: "¡Hola, cariño! Soy Ana. Hoy hablamos de la Palabra: «En el principio creó Dios los cielos y la tierra». Revienta los globos que no van, y guarda el bueno.",
       en: "Hello, dear! I'm Ana. Today we talk about the Word: “In the beginning God created the heavens and the earth.” Pop the balloons that don't belong, and keep the right one.",
+    },
+    howto: {
+      es: [
+        "Mira el versículo. Falta una palabra.",
+        "Revienta los globos que no van.",
+        "Al final queda uno: toca el globo bueno.",
+      ],
+      en: [
+        "Look at the verse. One word is missing.",
+        "Pop the balloons that do not belong.",
+        "At the end one is left: tap the good balloon.",
+      ],
     },
     praise: PRAISE,
     gentle: GENTLE,
