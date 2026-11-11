@@ -90,6 +90,12 @@ function buildOnce(p: BoardParams, rand: () => number): SokobanBoard {
     }
   }
 
+  // Occupied-cell ledger (player + crates) — MUST exist before the first
+  // pickFree() call: pickFree reads it, so declaring it any later is a TDZ
+  // ReferenceError on EVERY board (caught live in the sokoban QA play-check;
+  // the minifier only renames it — the bug is in the source order).
+  const taken = new Set<number>();
+
   // 2. meaning tiles — one per pair, never occupied at start
   const tiles: { es: string; x: number; y: number }[] = [];
   const tileSet = new Set<number>();
@@ -101,7 +107,7 @@ function buildOnce(p: BoardParams, rand: () => number): SokobanBoard {
 
   // 3. player start — free, off the tiles
   const player = pickFree();
-  const taken = new Set<number>([at(player)]);
+  taken.add(at(player));
 
   // 4. target crates — one per tile, never ON a tile, never on the player
   const targets = p.targets.map((es) => {

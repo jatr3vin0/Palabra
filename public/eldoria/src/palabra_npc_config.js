@@ -106,8 +106,10 @@ window.PALABRA_MISSIONS = {
     },
     reward: { gems: 15 },
     doneFlag: 'mission_ana_balloons2_done',
-  },,
-    mission_mira_almacen: {
+  },
+  // Game #7 (sokoban, R7-6): Mira's warehouse — reserved key goes ACTIVE as
+  // registry data now that the frame exists (almacen-palabra).
+  mission_mira_almacen: {
     id: 'mission_mira_almacen',
     npc: 'shopkeep_mira',
     game: 'Empuja la Palabra',
