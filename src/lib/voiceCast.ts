@@ -32,20 +32,20 @@ export type VoiceParams = {
 export const VOICE_CAST: Record<VoiceKey, VoiceParams> = {
   // Pip (boy ~10): light, quick, exclamatory — gate casting row "hero"
   hero: { voiceId: "ef_dora", speed: 1.05, pitch: 2 },
-  // girl ~10: brighter than the boy (reserved for Christiana/Mercy cast)
-  heroine: { voiceId: "ef_dora", speed: 1.12, pitch: 2 },
+  // girl ~10: matches the boy's warmth, not chipmunk-bright (owner recast)
+  heroine: { voiceId: "ef_dora", speed: 1.05, pitch: 2 },
   // generic child role
   child: { voiceId: "ef_dora", speed: 1.08, pitch: 2 },
   // elder male: slow + low = aged
-  elder: { voiceId: "em_alex", speed: 0.85, pitch: -2 },
+  elder: { voiceId: "em_alex", speed: 0.9, pitch: -2 },
   // neutral adult men (Capitán Rico, guards, farmers)
-  villagerM: { voiceId: "em_alex", speed: 0.95, pitch: 0 },
+  villagerM: { voiceId: "em_alex", speed: 1.0, pitch: 0 },
   // warm adult women (Ana) — unhurried, smiling
-  villagerF: { voiceId: "ef_dora", speed: 0.92, pitch: 0 },
-  // warm storyteller — menus, signs, the narrator line (most reliable voice)
-  narrator: { voiceId: "ef_dora", speed: 0.88, pitch: 0 },
+  villagerF: { voiceId: "ef_dora", speed: 0.95, pitch: 0 },
+  // warm storyteller — menus, signs, the narrator line (warmest Spanish voice)
+  narrator: { voiceId: "em_santa", speed: 0.95, pitch: 0 },
   // scripture read reverently (Génesis 1:1 in the balloon frame)
-  scripture: { voiceId: "em_santa", speed: 0.85, pitch: 0 },
+  scripture: { voiceId: "em_alex", speed: 0.85, pitch: -1 },
   // deep, slow, menacing — Apollyon, Giant Despair, tempters (phase 2)
   villain: { voiceId: "em_santa", speed: 0.9, pitch: -3 },
 };
