@@ -1,0 +1,931 @@
+{
+ "schema": "palabra.exam.v1",
+ "id": "exam-a1",
+ "cefr": "A1",
+ "kind": "level-exam",
+ "title": "Examen de nivel A1",
+ "supersedes": "build/EXAM-a1-assembly-rulings.md R1-R9 (2026-11-11) + build/EXAM-a1-u01-draft-and-pool-spec.md §1 (a1-u01 items) + LEAD RULINGS R-1…R-6",
+ "authority": "Palabra learner records are authoritative. Eldoria flags mirror exam state; they never source it.",
+ "binding": {
+  "rule": "Every item binds its word by `es`, byte-identical, to a bound id in the shared taught pool (rebase-pool.py: 416 ids after a1-u08). No slugs, no integer indices, no lowercasing, no trimming, no accent-stripping. Item key = `<es>#<formSeed>`.",
+  "formSeed": "block offset per unit (u01 101-113 as authored, uNN <unitNumber><authoredIndex>): seeds the deterministic option-order shuffle per attempt so a retake is a new form under the same item key, and the key never collides when two units share an `es`.",
+  "sourcePacks": "a1-u01…a1-u08 examContribution (items copied verbatim; verse blocks byte-identical to their pack scripture) + a1-u08-verse-lke-5-5.json (the R-2 companion verse pack)."
+ },
+ "voice": {
+  "allItems": "narrator",
+  "cast": "ef_dora 0.88",
+  "musicDuck": 0,
+  "note": "uniform exam conditions (exam-a0 ruling 4 precedent); the scripture voice returns in lessons, not here",
+  "replay": "each item's audio replays on tap, unlimited, no penalty",
+  "verseFirst": "every verse-complete item plays the FULL verse and shows it before the gap is asked — never a blind quiz (owner quality bar 2026-11-11)"
+ },
+ "timing": {
+  "targetMinutes": "10-14"
+ },
+ "scoring": {
+  "items": 50,
+  "counts": {
+   "hear-choose": 24,
+   "hear-act": 8,
+   "gap-fill": 8,
+   "verse-complete": 7,
+   "reading-item": 3
+  },
+  "pass": {
+   "total": 40,
+   "of": 50
+  },
+  "floors": {
+   "hear-choose": 20,
+   "hear-act": 6,
+   "gap-fill": 6,
+   "verse-complete": 6
+  },
+  "channels": "floors are counted by PATTERN SLOT, not by render mode: 7 of the 8 hear-act slots currently render through their hear-choose twin (no prop sprite, R6) but still count in the hear-act channel. Never ship a dead slot; never let missing art move a floor.",
+  "rescaleNote": "80% of 50 = 40. Floors: hear-choose 20/24 (~83%), hear-act 6/8 (75%), gap-fill 6/8 (75%), verse 6/7 (~86%). Pass needs the total AND every floor. speak 0 in v1 — no scorer exists, so no dead slot (R1)."
+ },
+ "anchors": [
+  "nunca",
+  "cree",
+  "puerta",
+  "lámpara",
+  "al",
+  "mercado",
+  "me levanto",
+  "abuelo",
+  "habló",
+  "llamó",
+  "red"
+ ],
+ "onPass": {
+  "flag": "exam_a1_passed",
+  "xp": 150,
+  "xpRule": "first pass only, gated on flag-not-set",
+  "bestKept": true,
+  "explain": "rewards are explained in Spanish at the pass moment (owner quality bar)"
+ },
+ "onFail": {
+  "xp": 0,
+  "recordMiss": true,
+  "missGame": "exam-a1",
+  "retake": "locked until every word missed here is cleared in a non-exam frame",
+  "attempts": "unlimited, best kept, no cooldown"
+ },
+ "audioFail": "exam pauses; it never silently degrades to a text-only screen",
+ "rendererContract": "hear-choose = 3 text options; hear-act = 3 sprite options keyed by `es` (art looked up by the word itself, no second id space) — items carrying renderFallback render as their hear-choose twin until the prop sprite lands; verse-complete = 4 text options with the full verse heard and read first; gap-fill = sentence with one blank + 3 text choices; reading-item = passage + question + 3 text choices. Listening items carry NO prompt caption — prompt is audio only, so the answer is never printed. gap-fill and reading-item contracts do not exist yet in the frame engine (R7): those 11 slots are authored and validated here but cannot ship until the contracts refactor lands.",
+ "sampling": "exam-a1 samples ~40% of the A1 new-id set by design (50 items across 8 units, 416 taught ids); the miss→recordMiss→replay loop closes the rest. A unit's pack may contribute 13 authored items while the exam samples 5-7 — this is sampling, not a coverage defect (R8). Reserve items stay in their packs and are legal alternates; swapping one never changes the pattern slot.",
+ "verseLedger": {
+  "slots": 7,
+  "list": [
+   "mat-7-13 (u01, teaches=perdición)",
+   "psa-119-105 (u02, teaches=lámpara)",
+   "lke-2-1 (u03, teaches=pesebre)",
+   "mrk-1-41 (u05, teaches=mano)",
+   "lke-15-24 (u06, teaches=hijo)",
+   "mat-4-21 (u08, teaches=llamó)",
+   "lke-5-5 (u08, teaches=red)"
+  ],
+  "dropped": "u04 pro-31-24 and u07 1sa-16-7 — both still ship inside their unit lessons, they are simply not exam-tested (R-3). If U8 had filed with only one verse binding, lke-5-5's slot would have stayed empty rather than being backfilled by a dropped OT verse.",
+  "gospelQuota": "E3 CLOSES at 7 of ≥7 Gospel verses taught (Mt 7:13, Mt 7:14, Lk 2:1-7, Mrk 1:41, Lk 15:24, Mt 4:21, Lk 5:5); the exam samples 6 of them (Mt 7:14 is the a0 revisit, not an A1 binding).",
+  "revisits": "psa-119-105 is served by a1-u02 with es=lámpara (never re-target; exam-a0 served it with es=camino — revisit recorded). mat-7-13 is served here with es=perdición; exam-a0 served the same passage at mat-7-14 with es=puerta — revisit 1 of max 2 per band.",
+  "byteIdentity": "every verse/verseModern/missing/missingModern/captionSplit block is copied byte-identically from its pack (R5); captionSplit ships 1909 orthography (u05/u06/u07 convention) and the modern line is served via verseModern/missingModern — the owner's RV pick decides which renders."
+ },
+ "renderDebt": {
+  "hearActSprites": "8 hear-act pattern slots; only puerta has a confirmed prop sprite (exam-a0's set: puerta, casa, camino, moneda, pan, cesta). 7 slots carry renderFallback=hear-choose (ventana, puente, zapato, cabeza, corazón, escudo, nariz).",
+  "artOwed": "ventana, lámpara, puente, pesebre, zapato, sombrero, cabeza, mano, corazón, familia, escudo, piedra, nariz, diente, medicina, red, barco + the toca/señala action icons (DEFECTS #17).",
+  "tileDebt": "SHORT tiles (vas 3, red 3) need min-width; LONG reflexive tiles (se levantan 14) need wrap/scale; the -ó/-ió ending is the only visual difference between pretérito tiles and their present partners (oró/ora, trabajó/trabajo) — extends DEFECTS #20/D6.",
+  "rule": "art debt files for the design pass; it never blocks the exam and never moves a floor (R6)."
+ },
+ "patternsRef": "Item kinds are matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), the same contract as a1-u02…a1-u08. The p1-p8 pattern shapes may dangle until R9b's CONTENT-a1-pack.md §B re-authoring lands (R-5) — not a blocker for filing.",
+ "items": [
+  {
+   "n": 1,
+   "type": "hear-choose",
+   "es": "nunca",
+   "en": "never",
+   "say": "David nunca tiene miedo.",
+   "options": [
+    "nunca",
+    "no",
+    "tampoco"
+   ],
+   "formSeed": 101,
+   "unit": "a1-u01"
+  },
+  {
+   "n": 2,
+   "type": "hear-choose",
+   "es": "cree",
+   "en": "believes",
+   "say": "David cree en Dios.",
+   "options": [
+    "cree",
+    "escoge",
+    "aprende"
+   ],
+   "formSeed": 104,
+   "unit": "a1-u01"
+  },
+  {
+   "n": 3,
+   "type": "hear-choose",
+   "es": "por qué",
+   "en": "why",
+   "say": "¿Por qué escoge Dios a David?",
+   "options": [
+    "por qué",
+    "porque",
+    "qué"
+   ],
+   "formSeed": 106,
+   "note": "THE U1 QUESTION-WORD CONTRAST (por qué / porque) — set byte-identical to the pack's own shipped round. R-1 resolves the nearFormRule conflict: the documented exception clause is added to a1-u01.qna.nearFormRule and this item ships as authored.",
+   "unit": "a1-u01"
+  },
+  {
+   "n": 4,
+   "type": "hear-act",
+   "es": "puerta",
+   "en": "door",
+   "say": "Toca la puerta.",
+   "sprite": "puerta",
+   "options": [
+    "puerta",
+    "casa",
+    "camino"
+   ],
+   "formSeed": 107,
+   "unit": "a1-u01"
+  },
+  {
+   "n": 5,
+   "type": "gap-fill",
+   "es": "come",
+   "sentence": "David ___ pan en casa.",
+   "choices": [
+    "come",
+    "bebe",
+    "vive"
+   ],
+   "formSeed": 110,
+   "note": "-ER/-IR 3RD PERSON ITEM (R2). Sentence = the pack's own say for come with the target blanked; choices = the pack's own option set.",
+   "unit": "a1-u01"
+  },
+  {
+   "n": 6,
+   "type": "verse-complete",
+   "verseId": "mat-7-13",
+   "verseEnd": 14,
+   "reference": "Mateo 7:13-14 (RV1909)",
+   "verse": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+   "verseModern": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva a perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+   "missing": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á ___, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+   "missingModern": "Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva a ___, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+   "captionSplit": [
+    "Entrad por la puerta estrecha: porque ancha",
+    "es la puerta, y espacioso el camino que lleva",
+    "á ___, y muchos son los que entran por ella.",
+    "Porque estrecha es la puerta, y angosto el camino",
+    "que lleva á la vida, y pocos son los que la hallan."
+   ],
+   "gapCount": 1,
+   "oneTapFillsAll": false,
+   "es": "perdición",
+   "en": "perdition",
+   "say": "«Entrad por la puerta estrecha: porque ancha es la puerta, y espacioso el camino que lleva á perdición, y muchos son los que entran por ella. Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.»",
+   "options": [
+    "perdición",
+    "ciudad",
+    "calle",
+    "muro"
+   ],
+   "formSeed": 111,
+   "note": "R3 FLAGSHIP — the only binding that teaches perdición (0 exam bindings today). verse/verseModern/captionSplit/say are BYTE-IDENTICAL to a1-u01.json scripture (verified lead 2026-11-10, ledger #1/#4); missing/missingModern/captionSplit-line-3 derived by blanking the single occurrence of perdición (occurs ×1). Decoys ciudad/calle/muro are bound ids and verse-free. Display line: captionSplit ships 1909 orthography (á) per the u05/u06/u07 convention; the modern line is served via verseModern/missingModern — the owner's RV pick decides which renders (R5). Ledger field: exam-a0 already served this passage (verseId mat-7-14, es puerta) — this is revisit 1 of max 2 per band, new binding target teaches=perdición.",
+   "unit": "a1-u01"
+  },
+  {
+   "type": "hear-choose",
+   "es": "lámpara",
+   "say": "La lámpara está en la mesa.",
+   "options": [
+    "lámpara",
+    "cesta",
+    "ventana"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 201,
+   "n": 7
+  },
+  {
+   "type": "hear-choose",
+   "es": "tiene",
+   "say": "Obed-Edom tiene una casa.",
+   "options": [
+    "tiene",
+    "tengo",
+    "hay"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 204,
+   "n": 8
+  },
+  {
+   "type": "hear-choose",
+   "es": "junto a",
+   "say": "La silla está junto a la mesa.",
+   "options": [
+    "junto a",
+    "debajo",
+    "detrás"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 206,
+   "n": 9
+  },
+  {
+   "type": "hear-act",
+   "es": "ventana",
+   "say": "Toca la ventana.",
+   "sprite": "ventana",
+   "options": [
+    "ventana",
+    "mesa",
+    "puerta"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 207,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 10
+  },
+  {
+   "type": "gap-fill",
+   "es": "de",
+   "sentence": "La casa ___ Ana es grande.",
+   "choices": [
+    "de",
+    "mi",
+    "su"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 209,
+   "n": 11
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "psa-119-105",
+   "reference": "Salmo 119:105 (RV1909)",
+   "verse": "Lámpara es á mis pies tu palabra, y lumbrera á mi camino.",
+   "verseModern": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",
+   "missing": "___ es á mis pies tu palabra, y lumbrera á mi camino.",
+   "missingModern": "___ es a mis pies tu palabra, y lumbrera a mi camino.",
+   "captionSplit": [
+    "___ es á mis pies",
+    "tu palabra, y lumbrera",
+    "á mi camino."
+   ],
+   "es": "lámpara",
+   "say": "«Lámpara es á mis pies tu palabra, y lumbrera á mi camino.»",
+   "options": [
+    "lámpara",
+    "ventana",
+    "cesta",
+    "mesa"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 211,
+   "n": 12
+  },
+  {
+   "type": "reading-item",
+   "passage": "Obed-Edom tiene una casa grande. La casa tiene dos ventanas y una puerta. La mesa está junto a la ventana. El saco está en el suelo. La lámpara está sobre la mesa.",
+   "question": "¿Dónde está el saco?",
+   "answer": "en el suelo",
+   "choices": [
+    "en el suelo",
+    "sobre la mesa",
+    "en la cesta"
+   ],
+   "unit": "a1-u02",
+   "formSeed": 212,
+   "n": 13
+  },
+  {
+   "type": "hear-choose",
+   "es": "pueblo",
+   "say": "María y José van al pueblo.",
+   "options": [
+    "pueblo",
+    "ciudad",
+    "plaza"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 301,
+   "n": 14
+  },
+  {
+   "type": "hear-choose",
+   "es": "izquierda",
+   "say": "Dobla a la izquierda.",
+   "options": [
+    "izquierda",
+    "derecha",
+    "recto"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 303,
+   "n": 15
+  },
+  {
+   "type": "hear-choose",
+   "es": "burro",
+   "say": "El burro lleva el saco.",
+   "options": [
+    "burro",
+    "camello",
+    "carro"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 304,
+   "n": 16
+  },
+  {
+   "type": "hear-act",
+   "es": "puente",
+   "say": "Señala el puente.",
+   "sprite": "puente",
+   "options": [
+    "puente",
+    "muro",
+    "plaza"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 307,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 17
+  },
+  {
+   "type": "gap-fill",
+   "es": "al",
+   "sentence": "José va ___ pueblo.",
+   "choices": [
+    "al",
+    "de",
+    "en"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 309,
+   "n": 18
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "lke-2-1",
+   "verseEnd": 7,
+   "reference": "Lucas 2:1-7 (RV1909)",
+   "verse": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+   "verseModern": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fue hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno a su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, a Judea, a la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió a su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+   "missing": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un ___, porque no había lugar para ellos en el mesón.",
+   "missingModern": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fue hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno a su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, a Judea, a la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió a su hijo primogénito, y le envolvió en pañales, y acostóle en un ___, porque no había lugar para ellos en el mesón.",
+   "gapCount": 1,
+   "captionSplit": [
+    "Y ACONTECIÓ en aquellos días que salió",
+    "edicto de parte de Augusto César, que",
+    "toda la tierra fuese empadronada. Este",
+    "empadronamiento primero fué hecho siendo",
+    "Cirenio gobernador de la Siria. E iban todos",
+    "para ser empadronados, cada uno á su ciudad.",
+    "Y subió José de Galilea, de la ciudad de",
+    "Nazaret, á Judea, á la ciudad de David, que",
+    "se llama Bethlehem, por cuanto era de la",
+    "casa y familia de David; Para ser",
+    "empadronado con María su mujer, desposada",
+    "con él, la cual estaba en cinta. Y",
+    "aconteció que estando ellos allí, se",
+    "cumplieron los días en que ella había de",
+    "parir. Y parió á su hijo primogénito, y le",
+    "envolvió en pañales, y acostóle en un",
+    "___, porque no había lugar para ellos",
+    "en el mesón."
+   ],
+   "en": "manger",
+   "es": "pesebre",
+   "say": "«Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.»",
+   "options": [
+    "pesebre",
+    "cama",
+    "puerta",
+    "mesa"
+   ],
+   "unit": "a1-u03",
+   "formSeed": 311,
+   "n": 19
+  },
+  {
+   "type": "hear-choose",
+   "es": "mercado",
+   "say": "Prudencia vende ropa en el mercado.",
+   "options": [
+    "mercado",
+    "tienda",
+    "plaza"
+   ],
+   "unit": "a1-u04",
+   "formSeed": 401,
+   "n": 20
+  },
+  {
+   "type": "hear-choose",
+   "es": "camisa",
+   "say": "La camisa es blanca.",
+   "options": [
+    "camisa",
+    "vestido",
+    "sombrero"
+   ],
+   "unit": "a1-u04",
+   "formSeed": 404,
+   "n": 21
+  },
+  {
+   "type": "hear-choose",
+   "es": "amarillo",
+   "say": "El maíz es amarillo.",
+   "options": [
+    "amarillo",
+    "azul",
+    "rojo"
+   ],
+   "unit": "a1-u04",
+   "formSeed": 405,
+   "n": 22
+  },
+  {
+   "type": "hear-act",
+   "es": "zapato",
+   "say": "Toca el zapato.",
+   "sprite": "zapato",
+   "options": [
+    "zapato",
+    "sombrero",
+    "camisa"
+   ],
+   "unit": "a1-u04",
+   "formSeed": 407,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 23
+  },
+  {
+   "type": "gap-fill",
+   "es": "esta",
+   "sentence": "___ camisa es blanca.",
+   "choices": [
+    "esta",
+    "este",
+    "estas"
+   ],
+   "note": "THE AGREEMENT ITEM. Three demonstratives in one written set is legal here and only here — the hear-choose ban on este/esta/estos does not apply to gap-fill, where the written noun camisa resolves the gender (E6).",
+   "unit": "a1-u04",
+   "formSeed": 409,
+   "n": 24
+  },
+  {
+   "type": "reading-item",
+   "passage": "En el mercado hay mucha gente. Prudencia vende ropa en su tienda. La camisa es blanca y la falda es azul. El vestido cuesta veinte monedas. El mercader trae tela nueva.",
+   "question": "¿De qué color es la falda?",
+   "answer": "azul",
+   "choices": [
+    "azul",
+    "verde",
+    "negro"
+   ],
+   "note": "READING-ITEM RULE applied: the answer is attested verbatim in the passage and every content word in the choices is a bound pool id (citation form for the distractors). The passage itself is where the agreement is demonstrated (blanca, azul, nueva).",
+   "unit": "a1-u04",
+   "formSeed": 412,
+   "n": 25
+  },
+  {
+   "type": "hear-choose",
+   "es": "me levanto",
+   "say": "Me levanto a las siete.",
+   "options": [
+    "me levanto",
+    "me acuesto",
+    "me peino"
+   ],
+   "unit": "a1-u05",
+   "formSeed": 501,
+   "n": 26
+  },
+  {
+   "type": "hear-choose",
+   "es": "temprano",
+   "say": "Me levanto temprano.",
+   "options": [
+    "temprano",
+    "siempre",
+    "después"
+   ],
+   "unit": "a1-u05",
+   "formSeed": 503,
+   "n": 27
+  },
+  {
+   "type": "hear-choose",
+   "es": "cuerpo",
+   "say": "Mi cuerpo está sano.",
+   "options": [
+    "cuerpo",
+    "cabeza",
+    "mano"
+   ],
+   "unit": "a1-u05",
+   "formSeed": 505,
+   "n": 28
+  },
+  {
+   "type": "hear-act",
+   "es": "cabeza",
+   "say": "Toca la cabeza.",
+   "sprite": "cabeza",
+   "options": [
+    "cabeza",
+    "cara",
+    "mano"
+   ],
+   "unit": "a1-u05",
+   "formSeed": 507,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 29
+  },
+  {
+   "type": "gap-fill",
+   "es": "se levanta",
+   "sentence": "Ana ___ temprano.",
+   "choices": [
+    "se levanta",
+    "me levanto",
+    "me acuesto"
+   ],
+   "note": "THE PERSON ITEM. Three persons/verbs in one written set is legal here and only here — the written subject Ana resolves the -a/-o contrast (a1-u04 E6 precedent).",
+   "unit": "a1-u05",
+   "formSeed": 509,
+   "n": 30
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "mrk-1-41",
+   "reference": "Marcos 1:41 (RV1909)",
+   "verse": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+   "verseModern": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+   "missing": "Y Jesús, teniendo misericordia de él, extendió su ___, y le tocó, y le dice: Quiero, sé limpio.",
+   "missingModern": "Y Jesús, teniendo misericordia de él, extendió su ___, y le tocó, y le dice: Quiero, sé limpio.",
+   "captionSplit": [
+    "Y Jesús, teniendo misericordia de él,",
+    "extendió su ___, y le tocó, y le",
+    "dice: Quiero, sé limpio."
+   ],
+   "gapCount": 1,
+   "en": "hand",
+   "es": "mano",
+   "say": "«Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.»",
+   "options": [
+    "mano",
+    "brazo",
+    "pierna",
+    "ojo"
+   ],
+   "unit": "a1-u05",
+   "formSeed": 511,
+   "n": 31
+  },
+  {
+   "type": "hear-choose",
+   "es": "abuelo",
+   "say": "Mi abuelo es fiel.",
+   "options": [
+    "abuelo",
+    "padre",
+    "tío"
+   ],
+   "unit": "a1-u06",
+   "formSeed": 601,
+   "n": 32
+  },
+  {
+   "type": "hear-choose",
+   "es": "amigo",
+   "say": "¿Es tu amigo?",
+   "options": [
+    "amigo",
+    "vecino",
+    "primo"
+   ],
+   "unit": "a1-u06",
+   "formSeed": 602,
+   "n": 33
+  },
+  {
+   "type": "hear-choose",
+   "es": "orgulloso",
+   "say": "Un corazón orgulloso no ora.",
+   "options": [
+    "orgulloso",
+    "humilde",
+    "celoso"
+   ],
+   "unit": "a1-u06",
+   "formSeed": 605,
+   "n": 34
+  },
+  {
+   "type": "hear-act",
+   "es": "corazón",
+   "say": "Toca tu corazón.",
+   "sprite": "corazón",
+   "options": [
+    "corazón",
+    "cabeza",
+    "cuerpo"
+   ],
+   "unit": "a1-u06",
+   "formSeed": 607,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 35
+  },
+  {
+   "type": "gap-fill",
+   "es": "mis",
+   "sentence": "___ amigos están aquí.",
+   "choices": [
+    "mis",
+    "mi",
+    "mío"
+   ],
+   "note": "THE NUMBER-AGREEMENT ITEM: mi/mis/mío in one written set is legal here and only here — the written plural noun amigos resolves the form (a1-u04 E6 precedent); the hear-choose ban on mi/mis still holds.",
+   "unit": "a1-u06",
+   "formSeed": 609,
+   "n": 36
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "lke-15-24",
+   "reference": "Lucas 15:24 (RV1909)",
+   "verse": "Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.",
+   "verseModern": "Porque este mi hijo muerto era, y ha revivido; se había perdido, y es hallado. Y comenzaron a regocijarse.",
+   "missing": "Porque este mi ___ muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.",
+   "missingModern": "Porque este mi ___ muerto era, y ha revivido; se había perdido, y es hallado. Y comenzaron a regocijarse.",
+   "captionSplit": [
+    "Porque este mi ___ muerto era,",
+    "y ha revivido; habíase perdido,",
+    "y es hallado. Y comenzaron á",
+    "regocijarse."
+   ],
+   "gapCount": 1,
+   "es": "hijo",
+   "en": "son",
+   "say": "«Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.»",
+   "options": [
+    "hijo",
+    "padre",
+    "hermano",
+    "madre"
+   ],
+   "note": "VERIFIED 21:5X by lead (curl verses/LUK/015/024.json, RV1909M). hijo ×1 → gapCount 1. Options are all BOUND pool ids; decoys padre/hermano/madre are verse-free (mi occurs but is not an option string, U6-15). captionSplit in 1909 orthography per the u05 display convention — the modern line is served via verseModern/missingModern (display pick pending the owner RV decision).",
+   "unit": "a1-u06",
+   "formSeed": 611,
+   "n": 37
+  },
+  {
+   "type": "reading-item",
+   "passage": "Mi familia es grande. Mi padre es generoso y mi madre es paciente. Mi abuelo y mi abuela están en casa. Mi amigo es fiel y mis primos están aquí. Un corazón humilde es bueno.",
+   "question": "¿Cómo es el padre?",
+   "answer": "generoso",
+   "choices": [
+    "generoso",
+    "egoísta",
+    "celoso"
+   ],
+   "note": "READING-ITEM RULE applied: the answer is attested verbatim in the passage and every content word in the choices is a bound pool id (citation form for the distractors). The passage demonstrates possessive agreement (mi/mis) and ser + character adjective together.",
+   "unit": "a1-u06",
+   "formSeed": 612,
+   "n": 38
+  },
+  {
+   "type": "hear-choose",
+   "es": "habló",
+   "say": "David habló con el rey.",
+   "options": [
+    "habló",
+    "oró",
+    "escuchó"
+   ],
+   "unit": "a1-u07",
+   "formSeed": 701,
+   "n": 39
+  },
+  {
+   "type": "hear-choose",
+   "es": "lanzó",
+   "say": "David lanzó la piedra.",
+   "options": [
+    "lanzó",
+    "cayó",
+    "ganó"
+   ],
+   "unit": "a1-u07",
+   "formSeed": 702,
+   "n": 40
+  },
+  {
+   "type": "hear-choose",
+   "es": "valle",
+   "say": "El valle está entre dos montes.",
+   "options": [
+    "valle",
+    "camino",
+    "piedra"
+   ],
+   "unit": "a1-u07",
+   "formSeed": 705,
+   "n": 41
+  },
+  {
+   "type": "hear-act",
+   "es": "escudo",
+   "say": "Señala el escudo.",
+   "sprite": "escudo",
+   "options": [
+    "escudo",
+    "espada",
+    "lanza"
+   ],
+   "unit": "a1-u07",
+   "formSeed": 707,
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 42
+  },
+  {
+   "type": "gap-fill",
+   "es": "oró",
+   "sentence": "Ayer David ___ a Dios.",
+   "choices": [
+    "oró",
+    "ora",
+    "gritó"
+   ],
+   "note": "THE PRESENT/PRETERITE ACCENT-PAIR ITEM: oró vs ora in one WRITTEN set is legal here and only here — the written marker ayer resolves the tense (a1-u04 E6 precedent). The hear-choose ban on ora/oró still holds (U7-2).",
+   "unit": "a1-u07",
+   "formSeed": 709,
+   "n": 43
+  },
+  {
+   "type": "hear-choose",
+   "es": "barco",
+   "en": "boat",
+   "say": "El barco está en el agua.",
+   "options": [
+    "barco",
+    "red",
+    "casa"
+   ],
+   "formSeed": 801,
+   "unit": "a1-u08",
+   "n": 44
+  },
+  {
+   "type": "hear-choose",
+   "es": "se levantan",
+   "en": "they get up",
+   "say": "Ellos se levantan temprano.",
+   "options": [
+    "se levantan",
+    "desayuno",
+    "temprano"
+   ],
+   "formSeed": 802,
+   "unit": "a1-u08",
+   "n": 45
+  },
+  {
+   "type": "hear-choose",
+   "es": "cuestan",
+   "en": "they cost",
+   "say": "Dos panes cuestan una moneda.",
+   "options": [
+    "cuestan",
+    "mercado",
+    "moneda"
+   ],
+   "formSeed": 803,
+   "unit": "a1-u08",
+   "n": 46
+  },
+  {
+   "type": "hear-act",
+   "es": "nariz",
+   "en": "nose",
+   "say": "Toca la nariz.",
+   "sprite": "nariz",
+   "options": [
+    "nariz",
+    "mano",
+    "cabeza"
+   ],
+   "formSeed": 804,
+   "note": "R6 SPRITE CHECK (B7): NO prop sprite exists for nariz (the confirmed set is exam-a0's puerta/casa/camino/moneda/pan/cesta) — this item ships as its hear-choose twin, same es/say/options, pattern slot unchanged. No u08 word has a sprite; the art debt files for the design pass and must not block the exam.",
+   "unit": "a1-u08",
+   "renderFallback": "hear-choose",
+   "renderFallbackWhy": "no prop sprite for this word (R6/B7); ships as its hear-choose twin — same es/say/options, pattern slot unchanged",
+   "n": 47
+  },
+  {
+   "type": "gap-fill",
+   "es": "vas",
+   "sentence": "Tú ___ al agua hoy.",
+   "choices": [
+    "vas",
+    "va",
+    "van"
+   ],
+   "formSeed": 805,
+   "note": "THE PERSON ITEM: three forms of ir in one WRITTEN set is legal here and only here — the written subject Tú resolves the 2nd singular (C5 in hear-choose, legal in gap-fill; a1-u07 llegaron precedent). The time marker hoy keeps the present tense unambiguous against U7's pretérito.",
+   "unit": "a1-u08",
+   "n": 48
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "mat-4-21",
+   "reference": "Mateo 4:21 (RV1909)",
+   "verse": "Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+   "verseModern": "Y pasando de allí vio otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+   "missing": "Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los ___.",
+   "missingModern": "Y pasando de allí vio otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los ___.",
+   "captionSplit": [
+    "Y pasando de allí vió otros dos hermanos,",
+    "Jacobo, hijo de Zebedeo, y Juan su hermano,",
+    "en el barco con Zebedeo, su padre,",
+    "que remendaban sus redes; y los ___."
+   ],
+   "gapCount": 1,
+   "oneTapFillsAll": false,
+   "es": "llamó",
+   "en": "called",
+   "say": "«Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.»",
+   "options": [
+    "llamó",
+    "escuchó",
+    "volvió",
+    "respondió"
+   ],
+   "formSeed": 806,
+   "note": "Byte-identical to this pack's scripture block (verified 11:14, ledger). The verse is HEARD and READ before the gap is asked (owner quality bar). Decoys escuchó/volvió/respondió are bound ids and verse-free; hermano/padre/barco occur in the verse and are therefore never decoys.",
+   "unit": "a1-u08",
+   "n": 49
+  },
+  {
+   "type": "verse-complete",
+   "verseId": "lke-5-5",
+   "reference": "Lucas 5:5 (RV1909)",
+   "verse": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+   "verseModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+   "missing": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+   "missingModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+   "captionSplit": [
+    "Y respondiendo Simón, le dijo: Maestro,",
+    "habiendo trabajado toda la noche,",
+    "nada hemos tomado; mas en tu palabra",
+    "echaré la ___."
+   ],
+   "gapCount": 1,
+   "oneTapFillsAll": false,
+   "es": "red",
+   "en": "net",
+   "say": "«Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.»",
+   "options": [
+    "red",
+    "cesta",
+    "moneda",
+    "pan"
+   ],
+   "formSeed": 807,
+   "note": "R-3 SLOT: u08's second verse slot. Byte-identical to the verse above and to the ledger entry. The verse is HEARD and READ before the gap is asked (owner quality bar 2026-11-11). Decoys cesta/moneda/pan are verse-free; nada/noche/maestro occur in the verse and are therefore never decoys (B2).",
+   "unit": "a1-u08",
+   "n": 50
+  }
+ ],
+ "nearFormScoping": {
+  "rule": "A pack's nearFormRule governs hear-choose option sets only. Written channels (gap-fill, verse-complete, reading-item) may place a banned pair in ONE set when the written marker resolves it — a1-u04 E6 / a1-u07 U7-2/U7-7 precedent.",
+  "examInstances": [
+   "item 3 hear-choose por qué/porque — the ONE hear-choose instance, authorized by LEAD RULING R-1 (documented exception in a1-u01.qna.nearFormRule, cuántos/cuándo precedent)",
+   "item 36 gap-fill mi/mis — a1-u06's own authored item, written subject resolves the possessive",
+   "item 37 verse-complete hijo/padre/madre — a1-u06's own authored option set (verse-complete, not hear-choose)",
+   "item 43 gap-fill oró/ora — U7-2: legal ONLY in gap-fill with the written marker ayer",
+   "item 48 gap-fill vas/va/van — U8-3: legal ONLY in gap-fill with the written subject Tú"
+  ],
+  "clean": "No hear-choose set in this exam places a banned pair other than item 3 (R-1)."
+ }
+}
