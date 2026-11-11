@@ -340,6 +340,7 @@ function Adventure() {
             frameId={mission.frameId}
             embedded
             missionDifficulty={mission.difficulty}
+            contentBinding={mission.contentBinding}
             onWin={handleWin}
             onExit={closeMission}
           />

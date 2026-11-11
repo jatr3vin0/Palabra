@@ -5,6 +5,13 @@ import { StatsBar, useProgress } from "~/components/Chrome";
 import { Mascot } from "~/components/Mascot";
 import { PhaserIsland } from "~/components/PhaserGame";
 import { unit } from "~/content/unit";
+import {
+  bindingScriptureRound,
+  bindingShooterRounds,
+  packForBinding,
+  packVocab,
+  type Pack,
+} from "~/content/packs/a0-packs";
 import { seededShuffle } from "~/lib/answer";
 import {
   CASA_FRAME_ID,
@@ -180,6 +187,7 @@ export function FrameGame({
   frameId,
   embedded = false,
   missionDifficulty,
+  contentBinding,
   onWin,
   onExit,
 }: {
@@ -187,6 +195,13 @@ export function FrameGame({
   embedded?: boolean;
   /** Session tier preselected when a mission launches it (child → Niño). */
   missionDifficulty?: string;
+  /**
+   * The mission registry's curriculum binding (e.g. a0-u03). When it resolves
+   * to a pack, the frame plays the PACK's rounds and draws decoys/replay from
+   * the pack ∪ unit pool union; absent/unknown → the frame's own rounds (the
+   * verified gate loop, untouched).
+   */
+  contentBinding?: string;
   /** Fires once per win, after XP/coins/mastery are recorded in storage. */
   onWin?: (result: MissionResult) => void;
   /** Fires when the learner closes the frame (embedded mode only). */
@@ -196,10 +211,25 @@ export function FrameGame({
   // Game #1: the Phaser shooter template. Everything else keeps the React body.
   if (frame?.kind === "phaser" && frame.mechanic === "shooter-word") {
     return (
-      <SkyWordsFrame frame={frame} embedded={embedded} missionDifficulty={missionDifficulty} onWin={onWin} onExit={onExit} />
+      <SkyWordsFrame
+        frame={frame}
+        embedded={embedded}
+        missionDifficulty={missionDifficulty}
+        contentBinding={contentBinding}
+        onWin={onWin}
+        onExit={onExit}
+      />
     );
   }
-  return <ClassicFrame frame={frame} embedded={embedded} onWin={onWin} onExit={onExit} />;
+  return (
+    <ClassicFrame
+      frame={frame}
+      embedded={embedded}
+      contentBinding={contentBinding}
+      onWin={onWin}
+      onExit={onExit}
+    />
+  );
 }
 
 // ── Game 1: Capitán Rico: Sky Words — the Phaser shooter template ───────────
@@ -219,12 +249,14 @@ function SkyWordsFrame({
   frame,
   embedded = false,
   missionDifficulty,
+  contentBinding,
   onWin,
   onExit,
 }: {
   frame: FrameDef;
   embedded?: boolean;
   missionDifficulty?: string;
+  contentBinding?: string;
   onWin?: (result: MissionResult) => void;
   onExit?: () => void;
 }) {
@@ -242,6 +274,10 @@ function SkyWordsFrame({
   // The Génesis wave opens with the scripture moment (once per session).
   const [verseMoment, setVerseMoment] = useState(false);
   const momentShownRef = useRef(false);
+  // The session's pack (when the mission carried a known binding) and the
+  // round pool every builder draws from: pack words ∪ unit vocab.
+  const pack = useMemo(() => packForBinding(contentBinding), [contentBinding]);
+  const pool = useMemo(() => poolFor(pack), [pack]);
 
   // The frame's own voice: the villager who opens it (per-character kokoro).
   const say = useCallback(
@@ -372,7 +408,11 @@ function SkyWordsFrame({
     (accuracy: number) => {
       const L = live.current;
       if (!L.p) return;
-      const { next, xpGained, coinsGained } = completeLesson(L.p, frame.id, frame.xp, accuracy);
+      // Composite Spanish-mastery lesson id when a pack binding is active
+      // (INTEGRATION §2 step 8) — a second mission on the same frame is a
+      // first-clear of its OWN lesson, not a half-XP replay of the gate one.
+      const lessonId = pack ? `${frame.id}@${contentBinding}` : frame.id;
+      const { next, xpGained, coinsGained } = completeLesson(L.p, lessonId, frame.xp, accuracy);
       updateRef.current(bumpImmersion(next));
       setResult({ xp: xpGained, coins: coinsGained, accuracy });
       setPhase("done");
@@ -387,7 +427,7 @@ function SkyWordsFrame({
       // Mission bridge: the adventure host records the flag + reward in-world.
       onWin?.({ xp: xpGained, coins: coinsGained, accuracy });
     },
-    [ctrl, frame, say, onWin],
+    [ctrl, frame, say, onWin, pack, contentBinding],
   );
 
   // Mirror state into the handlers' view every render.
@@ -410,10 +450,11 @@ function SkyWordsFrame({
     handleWinRef.current = handleWin;
   });
 
-  // The session's five waves: saludos ×2, cortesía, «En el principio», replay.
+  // The session's five waves: the pack's waves 1-4 (or the frame's own rounds
+  // without a binding), then the adaptive replay wave built at runtime.
   useEffect(() => {
     if (!p || waves.length > 0) return;
-    setWaves(buildShooterWaves(frame, p));
+    setWaves(buildShooterWaves(frame, p, pack));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p, waves.length]);
 
@@ -433,9 +474,9 @@ function SkyWordsFrame({
   const formation = useMemo(() => {
     if (phase !== "play" || !round) return null;
     const seed = `${frame.id}-${waveIdx}-${roundIdx}-${respawns}`;
-    return formationFor(round, tierParams, seed);
+    return formationFor(round, tierParams, seed, pool);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, round, waveIdx, roundIdx, respawns, tierParams]);
+  }, [phase, round, waveIdx, roundIdx, respawns, tierParams, pool]);
 
   useEffect(() => {
     if (phase !== "play" || !round || !formation) return;
@@ -473,7 +514,7 @@ function SkyWordsFrame({
     stopSpeaking();
     momentShownRef.current = false;
     setVerseMoment(false);
-    setWaves(buildShooterWaves(frame, p));
+    setWaves(buildShooterWaves(frame, p, pack));
     setWaveIdx(0);
     setRoundIdx(0);
     setRespawns(0);
@@ -611,42 +652,55 @@ function SkyWordsFrame({
 
 // ── Sky Words round building ────────────────────────────────────────────────
 
-const vocabPool: { es: string; en: string }[] = unit.vocab;
+/**
+ * The session round pool (buildspec item 2 — the pool-union builder behind the
+ * four vocabPool sites): the binding pack's words FIRST, then the unit-01
+ * vocab (deduped by es). Decoys and replay candidates never leave this pool.
+ * Without a pack this is exactly unit.vocab — the verified gate loop.
+ */
+function poolFor(pack: Pack | undefined): { es: string; en: string }[] {
+  if (!pack) return unit.vocab;
+  const seen = new Set(unit.vocab.map((v) => v.es));
+  return [...packVocab(pack), ...unit.vocab.filter((v) => !seen.has(v.es))];
+}
 
 /** True when a shooter wave is the «En el principio» scripture wave. */
 function isScriptureWave(w: ShooterRound[] | undefined): boolean {
   return Array.isArray(w) && w.some((r) => r.caption?.startsWith("Génesis"));
 }
 
-function distractors(word: string, count: number, seed: string): string[] {
-  const pool = vocabPool.map((v) => v.es).filter((w) => w !== word);
-  return seededShuffle(pool, seed).slice(0, count);
+function distractors(word: string, count: number, seed: string, pool: { es: string; en: string }[]): string[] {
+  const options = pool.map((v) => v.es).filter((w) => w !== word);
+  return seededShuffle(options, seed).slice(0, count);
 }
 
 /**
- * The five session waves from the frame's contentBinding: rounds carry a wave
- * tag (1–2 saludos, 3 cortesía, 4 «En el principio»); wave 5 is the adaptive
- * replay wave, built from progress.misses with isReplay — a hit clears the
- * miss, a miss re-records it.
+ * The five session waves from the frame's contentBinding: the pack's waves
+ * 1–4 (or the frame's own rounds without a binding); wave 5 is the adaptive
+ * replay wave, built from progress.misses ∩ the session pool with isReplay —
+ * a hit clears the miss, a miss re-records it.
  */
-function buildShooterWaves(frame: FrameDef, p: Progress | null): ShooterRound[][] {
-  const base = frame.rounds as ShooterRound[];
+function buildShooterWaves(frame: FrameDef, p: Progress | null, pack: Pack | undefined): ShooterRound[][] {
+  const base: ShooterRound[] = pack
+    ? (bindingShooterRounds(pack) as ShooterRound[])
+    : (frame.rounds as ShooterRound[]);
+  const pool = poolFor(pack);
   const waves: ShooterRound[][] = [[], [], [], [], []];
   for (const r of base) {
     const w = Math.min(4, Math.max(1, r.wave ?? 1)) - 1;
     waves[w].push(r);
   }
   const replays = (p ? missedWords(p) : [])
-    .filter((w) => vocabPool.some((v) => v.es === w))
+    .filter((w) => pool.some((v) => v.es === w))
     .slice(0, 3)
     .map((w) => {
-      const v = vocabPool.find((x) => x.es === w)!;
+      const v = pool.find((x) => x.es === w)!;
       return {
         word: v.es,
         en: v.en,
         say: `Repasamos una palabra de antes. ¿Dónde está… ${v.es}?`,
         caption: `¿Dónde está… ${v.es}?`,
-        options: [v.es, ...distractors(v.es, 3, `${frame.id}-${v.es}`)],
+        options: [v.es, ...distractors(v.es, 3, `${frame.id}-${v.es}`, pool)],
         wave: 5,
         isReplay: true,
       } satisfies ShooterRound;
@@ -663,18 +717,19 @@ function buildShooterWaves(frame: FrameDef, p: Progress | null): ShooterRound[][
 }
 
 /** The enemy labels for one formation: target + decoys (curated first, then
- * unit vocab; adults get look-alike/rhyming decoys first). Pre-shuffled. */
+ * the session pool; adults get look-alike/rhyming decoys first). Pre-shuffled. */
 function formationFor(
   round: ShooterRound,
   params: { difficulty: number; similar: boolean },
   seed: string,
+  pool: { es: string; en: string }[],
 ): string[] {
   const want = Math.max(2, params.difficulty);
   const picks: string[] = [round.word];
   const add = (w: string) => {
     if (picks.length < want && !picks.includes(w)) picks.push(w);
   };
-  const vocab = vocabPool.map((v) => v.es).filter((w) => w !== round.word);
+  const vocab = pool.map((v) => v.es).filter((w) => w !== round.word);
   if (params.similar) {
     for (const w of similarWords(round.word, vocab, seed)) add(w);
   }
@@ -712,11 +767,13 @@ type ViewProps<R extends AnyRound> = {
 function ClassicFrame({
   frame,
   embedded = false,
+  contentBinding,
   onWin,
   onExit,
 }: {
   frame: FrameDef | undefined;
   embedded?: boolean;
+  contentBinding?: string;
   onWin?: (result: MissionResult) => void;
   onExit?: () => void;
 }) {
@@ -726,6 +783,8 @@ function ClassicFrame({
   const [mistakes, setMistakes] = useState(0);
   const [rounds, setRounds] = useState<AnyRound[]>([]);
   const [result, setResult] = useState<{ xp: number; coins: number; accuracy: number } | null>(null);
+  // The session's pack (when the mission carried a known binding).
+  const pack = useMemo(() => packForBinding(contentBinding), [contentBinding]);
 
   const say = useCallback(
     (text: string, opts?: SpeakOpts, onEnd?: () => void) => {
@@ -745,13 +804,24 @@ function ClassicFrame({
     speakSpanish(REWARD_COPY.spoken.join(" "), castParams("narrator"));
   }, []);
 
-  // Rounds build once per visit: words missed earlier come back here, inside a
-  // DIFFERENT frame than where they were missed (adaptive replay).
+  // The session's rounds: the pack's scripture round under a binding, else the
+  // frame's own rounds; words missed earlier come back inside a DIFFERENT
+  // frame than where they were missed (adaptive replay).
+  const roundsFor = useCallback((): AnyRound[] => {
+    if (!frame) return [];
+    if (frame.kind !== "scripture") return frame.rounds as AnyRound[];
+    const base: ScriptureRound[] = pack
+      ? [bindingScriptureRound(pack) as ScriptureRound]
+      : (frame.rounds as ScriptureRound[]);
+    return buildScriptureRounds(base, p);
+  }, [frame, pack, p]);
+
+  // Rounds build once per visit.
   useEffect(() => {
     if (!frame || !p || rounds.length > 0) return;
-    setRounds(frame.kind === "scripture" ? buildScriptureRounds(frame, p) : (frame.rounds as AnyRound[]));
+    setRounds(roundsFor());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, p]);
+  }, [frame, p, roundsFor]);
 
   // Warm the voice as soon as the frame opens; stop speech when leaving.
   useEffect(() => {
@@ -779,7 +849,10 @@ function ClassicFrame({
   const finish = useCallback(() => {
     if (!p || !frame) return;
     const accuracy = total > 0 ? Math.max(0, Math.round(((total - mistakes) / total) * 100)) : 100;
-    const { next, xpGained, coinsGained } = completeLesson(p, frame.id, frame.xp, accuracy);
+    // Composite Spanish-mastery lesson id when a pack binding is active
+    // (INTEGRATION §2 step 8) — the second mission is its own first-clear.
+    const lessonId = pack ? `${frame.id}@${contentBinding}` : frame.id;
+    const { next, xpGained, coinsGained } = completeLesson(p, lessonId, frame.xp, accuracy);
     update(bumpImmersion(next));
     setResult({ xp: xpGained, coins: coinsGained, accuracy });
     setPhase("done");
@@ -794,7 +867,7 @@ function ClassicFrame({
     }
     onWin?.({ xp: xpGained, coins: coinsGained, accuracy });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p, frame, total, mistakes, say, sayVerse, onWin]);
+  }, [p, frame, total, mistakes, say, sayVerse, onWin, pack, contentBinding]);
 
   const nextRound = useCallback(() => {
     stopSpeaking();
@@ -907,7 +980,7 @@ function ClassicFrame({
               type="button"
               onClick={() => {
                 stopSpeaking();
-                setRounds(frame.kind === "scripture" ? buildScriptureRounds(frame, p) : (frame.rounds as AnyRound[]));
+                setRounds(roundsFor());
                 setIdx(0);
                 setMistakes(0);
                 setResult(null);
@@ -942,8 +1015,7 @@ function ClassicFrame({
 }
 
 /** Scripture rounds: the verse rounds, with missed words slipped in as balloons. */
-function buildScriptureRounds(frame: FrameDef, p: Progress | null): ScriptureRound[] {
-  const base = frame.rounds as ScriptureRound[];
+function buildScriptureRounds(base: ScriptureRound[], p: Progress | null): ScriptureRound[] {
   if (!p) return base;
   const answerWords = new Set(base.map((r) => r.word));
   const missed = missedWords(p).filter((w) => !answerWords.has(w)).slice(0, 2);
