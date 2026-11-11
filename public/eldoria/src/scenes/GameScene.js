@@ -1071,6 +1071,11 @@ window.GameScene = class GameScene extends Phaser.Scene {
     // real death — the kill counts immediately, no matter what happens next
     Flags.set('boss_' + deathMap);
     Flags.set(deathMap + '_complete');
+    // W3 blocking fix: the Evangelista briefings gate on d1/d2/d3_complete,
+    // but only <map>_complete was ever set — those variants were dead code.
+    // Additive alias: every save-flag name stays intact (no save break).
+    const alias = { dungeon1: 'd1_complete', dungeon2: 'd2_complete', dungeon3: 'd3_complete' }[deathMap];
+    if (alias) Flags.set(alias);
     if (deathMap === 'citadel') {
       // VICTORY ceremony: nothing may hurt the player anymore
       Flags.set('game_complete');
