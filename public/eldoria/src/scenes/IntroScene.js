@@ -33,10 +33,15 @@ window.IntroScene = class IntroScene extends Phaser.Scene {
     this.textObj.setText(this.pages[this.page].join('\n'));
     this.textObj.setAlpha(0);
     this.tweens.add({ targets: this.textObj, alpha: 1, duration: 400 });
-    // voice-first: the narrator reads the story page
-    if (window.Palabra) {
-      window.Palabra.speak(this.pages[this.page].filter(Boolean).join(' '), 'narrator');
-    }
+    // voice-first: the narrator reads the story page — with a short beat
+    // between pages (owner play-test 4) so it is not read flat line after line
+    const page = this.page;
+    const speak = () => {
+      if (this.page !== page || !window.Palabra) return;
+      window.Palabra.speak(this.pages[page].filter(Boolean).join(' '), 'narrator');
+    };
+    if (page === 0) speak();
+    else this.time.delayedCall(350, speak);
   }
 
   advance() {

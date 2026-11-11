@@ -112,6 +112,10 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     this.sel = (this.sel + d + this.owned.length) % this.owned.length;
     AUDIO.sfx('menuMove');
     this.refreshCursor();
+    // Menu voice (owner play-test 4): speak ONLY the highlighted item's name.
+    const k = this.owned[this.sel];
+    const nm = ITEMS[k] && ITEMS[k].name;
+    if (nm && window.Palabra) window.Palabra.speak(nm, 'narrator');
   }
 
   refreshMusicRow() {

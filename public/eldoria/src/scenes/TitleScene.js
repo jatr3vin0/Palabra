@@ -99,6 +99,15 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
     this.eraseArmed = -1;
     AUDIO.sfx('menuMove');
     this.refreshSlots();
+    // Menu voice (owner play-test 4): on a move, speak ONLY the highlighted
+    // item — never the whole list — so the menu feels like a game.
+    const s = SAVE.slots()[this.sel];
+    if (window.Palabra) {
+      window.Palabra.speak(
+        'Casilla ' + (this.sel + 1) + '. ' + (s && s.exists ? 'Aventura guardada.' : 'Nueva aventura.'),
+        'narrator',
+      );
+    }
   }
 
   choose() {

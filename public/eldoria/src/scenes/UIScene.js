@@ -128,10 +128,18 @@ window.UIScene = class UIScene extends Phaser.Scene {
           d.textObj.setText(full);
         } else if (d.page < d.pages.length - 1) {
           d.page++; d.shown = 0; d.tick = 0;
-          this.speakPage();   // voice leads the page turn; no menu sfx over it
+          // a beat between pages (owner play-test 4): the voice breathes
+          // instead of slam-reading line after line — the next page speaks
+          // 350 ms after the turn, once, unless another turn re-arms it
+          d.speakAt = this.time.now + 350;
         } else {
           this.closeDialogue();
         }
+      }
+      // the page-turn pause elapses -> speak THIS page once
+      if (d.speakAt && this.time.now >= d.speakAt) {
+        d.speakAt = 0;
+        this.speakPage();
       }
     }
   }
@@ -156,7 +164,7 @@ window.UIScene = class UIScene extends Phaser.Scene {
     const arrow = this.add.triangle(302, 206, 0, 0, 8, 0, 4, 6, 0xffe97f).setDepth(21).setVisible(false);
     g.add([box, txt, arrow]);
     this.dialogue = {
-      pages, page: 0, shown: 0, tick: 0, group: g, textObj: txt, arrow,
+      pages, page: 0, shown: 0, tick: 0, group: g, textObj: txt, arrow, speakAt: 0,
       gloss: payload && payload.gloss ? payload.gloss : null, glossObj,
       speaker: payload && payload.speaker ? payload.speaker : null,
     };

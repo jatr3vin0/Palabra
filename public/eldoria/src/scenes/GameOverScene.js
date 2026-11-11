@@ -20,8 +20,10 @@ window.GameOverScene = class GameOverScene extends Phaser.Scene {
     }).setShadow(1, 1, '#000000', 0).setOrigin(0.5).setResolution(CONFIG.ZOOM * 2));
     this.refresh();
 
-    this.input.keyboard.on('keydown-UP', () => { this.sel = 1 - this.sel; AUDIO.sfx('menuMove'); this.refresh(); });
-    this.input.keyboard.on('keydown-DOWN', () => { this.sel = 1 - this.sel; AUDIO.sfx('menuMove'); this.refresh(); });
+    // Menu voice (owner play-test 4): speak ONLY the highlighted option.
+    const sayOpt = () => { if (window.Palabra) window.Palabra.speak(this.opts[this.sel], 'narrator'); };
+    this.input.keyboard.on('keydown-UP', () => { this.sel = 1 - this.sel; AUDIO.sfx('menuMove'); this.refresh(); sayOpt(); });
+    this.input.keyboard.on('keydown-DOWN', () => { this.sel = 1 - this.sel; AUDIO.sfx('menuMove'); this.refresh(); sayOpt(); });
     const go = () => this.choose();
     this.input.keyboard.on('keydown-ENTER', go);
     this.input.keyboard.on('keydown-SPACE', go);
