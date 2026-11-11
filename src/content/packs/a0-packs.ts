@@ -97,8 +97,12 @@ for (const p of packs) {
   wordsByPack.set(p.packId, m);
 }
 
-/** getWord over the union: a0-packs ids resolve per source pack; unit-01 ids
- * resolve as { id: es, es, en }. Throws on any id absent from BOTH sources. */
+/** Every es in every a0 pack — sibling-pack decoy ids validate against this. */
+const allPackEs = new Set(packs.flatMap((p) => p.words.map((w) => w.es)));
+
+/** getWord over the union: a0-packs ids resolve across all packs (a word id
+ * is unique per pack, so the first hit is unambiguous); unit-01 ids resolve
+ * as { id: es, es, en }. Throws on any id absent from BOTH sources. */
 export function getWord(id: string): PackWord {
   for (const m of wordsByPack.values()) {
     const w = m.get(id);
@@ -124,10 +128,14 @@ for (const p of packs) {
   packIds.add(p.packId);
   const es = new Set(p.words.map((w) => w.es));
   if (es.size !== p.words.length) throw new Error(`a0-packs: duplicate es in ${p.packId}`);
-  // options must be within-pool decoys (DEFECTS #14-15)
+  // options must be known-word decoys (DEFECTS #14-15): the word's own pack
+  // pool first — the canonical file also borrows decoys from SIBLING a0 packs
+  // (a0-signs-regions cites campo/castillo/roca… from a0-u05), and those ids
+  // resolve via getWord across the union, so they pass; an id absent from
+  // every pack still fails the load — a child never meets an invented word.
   for (const w of p.words) {
     for (const o of w.options) {
-      if (!es.has(o)) throw new Error(`a0-packs: ${p.packId}.${w.id} option ${o} outside the pack pool`);
+      if (!es.has(o) && !allPackEs.has(o)) throw new Error(`a0-packs: ${p.packId}.${w.id} option ${o} outside the a0-packs union`);
     }
   }
   // numeric waves must cover every word (wave 5 is the runtime replay wave)
