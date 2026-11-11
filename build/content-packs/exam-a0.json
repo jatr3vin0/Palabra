@@ -1,0 +1,736 @@
+{
+ "schema": "palabra.exam.v1",
+ "id": "exam-a0",
+ "cefr": "A0",
+ "kind": "level-exam",
+ "title": "Examen de nivel A0",
+ "supersedes": "session-83434792 draft (40 items) + build/EXAM-a0.md LEAD RULINGS 1-8",
+ "authority": "Palabra learner records are authoritative. Eldoria flags mirror exam state; they never source it.",
+ "binding": {
+  "rule": "Every item binds its word by `es`, byte-identical, to src/content/unit-01.json vocab or build/content-packs/a0-packs.json. No u01-* slugs, no integer indices, no lowercasing, no trimming, no accent-stripping. Item key = `<es>#<formSeed>`.",
+  "unit01Edits": "none — unit-01.json gains no id fields and is not edited",
+  "accentedWords": "unrenamed and unencoded (maíz, árbol, río, día, adiós) per ruling 7",
+  "formSeed": "authored item number; seeds deterministic option-order shuffle per attempt so a retake is a new form under the same item key"
+ },
+ "voice": {
+  "allItems": "narrator",
+  "cast": "ef_dora 0.88",
+  "musicDuck": 0,
+  "note": "uniform exam conditions (ruling 4); the scripture voice (em_santa 0.85) returns in lessons, not here",
+  "replay": "each item's audio replays on tap, unlimited, no penalty"
+ },
+ "timing": {
+  "targetMinutes": "8-10"
+ },
+ "scoring": {
+  "items": 41,
+  "counts": {
+   "hear-choose": 18,
+   "hear-act": 12,
+   "verse-complete": 11
+  },
+  "pass": {
+   "total": 33,
+   "of": 41
+  },
+  "floors": {
+   "hear-choose": 12,
+   "hear-act": 9,
+   "verse-complete": 8
+  },
+  "rescaleNote": "40→41 items from ruling 5; 80% of 41 = 33. Floors carry over (12/18, 9/12); verse floor 8/11 holds ~70% per-channel. Pass needs total AND every floor. THRESHOLD RESCALE APPROVED by lead 2026-11-10."
+ },
+ "anchors": [
+  "hola",
+  "gracias",
+  "luz",
+  "casa",
+  "pan",
+  "camino"
+ ],
+ "onPass": {
+  "flag": "exam_a0_passed",
+  "xp": 100,
+  "xpRule": "first pass only, gated on flag-not-set",
+  "bestKept": true
+ },
+ "onFail": {
+  "xp": 0,
+  "recordMiss": true,
+  "missGame": "exam-a0",
+  "retake": "locked until every word missed here is cleared in a non-exam frame",
+  "attempts": "unlimited, best kept, no cooldown"
+ },
+ "audioFail": "exam pauses; it never silently degrades to a text-only screen",
+ "rendererContract": "hear-choose = 3 text options; hear-act = 3 sprite options keyed by `es` (sprite art looked up by the word itself, no second id space); verse-complete = 4 text options. Listening items carry NO prompt caption — prompt is audio only, so the answer is never printed.",
+ "items": [
+  {
+   "n": 1,
+   "type": "hear-choose",
+   "es": "hola",
+   "en": "hello",
+   "say": "Yo digo: ¡hola!",
+   "options": [
+    "hola",
+    "adiós",
+    "gracias"
+   ],
+   "formSeed": 1
+  },
+  {
+   "n": 2,
+   "type": "hear-choose",
+   "es": "gracias",
+   "en": "thank you",
+   "say": "Mamá te da pan. Tú dices: gracias.",
+   "options": [
+    "gracias",
+    "de nada",
+    "por favor"
+   ],
+   "formSeed": 2
+  },
+  {
+   "n": 3,
+   "type": "hear-choose",
+   "es": "luz",
+   "en": "light",
+   "say": "Y Dios dijo: sea la luz.",
+   "options": [
+    "luz",
+    "noche",
+    "tinieblas"
+   ],
+   "formSeed": 3
+  },
+  {
+   "n": 4,
+   "type": "hear-choose",
+   "es": "casa",
+   "en": "house",
+   "say": "Mira mi casa. Es blanca.",
+   "options": [
+    "casa",
+    "tienda",
+    "cama"
+   ],
+   "formSeed": 4
+  },
+  {
+   "n": 5,
+   "type": "hear-choose",
+   "es": "pan",
+   "en": "bread",
+   "say": "Me gusta el pan.",
+   "options": [
+    "pan",
+    "queso",
+    "plato"
+   ],
+   "formSeed": 5
+  },
+  {
+   "n": 6,
+   "type": "hear-choose",
+   "es": "camino",
+   "en": "path, road",
+   "say": "El camino va al pueblo.",
+   "options": [
+    "camino",
+    "campo",
+    "castillo"
+   ],
+   "formSeed": 6
+  },
+  {
+   "n": 7,
+   "type": "hear-choose",
+   "es": "agua",
+   "en": "water",
+   "say": "Bebo agua. Es buena.",
+   "options": [
+    "agua",
+    "leche",
+    "miel"
+   ],
+   "formSeed": 7
+  },
+  {
+   "n": 8,
+   "type": "hear-choose",
+   "es": "puerta",
+   "en": "door",
+   "say": "La puerta de la casa.",
+   "options": [
+    "puerta",
+    "ventana",
+    "pared"
+   ],
+   "formSeed": 8
+  },
+  {
+   "n": 9,
+   "type": "hear-choose",
+   "es": "hermano",
+   "en": "brother",
+   "say": "Mi hermano es David.",
+   "options": [
+    "hermano",
+    "hermana",
+    "hijo"
+   ],
+   "formSeed": 9
+  },
+  {
+   "n": 10,
+   "type": "hear-choose",
+   "es": "adiós",
+   "en": "goodbye",
+   "say": "Cuando me voy, digo adiós.",
+   "options": [
+    "adiós",
+    "hola",
+    "hasta luego"
+   ],
+   "formSeed": 10
+  },
+  {
+   "n": 11,
+   "type": "hear-choose",
+   "es": "buenas noches",
+   "en": "good evening / good night",
+   "say": "Es de noche. Digo buenas noches.",
+   "options": [
+    "buenas noches",
+    "buenos días",
+    "buenas tardes"
+   ],
+   "formSeed": 11
+  },
+  {
+   "n": 12,
+   "type": "hear-choose",
+   "es": "árbol",
+   "en": "tree",
+   "say": "El árbol es grande.",
+   "options": [
+    "árbol",
+    "planta",
+    "roca"
+   ],
+   "formSeed": 12
+  },
+  {
+   "n": 13,
+   "type": "hear-choose",
+   "es": "queso",
+   "en": "cheese",
+   "say": "Como queso y pan.",
+   "options": [
+    "queso",
+    "huevo",
+    "uva"
+   ],
+   "formSeed": 13
+  },
+  {
+   "n": 14,
+   "type": "hear-choose",
+   "es": "cielo",
+   "en": "sky; los cielos = the heavens",
+   "say": "El cielo es de Dios.",
+   "options": [
+    "cielo",
+    "tierra",
+    "luz"
+   ],
+   "formSeed": 14
+  },
+  {
+   "n": 15,
+   "type": "hear-choose",
+   "es": "familia",
+   "en": "family",
+   "say": "Mi familia es grande.",
+   "options": [
+    "familia",
+    "madre",
+    "padre"
+   ],
+   "formSeed": 15
+  },
+  {
+   "n": 16,
+   "type": "hear-choose",
+   "es": "mucho gusto",
+   "en": "pleased to meet you",
+   "say": "Mucho gusto, me llamo Ana.",
+   "options": [
+    "mucho gusto",
+    "perdón",
+    "disculpe"
+   ],
+   "formSeed": 16
+  },
+  {
+   "n": 17,
+   "type": "hear-choose",
+   "es": "piedra",
+   "en": "stone",
+   "say": "La piedra es dura.",
+   "options": [
+    "piedra",
+    "roca",
+    "barro"
+   ],
+   "formSeed": 17
+  },
+  {
+   "n": 18,
+   "type": "hear-choose",
+   "es": "hasta mañana",
+   "en": "see you tomorrow",
+   "say": "Hasta mañana, Ana.",
+   "options": [
+    "hasta mañana",
+    "hasta luego",
+    "adiós"
+   ],
+   "formSeed": 18
+  },
+  {
+   "n": 19,
+   "type": "hear-act",
+   "es": "casa",
+   "en": "house",
+   "say": "Toca la casa.",
+   "sprite": "casa",
+   "options": [
+    "casa",
+    "mesa",
+    "cama"
+   ],
+   "formSeed": 19
+  },
+  {
+   "n": 20,
+   "type": "hear-act",
+   "es": "pan",
+   "en": "bread",
+   "say": "Toca el pan.",
+   "sprite": "pan",
+   "options": [
+    "pan",
+    "plato",
+    "cesta"
+   ],
+   "formSeed": 20
+  },
+  {
+   "n": 21,
+   "type": "hear-act",
+   "es": "camino",
+   "en": "path, road",
+   "say": "Señala el camino.",
+   "sprite": "camino",
+   "options": [
+    "camino",
+    "árbol",
+    "puerta"
+   ],
+   "formSeed": 21
+  },
+  {
+   "n": 22,
+   "type": "hear-act",
+   "es": "puerta",
+   "en": "door",
+   "say": "Toca la puerta.",
+   "sprite": "puerta",
+   "options": [
+    "puerta",
+    "ventana",
+    "mesa"
+   ],
+   "formSeed": 22
+  },
+  {
+   "n": 23,
+   "type": "hear-act",
+   "es": "ventana",
+   "en": "window",
+   "say": "Abre la ventana.",
+   "sprite": "ventana",
+   "options": [
+    "ventana",
+    "puerta",
+    "cama"
+   ],
+   "formSeed": 23
+  },
+  {
+   "n": 24,
+   "type": "hear-act",
+   "es": "mesa",
+   "en": "table",
+   "say": "Toca la mesa.",
+   "sprite": "mesa",
+   "options": [
+    "mesa",
+    "silla",
+    "cama"
+   ],
+   "formSeed": 24
+  },
+  {
+   "n": 25,
+   "type": "hear-act",
+   "es": "silla",
+   "en": "chair",
+   "say": "Señala la silla.",
+   "sprite": "silla",
+   "options": [
+    "silla",
+    "mesa",
+    "plato"
+   ],
+   "formSeed": 25
+  },
+  {
+   "n": 26,
+   "type": "hear-act",
+   "es": "cama",
+   "en": "bed",
+   "say": "Toca la cama.",
+   "sprite": "cama",
+   "options": [
+    "cama",
+    "silla",
+    "mesa"
+   ],
+   "formSeed": 26
+  },
+  {
+   "n": 27,
+   "type": "hear-act",
+   "es": "plato",
+   "en": "plate",
+   "say": "Toca el plato.",
+   "sprite": "plato",
+   "options": [
+    "plato",
+    "cesta",
+    "pan"
+   ],
+   "formSeed": 27
+  },
+  {
+   "n": 28,
+   "type": "hear-act",
+   "es": "cesta",
+   "en": "basket",
+   "say": "Toca la cesta.",
+   "sprite": "cesta",
+   "options": [
+    "cesta",
+    "plato",
+    "moneda"
+   ],
+   "formSeed": 28
+  },
+  {
+   "n": 29,
+   "type": "hear-act",
+   "es": "árbol",
+   "en": "tree",
+   "say": "Señala el árbol.",
+   "sprite": "árbol",
+   "options": [
+    "árbol",
+    "camino",
+    "casa"
+   ],
+   "formSeed": 29
+  },
+  {
+   "n": 30,
+   "type": "hear-act",
+   "es": "moneda",
+   "en": "coin",
+   "say": "Toca la moneda.",
+   "sprite": "moneda",
+   "options": [
+    "moneda",
+    "cesta",
+    "plato"
+   ],
+   "formSeed": 30
+  },
+  {
+   "n": 31,
+   "type": "verse-complete",
+   "verseId": "gn-1-3",
+   "reference": "Génesis 1:3 (RV1909)",
+   "verse": "Y dijo Dios: Sea la luz: y fué la luz.",
+   "verseModern": "Y dijo Dios: Sea la luz: y fue la luz.",
+   "missing": "Y dijo Dios: Sea la ___: y fué la ___.",
+   "missingModern": "Y dijo Dios: Sea la ___: y fue la ___.",
+   "gapCount": 2,
+   "oneTapFillsAll": true,
+   "captionSplit": [
+    "Y dijo Dios: Sea la ___:",
+    "y fué la ___."
+   ],
+   "es": "luz",
+   "en": "light",
+   "say": "«Y dijo Dios: Sea la luz: y fué la luz.»",
+   "options": [
+    "luz",
+    "noche",
+    "tinieblas",
+    "hombre"
+   ],
+   "formSeed": 31
+  },
+  {
+   "n": 32,
+   "type": "verse-complete",
+   "verseId": "gn-1-3",
+   "reference": "Génesis 1:3 (RV1909)",
+   "verse": "Y dijo Dios: Sea la luz: y fué la luz.",
+   "verseModern": "Y dijo Dios: Sea la luz: y fue la luz.",
+   "missing": "Y dijo ___: Sea la luz: y fué la luz.",
+   "missingModern": "Y dijo ___: Sea la luz: y fue la luz.",
+   "captionSplit": [
+    "Y dijo ___: Sea la luz:",
+    "y fué la luz."
+   ],
+   "es": "Dios",
+   "en": "God",
+   "say": "«Y dijo Dios: Sea la luz: y fué la luz.»",
+   "options": [
+    "Dios",
+    "hombre",
+    "tierra",
+    "día"
+   ],
+   "formSeed": 32
+  },
+  {
+   "n": 33,
+   "type": "verse-complete",
+   "verseId": "1jn-4-8",
+   "reference": "1 Juan 4:8 (RV1909)",
+   "verse": "El que no ama, no conoce á Dios; porque Dios es amor.",
+   "verseModern": "El que no ama, no conoce a Dios; porque Dios es amor.",
+   "missing": "El que no ama, no conoce á Dios; porque Dios es ___.",
+   "missingModern": "El que no ama, no conoce a Dios; porque Dios es ___.",
+   "captionSplit": [
+    "El que no ama, no conoce á Dios;",
+    "porque Dios es ___."
+   ],
+   "es": "amor",
+   "en": "love",
+   "say": "«El que no ama, no conoce á Dios; porque Dios es amor.»",
+   "options": [
+    "amor",
+    "luz",
+    "tierra",
+    "familia"
+   ],
+   "formSeed": 33
+  },
+  {
+   "n": 34,
+   "type": "verse-complete",
+   "verseId": "jos-24-15",
+   "reference": "Josué 24:15 (RV1909)",
+   "verse": "que yo y mi casa serviremos á Jehová.",
+   "verseModern": "que yo y mi casa serviremos a Jehová.",
+   "missing": "que yo y mi ___ serviremos á Jehová.",
+   "missingModern": "que yo y mi ___ serviremos a Jehová.",
+   "captionSplit": [
+    "que yo y mi ___",
+    "serviremos á Jehová."
+   ],
+   "es": "casa",
+   "en": "house",
+   "say": "«que yo y mi casa serviremos á Jehová.»",
+   "options": [
+    "casa",
+    "tienda",
+    "mesa",
+    "familia"
+   ],
+   "formSeed": 34
+  },
+  {
+   "n": 35,
+   "type": "verse-complete",
+   "verseId": "mat-6-11",
+   "reference": "Mateo 6:11 (RV1909)",
+   "verse": "Danos hoy nuestro pan cotidiano.",
+   "missing": "Danos hoy nuestro ___ cotidiano.",
+   "captionSplit": [
+    "Danos hoy",
+    "nuestro ___ cotidiano."
+   ],
+   "es": "pan",
+   "en": "bread",
+   "say": "«Danos hoy nuestro pan cotidiano.»",
+   "options": [
+    "pan",
+    "queso",
+    "agua",
+    "sal"
+   ],
+   "formSeed": 35
+  },
+  {
+   "n": 36,
+   "type": "verse-complete",
+   "verseId": "jhn-14-6",
+   "reference": "Juan 14:6 (RV1909)",
+   "verse": "Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.",
+   "missing": "Jesús le dice: Yo soy el ___, y la verdad, y la vida: nadie viene al Padre, sino por mí.",
+   "captionSplit": [
+    "Jesús le dice: Yo soy el ___,",
+    "y la verdad, y la vida:",
+    "nadie viene al Padre, sino por mí."
+   ],
+   "es": "camino",
+   "en": "path, road",
+   "say": "«Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.»",
+   "options": [
+    "camino",
+    "campo",
+    "puerta",
+    "castillo"
+   ],
+   "formSeed": 36
+  },
+  {
+   "n": 37,
+   "type": "verse-complete",
+   "verseId": "gn-1-1",
+   "reference": "Génesis 1:1 (RV1909)",
+   "verse": "EN el principio crió Dios los cielos y la tierra.",
+   "verseModern": "En el principio creó Dios los cielos y la tierra.",
+   "missing": "EN el principio crió ___ los cielos y la tierra.",
+   "missingModern": "En el principio creó ___ los cielos y la tierra.",
+   "captionSplit": [
+    "EN el principio crió ___",
+    "los cielos y la tierra."
+   ],
+   "es": "Dios",
+   "en": "God",
+   "say": "«EN el principio crió Dios los cielos y la tierra.»",
+   "options": [
+    "Dios",
+    "hombre",
+    "luz",
+    "día"
+   ],
+   "formSeed": 37
+  },
+  {
+   "n": 38,
+   "type": "verse-complete",
+   "verseId": "mat-7-14",
+   "reference": "Mateo 7:14 (RV1909)",
+   "verse": "Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+   "verseModern": "Porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+   "missing": "Porque estrecha es la ___, y angosto el camino que lleva á la vida, y pocos son los que la hallan.",
+   "missingModern": "Porque estrecha es la ___, y angosto el camino que lleva a la vida, y pocos son los que la hallan.",
+   "captionSplit": [
+    "Porque estrecha es la ___,",
+    "y angosto el camino",
+    "que lleva á la vida,",
+    "y pocos son los que la hallan."
+   ],
+   "es": "puerta",
+   "en": "door",
+   "say": "«Porque estrecha es la puerta, y angosto el camino que lleva á la vida, y pocos son los que la hallan.»",
+   "options": [
+    "puerta",
+    "ventana",
+    "pared",
+    "casa"
+   ],
+   "formSeed": 38
+  },
+  {
+   "n": 39,
+   "type": "verse-complete",
+   "verseId": "psa-119-105",
+   "reference": "Salmo 119:105 (RV1909)",
+   "verse": "Lámpara es á mis pies tu palabra, y lumbrera á mi camino.",
+   "verseModern": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",
+   "missing": "Lámpara es á mis pies tu palabra, y lumbrera á mi ___.",
+   "missingModern": "Lámpara es a mis pies tu palabra, y lumbrera a mi ___.",
+   "captionSplit": [
+    "Lámpara es á mis pies tu palabra,",
+    "y lumbrera á mi ___."
+   ],
+   "es": "camino",
+   "en": "path, road",
+   "say": "«Lámpara es á mis pies tu palabra, y lumbrera á mi camino.»",
+   "options": [
+    "camino",
+    "río",
+    "campo",
+    "norte"
+   ],
+   "formSeed": 39
+  },
+  {
+   "n": 40,
+   "type": "verse-complete",
+   "verseId": "gn-1-1",
+   "reference": "Génesis 1:1 (RV1909)",
+   "verse": "EN el principio crió Dios los cielos y la tierra.",
+   "verseModern": "En el principio creó Dios los cielos y la tierra.",
+   "missing": "EN el ___ crió Dios los cielos y la tierra.",
+   "missingModern": "En el ___ creó Dios los cielos y la tierra.",
+   "captionSplit": [
+    "EN el ___ crió Dios",
+    "los cielos y la tierra."
+   ],
+   "es": "principio",
+   "en": "beginning",
+   "say": "«EN el principio crió Dios los cielos y la tierra.»",
+   "options": [
+    "principio",
+    "hombre",
+    "día",
+    "noche"
+   ],
+   "formSeed": 40
+  },
+  {
+   "n": 41,
+   "type": "verse-complete",
+   "verseId": "gn-1-1",
+   "reference": "Génesis 1:1 (RV1909)",
+   "verse": "EN el principio crió Dios los cielos y la tierra.",
+   "verseModern": "En el principio creó Dios los cielos y la tierra.",
+   "missing": "EN el principio crió Dios los cielos y la ___.",
+   "missingModern": "En el principio creó Dios los cielos y la ___.",
+   "captionSplit": [
+    "EN el principio crió Dios",
+    "los cielos y la ___."
+   ],
+   "es": "tierra",
+   "en": "earth, land",
+   "say": "«EN el principio crió Dios los cielos y la tierra.»",
+   "options": [
+    "tierra",
+    "luz",
+    "tinieblas",
+    "hombre"
+   ],
+   "formSeed": 41,
+   "note": "added per ruling 5; distractors are a0-u01-l8 story ids, byte-identical to unit-01.json vocab. 'cielo'/'cielos' deliberately NOT a distractor — the verse displays 'los cielos'."
+  }
+ ]
+}

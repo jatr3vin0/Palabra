@@ -1,0 +1,906 @@
+{
+ "packId": "a1-u03",
+ "unitId": "a1-u03",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "El camino a Belén — la ciudad y el pueblo, las direcciones, el transporte, ir a + lugar, las órdenes familiares",
+ "storyThread": "El camino a Belén (Lucas 2:1-7): el empadronamiento, el viaje de Nazaret a Belén, y el pesebre. L1 = el pueblo y sus lugares (re-pass de ciudad/calle/tienda/muro/camino); L2 = las direcciones; L3 = el transporte y el viaje (el paradigma de ir); L4 = las órdenes del camino y la llegada al pesebre.",
+ "grammarTargets": [
+  "ir a + lugar: voy / va / van (+ vamos re-pass de a0-verbs). VAS IS DELIBERATELY EXCLUDED — near-form budget, deferred to A1-U8 (two-verb structures / invitations); same treatment as C7's tenemos exclusion",
+  "a + el → al: the contraction is bound as its own id; bare a is bound too (closes the unbound spoken forms «va a la ciudad» a1-u01, «Vamos al pueblo»/«Al norte» a0-u05). a and al NEVER share an option set",
+  "familiar (tú) affirmative imperatives: ve, ven, dobla, sigue, cruza, espera + re-pass mira (a0-verbs). No negative commands (no + infinitive is A1-U8/B1-U2), no vosotros forms",
+  "present tense ONLY — pretérito is A1-U7. The scripture passage is past tense and is exempt per the standing scripture ruling",
+  "directions as adverbs: a la derecha, a la izquierda, todo recto, arriba, abajo — the phrase lives in say/sign, the tile is the bare form (formIdRule)",
+  "place nouns keep their articles (el pueblo, la plaza, al mercado); los/las already shipped in a1-u01 — no new article teaching"
+ ],
+ "waves": {
+  "l1": [
+   "ciudad",
+   "calle",
+   "pueblo",
+   "plaza",
+   "mercado",
+   "tienda",
+   "muro",
+   "camino"
+  ],
+  "l2": [
+   "derecha",
+   "izquierda",
+   "recto",
+   "arriba",
+   "abajo",
+   "puente",
+   "cerca",
+   "lejos",
+   "norte",
+   "sur"
+  ],
+  "l3": [
+   "burro",
+   "camello",
+   "carro",
+   "viaje",
+   "vamos",
+   "voy",
+   "va",
+   "van"
+  ],
+  "l4": [
+   "mira",
+   "ve",
+   "ven",
+   "dobla",
+   "sigue",
+   "cruza",
+   "espera",
+   "a",
+   "al",
+   "pesebre"
+  ]
+ },
+ "waveNotes": "l1 (8) = the town: 5 byte-identical re-passes (ciudad a0-signs-regions, calle a1-u01, tienda a0-u03, muro a1-u01, camino a0-u05) + pueblo/plaza/mercado new. NO pue- near pair inside l1 (puerta deliberately NOT re-passed here — re-served in a0-u03 + a1-u01 + a1-u02; puente sits in l2, away from pueblo). l2 (10) = directions + the bridge landmark: 6 new (derecha, izquierda, recto, arriba, abajo, puente) + 4 re-passes (cerca/lejos a1-u02, norte/sur a0-u05); contrast pairs sit together on purpose (derecha/izquierda, arriba/abajo, norte/sur, cerca/lejos) — documented exception. l3 (8) = transport + the ir paradigm: burro/camello/carro/viaje new, vamos re-pass, voy/va/van new. The whole ir paradigm is in ONE wave (a1-u02's tener-paradigm precedent) with the minimal pairs va/van separated inside it. l4 (10) = the orders of the road + the arrival: ve/ven/dobla/sigue/cruza/espera/a/al/pesebre new + mira re-pass; a and al are here because the commands carry them («Ve a la plaza.», «Ve al pueblo.»). Largest wave = 10 — under the 12-per-page threshold (DEFECTS #18), no pagination. Wave 5 = adaptive replay from progress.misses (unchanged convention — matches a1-u01/a1-u02).",
+ "words": [
+  {
+   "id": "ciudad",
+   "es": "ciudad",
+   "en": "city",
+   "say": "Belén es una ciudad pequeña.",
+   "caption": "La ciudad de David",
+   "sign": "La ciudad",
+   "options": [
+    "ciudad",
+    "pueblo",
+    "plaza"
+   ],
+   "new": false,
+   "poolSource": "a0-signs-regions",
+   "note": "re-pass at A1 with a fuller sentence than a1-u01's «La ciudad es grande». Belén is a proper noun, never a tile."
+  },
+  {
+   "id": "calle",
+   "es": "calle",
+   "en": "street",
+   "say": "Hay mucha gente en la calle.",
+   "caption": "La calle",
+   "sign": "La calle",
+   "options": [
+    "calle",
+    "camino",
+    "plaza"
+   ],
+   "new": false,
+   "poolSource": "a1-u01",
+   "note": "second A1 serve = spaced review of the previous unit; calle/camino may share a set (a1-u01 precedent), they are not a near pair."
+  },
+  {
+   "id": "pueblo",
+   "es": "pueblo",
+   "en": "town, village",
+   "say": "María y José van al pueblo.",
+   "caption": "El pueblo de Belén",
+   "sign": "El pueblo",
+   "options": [
+    "pueblo",
+    "ciudad",
+    "plaza"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "closes FOUR unbound spoken forms in shipped text: «La tienda del pueblo» (a0-u03), «El camino va al pueblo» (a0-u05), «El viernes vamos al pueblo» (a0-u02), «¿Cuándo vamos al pueblo?» (a0-u06) — the F5 hole in reverse, same class as a1-u02's junto a/en. pueblo/ciudad is the taught contrast (town vs city)."
+  },
+  {
+   "id": "plaza",
+   "es": "plaza",
+   "en": "square, plaza",
+   "say": "Hay un mercado en la plaza.",
+   "caption": "La plaza del pueblo",
+   "sign": "La plaza",
+   "options": [
+    "plaza",
+    "calle",
+    "mercado"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "pla- cluster: plaza/plato/planta never share an option set (plato a0-u04, planta a0-u05 are both pool ids)."
+  },
+  {
+   "id": "mercado",
+   "es": "mercado",
+   "en": "market",
+   "say": "El mercado está en la plaza.",
+   "caption": "El mercado",
+   "sign": "El mercado",
+   "options": [
+    "mercado",
+    "tienda",
+    "plaza"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "FORWARD BINDING (D4): A1-U4 (shopping, prices, merchants of Proverbs 31) must re-pass this id, not re-introduce it."
+  },
+  {
+   "id": "tienda",
+   "es": "tienda",
+   "en": "shop",
+   "say": "Mi tienda está en la plaza.",
+   "caption": "La tienda",
+   "sign": "La tienda",
+   "options": [
+    "tienda",
+    "mercado",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass; mercado (market) vs tienda (shop) is the unit's own contrast."
+  },
+  {
+   "id": "muro",
+   "es": "muro",
+   "en": "wall (city, outer)",
+   "say": "El muro está junto a la plaza.",
+   "caption": "El muro de la ciudad",
+   "sign": "El muro",
+   "options": [
+    "muro",
+    "piedra",
+    "camino"
+   ],
+   "new": false,
+   "poolSource": "a1-u01",
+   "note": "re-pass; muro/pared never each other's decoy (C6 holds — pared is not in this pack). junto a (a1-u02) carries the relation. en gloss matches the SOURCE fix (a1-u01.json:27)."
+  },
+  {
+   "id": "camino",
+   "es": "camino",
+   "en": "path, road",
+   "say": "El camino va a Belén.",
+   "caption": "El camino a Belén",
+   "sign": "El camino",
+   "options": [
+    "camino",
+    "calle",
+    "puente"
+   ],
+   "new": false,
+   "poolSource": "a0-u05",
+   "note": "re-pass; the unit's spine word; en gloss normalized to source-of-record (a0-u05) per u03 verification ruling. camello/camino never share a set (cam- cluster)."
+  },
+  {
+   "id": "derecha",
+   "es": "derecha",
+   "en": "right",
+   "say": "Dobla a la derecha.",
+   "caption": "A la derecha",
+   "sign": "A la derecha",
+   "options": [
+    "derecha",
+    "izquierda",
+    "recto"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "tile is the bare form, the phrase «a la derecha» lives in say/sign (formIdRule). Deliberate contrast set with izquierda."
+  },
+  {
+   "id": "izquierda",
+   "es": "izquierda",
+   "en": "left",
+   "say": "Dobla a la izquierda.",
+   "caption": "A la izquierda",
+   "sign": "A la izquierda",
+   "options": [
+    "izquierda",
+    "derecha",
+    "recto"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "derecha/izquierda in one set on purpose (documented exception) — the pair is the teaching point."
+  },
+  {
+   "id": "recto",
+   "es": "recto",
+   "en": "straight",
+   "say": "Sigue todo recto.",
+   "caption": "Todo recto",
+   "sign": "Todo recto",
+   "options": [
+    "recto",
+    "derecha",
+    "izquierda"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "only used as «todo recto»; the bare tile is recto."
+  },
+  {
+   "id": "arriba",
+   "es": "arriba",
+   "en": "up, above",
+   "say": "Belén está arriba.",
+   "caption": "Arriba",
+   "sign": "Arriba",
+   "options": [
+    "arriba",
+    "abajo",
+    "lejos"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "Belén is up in the hills (Lucas 2:4 «subió José») — the adverb is true to the passage, not an invented detail."
+  },
+  {
+   "id": "abajo",
+   "es": "abajo",
+   "en": "down, below",
+   "say": "El río está abajo.",
+   "caption": "Abajo",
+   "sign": "Abajo",
+   "options": [
+    "abajo",
+    "arriba",
+    "cerca"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "arriba/abajo in one set on purpose (documented exception)."
+  },
+  {
+   "id": "puente",
+   "es": "puente",
+   "en": "bridge",
+   "say": "El puente está a la derecha.",
+   "caption": "El puente",
+   "sign": "El puente",
+   "options": [
+    "puente",
+    "muro",
+    "piedra"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "puente/puerta/pueblo are the pue- cluster: never in the same option set. puerta is not in this pack; pueblo is in l1, puente in l2 — different waves as well."
+  },
+  {
+   "id": "cerca",
+   "es": "cerca",
+   "en": "near, close",
+   "say": "El mercado está cerca.",
+   "caption": "Cerca",
+   "sign": "Cerca",
+   "options": [
+    "cerca",
+    "lejos",
+    "arriba"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass at A1 in the directions sense. a1-u02 taught cerca DE / lejos DE (with a place object); alone they take no de. cerca/lejos stay each other's decoy (a1-u02 rule)."
+  },
+  {
+   "id": "lejos",
+   "es": "lejos",
+   "en": "far",
+   "say": "Belén está lejos.",
+   "caption": "Lejos",
+   "sign": "Lejos",
+   "options": [
+    "lejos",
+    "cerca",
+    "abajo"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass; lejos DE casa was a1-u02, bare lejos here."
+  },
+  {
+   "id": "norte",
+   "es": "norte",
+   "en": "north",
+   "say": "El norte está a la izquierda.",
+   "caption": "Al norte",
+   "sign": "Al norte",
+   "options": [
+    "norte",
+    "sur",
+    "recto"
+   ],
+   "new": false,
+   "poolSource": "a0-u05",
+   "note": "re-pass; the four compass points meet the left/right frame. norte/sur in one set on purpose (a0-u05 precedent)."
+  },
+  {
+   "id": "sur",
+   "es": "sur",
+   "en": "south",
+   "say": "El sur está a la derecha.",
+   "caption": "Al sur",
+   "sign": "Al sur",
+   "options": [
+    "sur",
+    "norte",
+    "derecha"
+   ],
+   "new": false,
+   "poolSource": "a0-u05",
+   "note": "re-pass; este/oeste deliberately NOT re-served (este is a homograph trap — see conflict #2 / D2 ruling: a1-u03 accepts a lowercase teachesForm; the verse-initial-cap mechanism stays demonstrated in a1-u02 Sal 119:105)."
+  },
+  {
+   "id": "burro",
+   "es": "burro",
+   "en": "donkey",
+   "say": "El burro lleva el saco.",
+   "caption": "El burro",
+   "sign": "El burro",
+   "options": [
+    "burro",
+    "camello",
+    "carro"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "NO say puts María on the donkey — the donkey of the nativity is tradition, not Lucas 2 (see qna.csa). burro/barro never share a set (barro a0-u05)."
+  },
+  {
+   "id": "camello",
+   "es": "camello",
+   "en": "camel",
+   "say": "El camello bebe agua.",
+   "caption": "El camello",
+   "sign": "El camello",
+   "options": [
+    "camello",
+    "burro",
+    "carro"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "generic transport animal; not tied to the Magi (Mateo 2 is not this unit). camello/camino never share a set."
+  },
+  {
+   "id": "carro",
+   "es": "carro",
+   "en": "cart",
+   "say": "El carro va al mercado.",
+   "caption": "El carro",
+   "sign": "El carro",
+   "options": [
+    "carro",
+    "burro",
+    "camello"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "carro/barro never share a set. barco/barca deliberately NOT taught here (water transport is A2-U6 travel; barca/barro is a near-form trap for nothing)."
+  },
+  {
+   "id": "viaje",
+   "es": "viaje",
+   "en": "journey, trip",
+   "say": "El viaje a Belén es largo.",
+   "caption": "El viaje",
+   "sign": "El viaje",
+   "options": [
+    "viaje",
+    "camino",
+    "calle"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "viaje/viejo (a0-u06) never share a set."
+  },
+  {
+   "id": "vamos",
+   "es": "vamos",
+   "en": "let's go / we go",
+   "say": "¡Vamos a la plaza!",
+   "caption": "¡Vamos!",
+   "sign": "¡Vamos!",
+   "options": [
+    "vamos",
+    "camino",
+    "viaje"
+   ],
+   "new": false,
+   "poolSource": "a0-verbs",
+   "note": "re-pass; the 1st-plural form the learner already has, now with a place object."
+  },
+  {
+   "id": "voy",
+   "es": "voy",
+   "en": "I go",
+   "say": "Voy a Belén con José.",
+   "caption": "Voy a Belén",
+   "sign": "Voy a Belén",
+   "options": [
+    "voy",
+    "vamos",
+    "viaje"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "ir 1st singular. Paradigm members may share a set EXCEPT the minimal pairs va/van, ve/ven, ve/va."
+  },
+  {
+   "id": "va",
+   "es": "va",
+   "en": "he / she goes",
+   "say": "José va a Belén.",
+   "caption": "José va a Belén",
+   "sign": "Va a Belén",
+   "options": [
+    "va",
+    "voy",
+    "vamos"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "ir 3rd singular. va/van NEVER share a set (final -n is the only difference — the tiene/tienen family, C5)."
+  },
+  {
+   "id": "van",
+   "es": "van",
+   "en": "they go",
+   "say": "María y José van a Belén.",
+   "caption": "Van a Belén",
+   "sign": "Van a Belén",
+   "options": [
+    "van",
+    "voy",
+    "vamos"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "ir 3rd plural; the spoken subject (María y José) is what distinguishes it from va."
+  },
+  {
+   "id": "mira",
+   "es": "mira",
+   "en": "look! (look at)",
+   "say": "Mira la plaza.",
+   "caption": "Mira la plaza",
+   "sign": "Mira",
+   "options": [
+    "mira",
+    "espera",
+    "sigue"
+   ],
+   "new": false,
+   "poolSource": "a0-verbs",
+   "note": "re-pass: the familiar imperative the learner already owns anchors the whole l4 wave as «commands you already know»; en gloss normalized to source-of-record (a0-verbs) per u03 verification ruling."
+  },
+  {
+   "id": "ve",
+   "es": "ve",
+   "en": "go! (command)",
+   "say": "Ve a la plaza.",
+   "caption": "Ve a la plaza",
+   "sign": "Ve",
+   "options": [
+    "ve",
+    "mira",
+    "sigue"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "irregular familiar imperative of ir. ve/ven and ve/va never share a set."
+  },
+  {
+   "id": "ven",
+   "es": "ven",
+   "en": "come! (command)",
+   "say": "Ven a la plaza.",
+   "caption": "Ven a la plaza",
+   "sign": "Ven",
+   "options": [
+    "ven",
+    "mira",
+    "espera"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "irregular familiar imperative of venir. ve/ven never share a set (one letter apart)."
+  },
+  {
+   "id": "dobla",
+   "es": "dobla",
+   "en": "turn! (command)",
+   "say": "Dobla a la derecha.",
+   "caption": "Dobla a la derecha",
+   "sign": "Dobla",
+   "options": [
+    "dobla",
+    "sigue",
+    "cruza"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "from doblar; always followed by a la derecha / a la izquierda in this unit."
+  },
+  {
+   "id": "sigue",
+   "es": "sigue",
+   "en": "keep going, follow! (command)",
+   "say": "Sigue todo recto.",
+   "caption": "Sigue recto",
+   "sign": "Sigue",
+   "options": [
+    "sigue",
+    "dobla",
+    "espera"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "from seguir; the directions chain is dobla → sigue → cruza."
+  },
+  {
+   "id": "cruza",
+   "es": "cruza",
+   "en": "cross! (command)",
+   "say": "Cruza el puente.",
+   "caption": "Cruza el puente",
+   "sign": "Cruza",
+   "options": [
+    "cruza",
+    "dobla",
+    "sigue"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "from cruzar; cruza/crece/cree never share a set (cr- cluster, extends a1-u01's cree/crece/creó rule)."
+  },
+  {
+   "id": "espera",
+   "es": "espera",
+   "en": "wait! (command)",
+   "say": "Espera aquí.",
+   "caption": "Espera aquí",
+   "sign": "Espera",
+   "options": [
+    "espera",
+    "sigue",
+    "cruza"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "from esperar; espera/escribe never share a set (es- cluster, escribe a1-u01)."
+  },
+  {
+   "id": "a",
+   "es": "a",
+   "en": "to",
+   "say": "Voy a la plaza.",
+   "caption": "Voy a la plaza",
+   "sign": "Voy a la plaza",
+   "options": [
+    "a",
+    "de",
+    "en"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "bare function-word preposition, a1-u02's de/en precedent. Closes unbound spoken «a» in «El camino va a la ciudad» (a1-u01) and «Voy a la tienda». a/al never share a set. ONE-CHARACTER TILE — see artDebt / D6."
+  },
+  {
+   "id": "al",
+   "es": "al",
+   "en": "to the (a + el)",
+   "say": "José va al pueblo.",
+   "caption": "Va al pueblo",
+   "sign": "Va al pueblo",
+   "options": [
+    "al",
+    "de",
+    "en"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "the contraction a + el; unbound in shipped text («Vamos al pueblo» a0-u05, «Al norte» a0-u05, «El camino va al pueblo» a0-u05). a/al never share a set. Two-character tile — see artDebt / D6."
+  },
+  {
+   "id": "pesebre",
+   "es": "pesebre",
+   "en": "manger",
+   "say": "Jesús está en el pesebre.",
+   "caption": "El pesebre",
+   "sign": "El pesebre",
+   "options": [
+    "pesebre",
+    "cama",
+    "puerta"
+   ],
+   "new": true,
+   "poolSource": "a1-u03",
+   "note": "scripture teaches-word (a1-u02 lámpara precedent): the verse's own noun, the destination of the unit. Sits in l4 (the arrival), not in the city/direction vocabulary. Proper noun Jesús in say, never a tile."
+  }
+ ],
+ "scripture": {
+  "verseId": "lke-2-1",
+  "verseEnd": 7,
+  "reference": "Lucas 2:1-7 (RV1909)",
+  "status": "verified",
+  "verse": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+  "verseModern": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fue hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno a su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, a Judea, a la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió a su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+  "captionSplit": [
+   "Y ACONTECIÓ en aquellos días que salió",
+   "edicto de parte de Augusto César, que",
+   "toda la tierra fuese empadronada. Este",
+   "empadronamiento primero fué hecho siendo",
+   "Cirenio gobernador de la Siria. E iban todos",
+   "para ser empadronados, cada uno á su ciudad.",
+   "Y subió José de Galilea, de la ciudad de",
+   "Nazaret, á Judea, á la ciudad de David, que",
+   "se llama Bethlehem, por cuanto era de la",
+   "casa y familia de David; Para ser",
+   "empadronado con María su mujer, desposada",
+   "con él, la cual estaba en cinta. Y",
+   "aconteció que estando ellos allí, se",
+   "cumplieron los días en que ella había de",
+   "parir. Y parió á su hijo primogénito, y le",
+   "envolvió en pañales, y acostóle en un",
+   "pesebre, porque no había lugar para ellos",
+   "en el mesón."
+  ],
+  "say": "«Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.»",
+  "teaches": "pesebre",
+  "teachesForm": "pesebre",
+  "decoys": [
+   "cama",
+   "puerta",
+   "mesa"
+  ],
+  "verify": "VERIFIED 21:20 by lead — 7 curls verses/LUK/002/001-007.json (danielmiranda/rv1909hispano, RV1909M); text is the byte-exact concatenation of the seven text_original fields (spaces at verse joins). verseModern by R1 (á→a standalone: v3, v4 ×2, v7) + R2 (fué→fue: v2). displayNotes in the ledger: ACONTECIÓ small-caps stays verbatim (R6); v4 Bethlehem in Latin letters is authentic RV1909 — a Belén switch would be an owner display-rule decision, never a text edit. pesebre occurs ONCE (v7).",
+  "ledger": "SCRIPTURE-rv1909-verified.md «LUCAS 2:1-7 — VERIFIED 21:20». First Lucas coverage (Gospels-first quota §2b). D1: lowercase teachesForm ACCEPTED — no verse-initial capital is available for binding in this passage (v2 'Este' is the demonstrative, a different sense; demonstratives are A1-U4); the verse-initial-cap mechanism stays demonstrated in a1-u02's Sal 119:105. D3: rut-1-16 NOT used — ledger #12 / C2 reservation respected. D5: the passage ships as a full-screen scripture moment (18 caption lines ≤44; the verse-card 3-line shape does not apply to a 7-verse passage)."
+ },
+ "qna": {
+  "sayMax": 30,
+  "captionMax": 21,
+  "signMax": 15,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). Proper nouns Belén, María, José, Jesús appear in say text and are never tiles (a1-u02 Obed-Edom rule).",
+  "nearFormRule": "Never in the same word-round option set: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro (inherited from a1-u02 and still binding). NEW in this pack: va/van (final -n only — the tiene/tienen family), ve/ven, ve/va, a/al, pueblo/puerta/puente (pue- cluster), puente/puerta, plaza/plato/planta (pla- cluster), barro/burro, barro/carro, viaje/viejo, camello/camino, cruza/crece/cree, espera/escribe, cama/casa. DOCUMENTED EXCEPTIONS (deliberate, kept): (1) the taught contrast pairs sit TOGETHER in one set — derecha/izquierda, arriba/abajo, norte/sur, cerca/lejos — because the pair IS the teaching point (a1-u02's cerca/lejos and a0-u05's norte/sur precedent); (2) ir-paradigm members voy/va/van/vamos MAY share a set — only the minimal pairs are separated (a1-u02 allowed the tener family on exactly this logic); (3) a1-u02's exceptions (hay/está/tengo, mi/tu/su, cuántos/cuándo) remain documented exceptions but none of those ids co-occur in this pack's sets. Phantom decoys: none — every option string is a bound pool id.",
+  "targetLeadsOptions": true,
+  "pagination": "largest wave l2/l4 = 10 ids, l1/l3 = 8 — all under the 12-per-page threshold (DEFECTS #18). No split required.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "25 new ids, 0 collisions against the 250-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 = 250). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 275.",
+  "optionsBoundToIds": "Every option string is a bound pool id (250 existing + this pack's 25). Decoys drawn from the same wave where possible (burro/camello/carro, dobla/sigue/cruza) and from a1-u02's function words for a/al (de, en). No phantom decoys (DEFECTS #14).",
+  "grammar": "A1 register per THEOLOGY-guide §3.1: present tense only, NO pretérito (A1-U7 owns it), NO subjunctive, affirmative familiar imperatives only (ve/ven/dobla/sigue/cruza/espera/mira). Every say is one idea and the target word is repeated in caption + sign. Scripture exempt from the tense rule (standing ruling).",
+  "csa": "Owner plain-truth directive applied: no sanitizing rules apply. Content guard held voluntarily: NOTHING in this pack invents nativity detail beyond Lucas 2:1-7 — no donkey for María, no animals at the manger, no innkeeper, no «no hay lugar» dramatization. The donkey/camel/cart are generic transport vocabulary in their own sentences. The pesebre is stated plainly («Jesús está en el pesebre»), which is what the text says. INT-1 holds — no doctrine-assent gate anywhere.",
+  "formIdRule": "ids are the exact form the learner hears and the string on the tile. Directions are BARE (derecha, izquierda, recto, arriba, abajo) while the phrase «a la derecha» / «todo recto» lives in say/sign — the tile stays a word (a0-u06 question-word precedent). ir forms are finite forms (voy/va/van), not the infinitive (a0-verbs formIdRule). al is the contraction, not a + el split."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "pueblo",
+    "say": "María y José van al pueblo.",
+    "options": [
+     "pueblo",
+     "ciudad",
+     "plaza"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "puente",
+    "say": "El puente está a la derecha.",
+    "options": [
+     "puente",
+     "muro",
+     "piedra"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "izquierda",
+    "say": "Dobla a la izquierda.",
+    "options": [
+     "izquierda",
+     "derecha",
+     "recto"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "burro",
+    "say": "El burro lleva el saco.",
+    "options": [
+     "burro",
+     "camello",
+     "carro"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "van",
+    "say": "María y José van a Belén.",
+    "options": [
+     "van",
+     "voy",
+     "vamos"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "pesebre",
+    "say": "Jesús está en el pesebre.",
+    "options": [
+     "pesebre",
+     "cama",
+     "puerta"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "puente",
+    "say": "Señala el puente.",
+    "sprite": "puente",
+    "options": [
+     "puente",
+     "muro",
+     "plaza"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "pesebre",
+    "say": "Toca el pesebre.",
+    "sprite": "pesebre",
+    "options": [
+     "pesebre",
+     "cama",
+     "puerta"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "al",
+    "sentence": "José va ___ pueblo.",
+    "choices": [
+     "al",
+     "de",
+     "en"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "va",
+    "sentence": "José ___ a Belén.",
+    "choices": [
+     "va",
+     "voy",
+     "vamos"
+    ]
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "lke-2-1",
+    "verseEnd": 7,
+    "reference": "Lucas 2:1-7 (RV1909)",
+    "verse": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+    "verseModern": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fue hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno a su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, a Judea, a la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió a su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.",
+    "missing": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un ___, porque no había lugar para ellos en el mesón.",
+    "missingModern": "Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fue hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno a su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, a Judea, a la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió a su hijo primogénito, y le envolvió en pañales, y acostóle en un ___, porque no había lugar para ellos en el mesón.",
+    "gapCount": 1,
+    "captionSplit": [
+     "Y ACONTECIÓ en aquellos días que salió",
+     "edicto de parte de Augusto César, que",
+     "toda la tierra fuese empadronada. Este",
+     "empadronamiento primero fué hecho siendo",
+     "Cirenio gobernador de la Siria. E iban todos",
+     "para ser empadronados, cada uno á su ciudad.",
+     "Y subió José de Galilea, de la ciudad de",
+     "Nazaret, á Judea, á la ciudad de David, que",
+     "se llama Bethlehem, por cuanto era de la",
+     "casa y familia de David; Para ser",
+     "empadronado con María su mujer, desposada",
+     "con él, la cual estaba en cinta. Y",
+     "aconteció que estando ellos allí, se",
+     "cumplieron los días en que ella había de",
+     "parir. Y parió á su hijo primogénito, y le",
+     "envolvió en pañales, y acostóle en un",
+     "___, porque no había lugar para ellos",
+     "en el mesón."
+    ],
+    "en": "manger",
+    "es": "pesebre",
+    "say": "«Y ACONTECIÓ en aquellos días que salió edicto de parte de Augusto César, que toda la tierra fuese empadronada. Este empadronamiento primero fué hecho siendo Cirenio gobernador de la Siria. E iban todos para ser empadronados, cada uno á su ciudad. Y subió José de Galilea, de la ciudad de Nazaret, á Judea, á la ciudad de David, que se llama Bethlehem, por cuanto era de la casa y familia de David; Para ser empadronado con María su mujer, desposada con él, la cual estaba en cinta. Y aconteció que estando ellos allí, se cumplieron los días en que ella había de parir. Y parió á su hijo primogénito, y le envolvió en pañales, y acostóle en un pesebre, porque no había lugar para ellos en el mesón.»",
+    "options": [
+     "pesebre",
+     "cama",
+     "puerta",
+     "mesa"
+    ]
+   },
+   {
+    "type": "reading-item",
+    "passage": "María y José van a Belén. El camino es largo. En el pueblo hay un mercado y una plaza. El puente está a la derecha. El pesebre está cerca.",
+    "question": "¿Dónde está el puente?",
+    "answer": "a la derecha",
+    "choices": [
+     "a la derecha",
+     "a la izquierda",
+     "todo recto"
+    ]
+   },
+   {
+    "type": "speak",
+    "target": "Voy a la plaza.",
+    "translation": "I am going to the square.",
+    "minScore": 60
+   }
+  ],
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02; lead maps them onto the p1-p8 shapes when exam-a1 is authored. Exam-a0's es=object shape applied to hear-act items at filing (lead ruling 21:2X, same as a1-u02 items 7-8).",
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
+  },
+  "artDebt": "hear-act #7-8 need prop sprites for puente and pesebre (both NEW art) plus the señala/toca action icons already owed by DEFECTS #17. No sprites needed for any hear-choose wave (text tiles only). SECOND, SEPARATE DEBT (D6 CONFIRMED): six very short tiles — a (1 char), ve, va, al (2), van, ven (3) — need a min-width and distinct tile geometry so hear-choose stays answerable at game size; the DEFECTS #20 family is extended from accents to LENGTH, a Reviewer correctness check for this pack. If pesebre/puente art is not ready, swap both hear-act items to hear-choose — the pattern slot is unchanged."
+ },
+ "provenance": {
+  "author": "curriculum-author session 3b5605d9 (report-only)",
+  "validatedBy": "lead 2026-11-10 21:2X (scripted union check + rulings D1-D7; scripture verified by lead curl per design §3)",
+  "map": "content/curriculum-map.md, A1 row 3: «City, directions, transport, ir a + place, imperatives (familiar) — Journey to Bethlehem»",
+  "schemaPrecedent": "build/content-packs/a1-u02.json exactly (sign kept, provenance = new + poolSource, waves l1-l4 + replay-5 convention, qna/nearFormRule/examContribution/provenance block shape)",
+  "rulings": "D1 ACCEPTED: lowercase teachesForm pesebre (no verse-initial capital binds here; v2 'Este' is the demonstrative sense, A1-U4's topic — the cap mechanism stays demonstrated in a1-u02). D2 CONFIRMED: a and al bound as ids (de/en precedent; a/al never share a set); short-tile min-width render rule added to the DEFECTS #20 family (Reviewer check). D3 CONFIRMED: rut-1-16 untouched (ledger #12 / C2 reservation); u03 ships Lucas 2:1-7 instead. D4 CONFIRMED: mercado forward-binds to A1-U4 — U4 must re-pass (new:false, poolSource a1-u03), never re-introduce. D5 CONFIRMED: passage ships as a full-screen scripture moment (18 caption lines; one scripture block per pack holds). D6 CONFIRMED: vas excluded → A1-U8 owns it (recorded so it is not lost). D7 CONFIRMED: pesebre added to carry the verse binding (a1-u02 lámpara precedent). Exam fixes at filing: hear-act items 7-8 es = OBJECT (puente/pesebre) per the exam-a0 shape ruling. Conflict #8 content guard recorded for the Reviewer: nothing invents nativity detail beyond Lucas 2:1-7.",
+  "taughtPoolBefore": 249,
+  "newIds": 25,
+  "taughtPoolAfter": 274
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "pueblo",
+  "plaza",
+  "mercado",
+  "puente",
+  "derecha",
+  "izquierda",
+  "recto",
+  "arriba",
+  "abajo",
+  "burro",
+  "camello",
+  "carro",
+  "viaje",
+  "voy",
+  "va",
+  "van",
+  "ve",
+  "ven",
+  "dobla",
+  "sigue",
+  "cruza",
+  "espera",
+  "a",
+  "al",
+  "pesebre"
+ ]
+}

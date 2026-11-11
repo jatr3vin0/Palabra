@@ -1,0 +1,968 @@
+{
+ "packId": "a1-u06",
+ "unitId": "a1-u06",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "La familia y los amigos en detalle; los posesivos; describir el carácter de las personas — el hijo pródigo",
+ "storyThread": "El hijo pródigo (Lucas 15:24). L1 = la familia en detalle (re-passes de unit-01 + los abuelos). L2 = los amigos y los vecinos: tío, tía, primo, prima, amigo, amiga, vecino, vecina. L3 = los posesivos en profundidad: mis, tus, sus, nuestra, nuestros. L4 = el carácter del padre y de los dos hermanos: generoso, egoísta, humilde, orgulloso, celoso, paciente.",
+ "grammarTargets": [
+  "possessive adjectives AGREE with the THING owned, not the owner: mi/mis, tu/tus, su/sus, nuestro/nuestra/nuestros/nuestras — taught by note + gap-fill with the written noun (E6 precedent); no new possessive ids beyond the 5 new ones (mis, tus, sus, nuestra, nuestros)",
+  "the mi/tu/su paradigm exception (a1-u02) remains the ONLY hear-choose paradigm exception, now extended by mis/tus/sus under the SAME logic (U6-7) — the person IS the contrast when the noun is identical",
+  "ser + character adjective vs estar + state: es generoso (trait) vs está enojado (state) — taught by note + say, no new ids",
+  "family nouns are SINGULAR citation forms with plurals in say/reading only (moneda precedent); padres is say-text ONLY — a DIFFERENT word from padre (U6-6), never an option string",
+  "present tense ONLY — pretérito is A1-U7; the parable's past-tense narration is NOT reproduced in any authored line (the scripture passage is exempt per the standing ruling)",
+  "«¿De quién es?» pattern lives in say/sign — de and quién are already bound ids (phrase-vs-word, ¿Cuánto cuesta? precedent)"
+ ],
+ "waves": {
+  "l1": [
+   "padre",
+   "madre",
+   "hermano",
+   "hermana",
+   "hijo",
+   "hija",
+   "familia",
+   "abuelo",
+   "abuela"
+  ],
+  "l2": [
+   "tío",
+   "tía",
+   "primo",
+   "prima",
+   "amigo",
+   "amiga",
+   "vecino",
+   "vecina"
+  ],
+  "l3": [
+   "mi",
+   "tu",
+   "su",
+   "nuestro",
+   "mío",
+   "mis",
+   "tus",
+   "sus",
+   "nuestra",
+   "nuestros",
+   "tuyo",
+   "suyo"
+  ],
+  "l4": [
+   "bueno",
+   "malo",
+   "corazón",
+   "amable",
+   "generoso",
+   "fiel",
+   "humilde",
+   "orgulloso",
+   "celoso",
+   "enojado",
+   "egoísta",
+   "paciente"
+  ]
+ },
+ "waveNotes": "l1 (9) = 7 byte-identical re-passes (unit-01 family wave — the A1 depth re-pass, C8) + abuelo/abuela new; the GENDER PARADIGM PAIRS (padre/madre, hermano/hermana, hijo/hija, abuelo/abuela) never share a hear-choose set (U6-8) — the contrast is tested in gap-fill with the written noun (E6). l2 (8) = the extended family and friends, all new; every gender pair never shares a set (U6-8). l3 (12) = the possessives: 5 re-passes (mi a0-u01; tu/su/nuestro/mío a1-u02) + 7 new (mis, tus, sus, nuestra, nuestros, tuyo, suyo). The PARADIGM EXCEPTION holds: mi/tu/su may share a hear-choose set (a1-u02, unchanged) and mis/tus/sus + mío/tuyo/suyo join under the same logic (U6-7); mi/mis, tu/tus, su/sus, mío/mi, tuyo/tu, suyo/su and the nuestro/nuestra/nuestros series may NOT (U6-7). l4 (12) = the character of the parable's people: 2 re-passes (bueno a0-u01; corazón a1-u05, U5-4 DISCHARGED — new:false) + 10 new. The OPPOSITE PAIRS sit together on purpose (bueno/malo, humilde/orgulloso, generoso/egoísta, celoso/enojado). Waves AT the 12-per-page threshold (DEFECTS #18) — no pagination; wave 5 = adaptive replay from progress.misses (unchanged convention).",
+ "words": [
+  {
+   "id": "padre",
+   "es": "padre",
+   "en": "father",
+   "say": "Mi padre es generoso.",
+   "caption": "Mi padre",
+   "sign": "El padre",
+   "options": [
+    "padre",
+    "abuelo",
+    "tío"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass (unit-01.json = a0-u01 source of record, C8; gloss byte-identical). The generation set abuelo/padre/tío sits together on purpose. padres (parents) is a DIFFERENT word — never an option string (U6-6). padre/padre-plural distinct ids (exact-string rule)."
+  },
+  {
+   "id": "madre",
+   "es": "madre",
+   "en": "mother",
+   "say": "Mi madre es paciente.",
+   "caption": "Mi madre",
+   "sign": "La madre",
+   "options": [
+    "madre",
+    "abuela",
+    "tía"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. The generation set abuela/madre/tía together on purpose. madre/madera (a0-u03) never share a set (one-letter pair, DEFECTS #20)."
+  },
+  {
+   "id": "hermano",
+   "es": "hermano",
+   "en": "brother",
+   "say": "Mi hermano es amable.",
+   "caption": "Mi hermano",
+   "sign": "El hermano",
+   "options": [
+    "hermano",
+    "primo",
+    "amigo"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. mano/hermano never share a set (substring, a1-u05). hermano/hermana NEVER share a set (one-letter pair, C5/U6-8) — the gender contrast is tested in gap-fill with the written article."
+  },
+  {
+   "id": "hermana",
+   "es": "hermana",
+   "en": "sister",
+   "say": "Mi hermana es fiel.",
+   "caption": "Mi hermana",
+   "sign": "La hermana",
+   "options": [
+    "hermana",
+    "prima",
+    "amiga"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. hermana/hermano never share a set (one-letter pair)."
+  },
+  {
+   "id": "hijo",
+   "es": "hijo",
+   "en": "son",
+   "say": "El hijo regresó a casa en la historia.",
+   "caption": "El hijo",
+   "sign": "El hijo",
+   "options": [
+    "hijo",
+    "hija",
+    "primo"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. hijo/hija never share a set (one-letter pair, U6-8). SCRIPTURE TEACHES-WORD of this pack (Lucas 15:24 «este mi hijo», VERIFIED — occurs once). hijos is say-text only. hijo is at the two-verse cap ONLY if mat-5-9 (design batch #16) ever binds — recorded, not bound (U6-4)."
+  },
+  {
+   "id": "hija",
+   "es": "hija",
+   "en": "daughter",
+   "say": "La hija ayuda en casa.",
+   "caption": "La hija",
+   "sign": "La hija",
+   "options": [
+    "hija",
+    "prima",
+    "vecina"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. hija/hijo never share a set (one-letter pair). hijas is say-text only."
+  },
+  {
+   "id": "familia",
+   "es": "familia",
+   "en": "family",
+   "say": "Mi familia es grande.",
+   "caption": "Mi familia",
+   "sign": "La familia",
+   "options": [
+    "familia",
+    "gente",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass, byte-identical. familia/gente is the taught contrast (the group vs the people in it); familia/famoso never share a set (fam- cluster). The hear-act item names la familia — the group sprite is the pack's largest art ask (artDebt)."
+  },
+  {
+   "id": "abuelo",
+   "es": "abuelo",
+   "en": "grandfather",
+   "say": "Mi abuelo es paciente.",
+   "caption": "Mi abuelo",
+   "sign": "El abuelo",
+   "options": [
+    "abuelo",
+    "padre",
+    "tío"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "the household's elder. abuelo/abuela never share a set (one-letter pair, U6-8). abuelo/abrigo never share a set (ab- cluster; abrigo not an id — note only). The generation set abuelo/padre/tío together on purpose."
+  },
+  {
+   "id": "abuela",
+   "es": "abuela",
+   "en": "grandmother",
+   "say": "Mi abuela es amable.",
+   "caption": "Mi abuela",
+   "sign": "La abuela",
+   "options": [
+    "abuela",
+    "madre",
+    "tía"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "abuela/abuelo never share a set (one-letter pair). abuela/aguila never share a set (ab- cluster; águila not an id — note only). The hear-act item names la abuela."
+  },
+  {
+   "id": "tío",
+   "es": "tío",
+   "en": "uncle",
+   "say": "Mi tío es generoso.",
+   "caption": "Mi tío",
+   "sign": "El tío",
+   "options": [
+    "tío",
+    "tía",
+    "abuelo"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "tío/tía NEVER share a set (final-vowel pair, U6-8). tío/tiempo never share a set (tí- cluster). SHORT tile (3 chars) — min-width + accent legibility (DEFECTS #20/D6)."
+  },
+  {
+   "id": "tía",
+   "es": "tía",
+   "en": "aunt",
+   "say": "Mi tía es amable.",
+   "caption": "Mi tía",
+   "sign": "La tía",
+   "options": [
+    "tía",
+    "prima",
+    "abuela"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "tía/tío never share a set (U6-8). SHORT tile (3 chars) — min-width + accent legibility."
+  },
+  {
+   "id": "primo",
+   "es": "primo",
+   "en": "cousin (male)",
+   "say": "Mi primo es alto.",
+   "caption": "Mi primo",
+   "sign": "El primo",
+   "options": [
+    "primo",
+    "tío",
+    "hermano"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "primo/prima never share a set (U6-8). primo/primero never share a set (prefix family, a1-u05 ruling U5-5-adjacent). primo/primo-the-adverb distinct (exact-string rule)."
+  },
+  {
+   "id": "prima",
+   "es": "prima",
+   "en": "cousin (female)",
+   "say": "Mi prima es alta.",
+   "caption": "Mi prima",
+   "sign": "La prima",
+   "options": [
+    "prima",
+    "tía",
+    "abuela"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "prima/primo never share a set (U6-8). prima/piedra never share a set (pr- cluster)."
+  },
+  {
+   "id": "amigo",
+   "es": "amigo",
+   "en": "friend (male)",
+   "say": "Mi amigo es fiel.",
+   "caption": "Mi amigo",
+   "sign": "El amigo",
+   "options": [
+    "amigo",
+    "vecino",
+    "primo"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "amigo/amiga never share a set (U6-8). amable/amigo NEVER share a set (am- cluster — the pack's subtlest pair: one letter, different stress). amigo/amor never share a set (am- cluster; amor IS a pool id (unit-01.json:44) — never a decoy here (am- cluster))."
+  },
+  {
+   "id": "amiga",
+   "es": "amiga",
+   "en": "friend (female)",
+   "say": "Mi amiga es generosa.",
+   "caption": "Mi amiga",
+   "sign": "La amiga",
+   "options": [
+    "amiga",
+    "vecina",
+    "prima"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "amiga/amigo never share a set (U6-8). amiga/amable never share a set (am- cluster)."
+  },
+  {
+   "id": "vecino",
+   "es": "vecino",
+   "en": "neighbour (male)",
+   "say": "Mi vecino es bueno.",
+   "caption": "Mi vecino",
+   "sign": "El vecino",
+   "options": [
+    "vecino",
+    "amigo",
+    "tío"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "vecino/vecina never share a set (U6-8). vecino/veneno never share a set (ve- cluster; veneno is NOT an id — never an option string). vecino/vecina vs vecino-the-verb distinct (exact-string rule; only the noun is an id)."
+  },
+  {
+   "id": "vecina",
+   "es": "vecina",
+   "en": "neighbour (female)",
+   "say": "Mi vecina es amable.",
+   "caption": "Mi vecina",
+   "sign": "La vecina",
+   "options": [
+    "vecina",
+    "amiga",
+    "prima"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "vecina/vecino never share a set (U6-8). vecina/veneno never share a set (ve- cluster)."
+  },
+  {
+   "id": "mi",
+   "es": "mi",
+   "en": "my",
+   "say": "Mi hermano es fiel.",
+   "caption": "Mi hermano",
+   "sign": "Mi hermano",
+   "options": [
+    "mi",
+    "tu",
+    "su"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass (a0-u01). THE PARADIGM EXCEPTION: mi/tu/su may share a hear-choose set (a1-u02, unchanged) — the person IS the contrast when the noun is identical. mi/mis, mi/mío never share a set (U6-7). SHORT tile (2 chars) — min-width + distinct geometry (the pack's biggest rendering risk, U6-13)."
+  },
+  {
+   "id": "tu",
+   "es": "tu",
+   "en": "your (familiar)",
+   "say": "¿Es tu amigo?",
+   "caption": "¿Es tu amigo?",
+   "sign": "Tu amigo",
+   "options": [
+    "tu",
+    "mi",
+    "su"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass (a1-u02). tu/tú NEVER share a set (accent pair, unchanged). tu/tus never share a set (U6-7). SHORT tile (2 chars)."
+  },
+  {
+   "id": "su",
+   "es": "su",
+   "en": "his / her / your (polite)",
+   "say": "Su familia es grande.",
+   "caption": "Su familia",
+   "sign": "Su familia",
+   "options": [
+    "su",
+    "mi",
+    "tu"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass (a1-u02). su/sus never share a set (U6-7). su/suyo never share a set (inherited). SHORT tile (2 chars)."
+  },
+  {
+   "id": "nuestro",
+   "es": "nuestro",
+   "en": "our",
+   "say": "Nuestro amigo es fiel.",
+   "caption": "Nuestro amigo",
+   "sign": "Nuestro amigo",
+   "options": [
+    "nuestro",
+    "nuestros",
+    "nuestra"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass (a1-u02). nuestro/nuestra/nuestros NEVER share a hear-choose set (agreement series, U6-7) — the agreement contrast is tested in gap-fill with the written noun (E6). nuevo/nuestro never share a set (inherited)."
+  },
+  {
+   "id": "mis",
+   "es": "mis",
+   "en": "my (plural)",
+   "say": "Mis amigos están aquí.",
+   "caption": "Mis amigos",
+   "sign": "Mis amigos",
+   "options": [
+    "mis",
+    "tus",
+    "sus"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "THE NUMBER-AGREEMENT WORD: mis/mi never share a set (one letter, U6-7) — the number contrast is tested in the gap-fill item where the written plural noun resolves it (E6). mis/tus/sus MAY share a set (paradigm exception extended, U6-7). SHORT tile (3 chars)."
+  },
+  {
+   "id": "tus",
+   "es": "tus",
+   "en": "your (familiar, plural)",
+   "say": "Tus amigos están aquí.",
+   "caption": "Tus amigos",
+   "sign": "Tus amigos",
+   "options": [
+    "tus",
+    "mis",
+    "sus"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "tus/tu never share a set (U6-7). tus/tus-the-noun distinct (exact-string rule). SHORT tile (3 chars)."
+  },
+  {
+   "id": "sus",
+   "es": "sus",
+   "en": "his / her / their (plural)",
+   "say": "Sus amigos están aquí.",
+   "caption": "Sus amigos",
+   "sign": "Sus amigos",
+   "options": [
+    "sus",
+    "mis",
+    "tus"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "sus/su never share a set (U6-7). sus/sur never share a set (inherited). SHORT tile (3 chars)."
+  },
+  {
+   "id": "nuestra",
+   "es": "nuestra",
+   "en": "our (feminine)",
+   "say": "Nuestra familia es grande.",
+   "caption": "Nuestra familia",
+   "sign": "Nuestra familia",
+   "options": [
+    "nuestra",
+    "nuestro",
+    "nuestros"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "nuestra/nuestro/nuestros NEVER share a hear-choose set (agreement series, U6-7) — the written noun resolves the form in gap-fill (E6). nuestra/nieto never share a set (nue- cluster; nieto not an id — note only)."
+  },
+  {
+   "id": "nuestros",
+   "es": "nuestros",
+   "en": "our (masculine plural)",
+   "say": "Nuestros amigos están aquí.",
+   "caption": "Nuestros amigos",
+   "sign": "Nuestros amigos",
+   "options": [
+    "nuestros",
+    "nuestro",
+    "nuestra"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "nuestros/nuestro/nuestra never share a set (agreement series, U6-7). LONG tile (9 chars) — wrap/scale without clipping (U6-13)."
+  },
+  {
+   "id": "bueno",
+   "es": "bueno",
+   "en": "good",
+   "say": "El amigo bueno ayuda.",
+   "caption": "Es bueno",
+   "sign": "Bueno",
+   "options": [
+    "bueno",
+    "malo",
+    "amable"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass (a0-u01), byte-identical. bueno/malo sit together on purpose (the opposite pair IS the teaching point). buen (pre-nominal) is a DIFFERENT form — say-text only, never an option string. bueno/buena agree; buena is NOT an id."
+  },
+  {
+   "id": "malo",
+   "es": "malo",
+   "en": "bad",
+   "say": "El hermano egoísta es malo con el padre.",
+   "caption": "Es malo",
+   "sign": "Malo",
+   "options": [
+    "malo",
+    "bueno",
+    "celoso"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "malo/mala agree; mala is NOT an id (descriptorDecision). malo/malla never share a set (m- cluster). malo/malo-the-adverb (badly) distinct (exact-string rule; only the adjective is an id). The parable's own reading of the son's behaviour, named plainly (csa)."
+  },
+  {
+   "id": "amable",
+   "es": "amable",
+   "en": "kind",
+   "say": "Mi tía es amable.",
+   "caption": "Es amable",
+   "sign": "Amable",
+   "options": [
+    "amable",
+    "generoso",
+    "fiel"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "GENDER-INVARIANT (el padre amable, la madre amable) — one form. amable/amigo never share a set (am- cluster). amable/amabilidad never share a set (not an id)."
+  },
+  {
+   "id": "generoso",
+   "es": "generoso",
+   "en": "generous",
+   "say": "El padre es generoso.",
+   "caption": "Es generoso",
+   "sign": "Generoso",
+   "options": [
+    "generoso",
+    "egoísta",
+    "amable"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "The father of the parable, the story's own reading of him. generoso/generosa agree; generosa is NOT an id. generoso/egoísta sit together on purpose (the opposite pair is the teaching point). generoso/gente never share a set (gen- cluster)."
+  },
+  {
+   "id": "humilde",
+   "es": "humilde",
+   "en": "humble",
+   "say": "El hijo humilde ora.",
+   "caption": "Es humilde",
+   "sign": "Humilde",
+   "options": [
+    "humilde",
+    "orgulloso",
+    "paciente"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "GENDER-INVARIANT (one form). humilde/orgulloso sit together on purpose (the opposite pair is the teaching point). humilde/humedad never share a set (not an id — note only). The say uses ora (a0-u06) — prayer as the humble's act."
+  },
+  {
+   "id": "orgulloso",
+   "es": "orgulloso",
+   "en": "proud",
+   "say": "El hermano orgulloso no entra.",
+   "caption": "Es orgulloso",
+   "sign": "Orgulloso",
+   "options": [
+    "orgulloso",
+    "humilde",
+    "celoso"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "orgulloso/orgullosa agree; orgullosa is NOT an id. The older brother's refusal (Lucas 15:28), named plainly (csa). orgullo/orgullosa are say-text only. humilde/orgulloso together on purpose (the opposite pair). LONG tile (9 chars) — wrap/scale (U6-13)."
+  },
+  {
+   "id": "celoso",
+   "es": "celoso",
+   "en": "jealous",
+   "say": "El hermano celoso no quiere entrar.",
+   "caption": "Es celoso",
+   "sign": "Celoso",
+   "options": [
+    "celoso",
+    "orgulloso",
+    "enojado"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "celoso/celosa agree; celosa is NOT an id. celoso/cielo never share a set (cel- cluster). celoso/enojado share a set on purpose (the older brother's two states in Lucas 15:28-30, named plainly — csa). celoso/celos are distinct tokens; celos is NOT an id."
+  },
+  {
+   "id": "paciente",
+   "es": "paciente",
+   "en": "patient",
+   "say": "El padre espera con corazón paciente.",
+   "caption": "Es paciente",
+   "sign": "Paciente",
+   "options": [
+    "paciente",
+    "amable",
+    "humilde"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "GENDER-INVARIANT (el padre paciente, la madre paciente). The father waits and runs (Lucas 15:20) — patience is the story's own reading of him. paciencia is NOT an id. paciente/amable never share a set (am- cluster)."
+  },
+  {
+   "id": "corazón",
+   "es": "corazón",
+   "en": "heart",
+   "say": "El hombre mira el corazón.",
+   "caption": "El corazón",
+   "sign": "El corazón",
+   "options": [
+    "corazón",
+    "cabeza",
+    "cuerpo"
+   ],
+   "new": false,
+   "poolSource": "a1-u05",
+   "note": "RE-PASS (a1-u05, U5-4 DISCHARGED — new:false, never re-introduced). 1 Samuel 16:7 («el hombre mira el corazón», VERIFIED ledger #20) is NOT bound in this pack (U6-1 CONFIRMED Lucas 15:24; one scripture block per pack §5.5) — its natural home is A1-U7 (David, 1 Sam 17), where corazón is bindable with teaches=corazón. The say deliberately does NOT quote the verse (it paraphrases the verse's own idea with bound ids)."
+  },
+  {
+   "id": "mío",
+   "es": "mío",
+   "en": "mine",
+   "say": "¿De quién es? Es mío.",
+   "caption": "Es mío",
+   "sign": "Es mío",
+   "options": [
+    "mío",
+    "tuyo",
+    "suyo"
+   ],
+   "new": false,
+   "poolSource": "a1-u02",
+   "note": "re-pass (a1-u02). mío/mía agree with the THING owned; mía is NOT an id. mi/mío never share a set (U6-7). mío/tuyo/suyo is the STRESSED paradigm and may share a set (mi/tu/su precedent, U6-7). The say demonstrates the unit's pattern «¿De quién es?» using the already-bound ids de (a1-u02) + quién (a0-u06)."
+  },
+  {
+   "id": "tuyo",
+   "es": "tuyo",
+   "en": "yours (familiar)",
+   "say": "El amigo es tuyo.",
+   "caption": "Es tuyo",
+   "sign": "Es tuyo",
+   "options": [
+    "tuyo",
+    "mío",
+    "suyo"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "tuyo/tu NEVER share a set (stressed vs unstressed, U6-7). tuyo/tuya: tuya is NOT an id. Stressed paradigm set with mío/suyo (documented exception, U6-7). Closes the stressed possessive series."
+  },
+  {
+   "id": "suyo",
+   "es": "suyo",
+   "en": "his / hers / yours (polite)",
+   "say": "¿De quién es? Es suyo.",
+   "caption": "Es suyo",
+   "sign": "Es suyo",
+   "options": [
+    "suyo",
+    "mío",
+    "tuyo"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "suyo/su NEVER share a set (U6-7). Stressed paradigm with mío/tuyo (documented exception). Closes the possessive system: unstressed mi/tu/su + plural mis/tus/sus + nuestro/nuestra/nuestros + stressed mío/tuyo/suyo."
+  },
+  {
+   "id": "fiel",
+   "es": "fiel",
+   "en": "faithful",
+   "say": "Mi amigo es fiel.",
+   "caption": "Es fiel",
+   "sign": "Es fiel",
+   "options": [
+    "fiel",
+    "amable",
+    "generoso"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "GENDER-INVARIANT (el amigo fiel, la amiga fiel). fiel/fieles: fieles is a say-only agreement form, never an id. No near-form partner in the pool."
+  },
+  {
+   "id": "enojado",
+   "es": "enojado",
+   "en": "angry",
+   "say": "El hermano está enojado.",
+   "caption": "Está enojado",
+   "sign": "Enojado",
+   "options": [
+    "enojado",
+    "celoso",
+    "orgulloso"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "enojado/enojada agree; enojada is NOT an id. TAKES ESTAR (a state, not a trait) — the ser/estar split is carried in the say, per THEOLOGY-guide §3.1 register. enojó is a verse token in Lucas 15:28 (a DIFFERENT token — exact-token rule) and that verse is NOT bound here."
+  },
+  {
+   "id": "egoísta",
+   "es": "egoísta",
+   "en": "selfish",
+   "say": "El hijo egoísta no da.",
+   "caption": "Es egoísta",
+   "sign": "Es egoísta",
+   "options": [
+    "egoísta",
+    "generoso",
+    "amable"
+   ],
+   "new": true,
+   "poolSource": "a1-u06",
+   "note": "GENDER-INVARIANT. The younger son's self-seeking is named plainly — the parable's own point (Lucas 15:12-13). generoso/egoísta opposite pair kept together (documented exception)."
+  }
+ ],
+ "scripture": {
+  "verseId": "lke-15-24",
+  "reference": "Lucas 15:24 (RV1909)",
+  "status": "verified",
+  "verse": "Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.",
+  "verseModern": "Porque este mi hijo muerto era, y ha revivido; se había perdido, y es hallado. Y comenzaron a regocijarse.",
+  "captionSplit": [
+   "Porque este mi hijo muerto era,",
+   "y ha revivido; habíase perdido,",
+   "y es hallado. Y comenzaron á",
+   "regocijarse."
+  ],
+  "say": "«Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.»",
+  "teaches": "hijo",
+  "teachesForm": "hijo",
+  "gapCount": 1,
+  "decoys": [
+   "padre",
+   "hermano",
+   "madre"
+  ],
+  "verify": "VERIFIED 21:5X by lead — single curl verses/LUK/015/024.json (danielmiranda/rv1909hispano, RV1909M); text_original byte-identical. teachesForm = hijo, occurs ONCE («este mi hijo») → gapCount 1. Decoy re-check: padre/hermano/madre do NOT occur in the verse; mi DOES occur («este mi hijo») — mi is a pool id (a0-u01) but NOT an option string in the verse item (U6-15). verseModern: R1 (á→a, «comenzaron a regocijarse») + R7 PROPOSED (enclitic reordering: habíase → se había; R7 is a DISPLAY rule, PROPOSED — recorded in the ledger, folded into the owner's RV-pick/display decision; without R7 the modern line would keep the archaic «habíase»). verseModern word order = R1+R7; nothing else changed.",
+  "ledger": "FIFTH GOSPEL-QUOTA VERSE: A1 = 5 of ≥7 (Mt 7:13, Mt 7:14, Lk 2:1-7, Mrk 1:41, Lk 15:24) — A1-U8 must carry ≥2 more (E3 HARD). FIRST Lucas 15 coverage; the parable's own verdict sentence (the son who was lost is found) — repentance and restoration taught plainly (theology guide §3.3), INT-1 holds (the verse is the father's mercy, never a measurement device). Lk 15:22 remains MILESTONE-RESERVED (Ring of Restoration — C2/U5-4); v.24 is the pack's binding instead. U6-4: hijo is now at 1 verse; mat-5-9 (design batch #16, teaches hijo←«hijos») would be verse 2 of the 2-verse cap — recorded, not bound. Fetched as a future candidate (NOT bound): mat-6-9-class material is NOT fetched here; LUK/015/024 sha256 recorded in the ledger entry. mi occurrence: «este mi hijo» — mi is a0-u01's id, NOT a decoy (not in the options list); recorded so no later check flags it (U6-15)."
+ },
+ "qna": {
+  "sayMax": 32,
+  "captionMax": 22,
+  "signMax": 15,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). NO proper nouns in rendered fields. SAY-TEXT ONLY, never option strings: amigos, amigas, primos, primas, hijos, hijas, hermanos, hermanas, padres (a DIFFERENT word from padre — never used at all), fieles, amables, orgullosa, celosa, enojada, egoístas, humildes, generosa, buena, mala (as the -a form), tuya, mía, suya, buen, mal, amistad, nieto, nieta, sobrino, sobrina, esposo, esposa, cuñado, enojó, enojo, celos, orgullo, humildad, paciencia, pródigo, siervo, hambre, fiesta, heredad, «de quién», «un», «y».",
+  "nearFormRule": "Never in the same hear-choose option set — INHERITED and still binding: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro (a1-u02); va/van, ve/ven, ve/va, a/al, pueblo/puerta/puente, plaza/plato/planta, barro/burro, barro/carro, viaje/viejo, camello/camino, cruza/crece/cree, espera/escribe, cama/casa (a1-u03); mercader/mercado, esta/está, este/esta/esto/estos/estas, estos/estas, ese/esa, ese/este, camisa/cama, barato/barro, color/calor, verde/verano, rojo/ropa, cuesta/cuántos, cinturón/cintas (a1-u04); the levantarse paradigm, tengo/tenemos, me llamo/me lavo/me levanto, me visto/vestido, mano/mañana, mano/hermano, cara/casa, cara/cama, pierna/piedra, pie/pierna/piedra, siempre/nunca (a1-u05). NEW IN THIS PACK: padre/madre (one-letter pair); the GENDER PARADIGM PAIRS hermano/hermana, hijo/hija, abuelo/abuela, tío/tía, primo/prima, amigo/amiga, vecino/vecina (one-letter pairs, C5/U6-8); mi/mis, tu/tus, su/sus (one-letter pairs, U6-7); nuestro/nuestra/nuestros (agreement series — gap-fill only); mío/mi, tuyo/tu, suyo/su (stressed vs unstressed); primo/primero (prefix family); abuelo/abrigo, tío/tiempo, generoso/gente, amable/amigo, vecino/verde (cluster bans). DOCUMENTED EXCEPTIONS (deliberate, kept): (1) the taught contrast sets sit TOGETHER — bueno/malo, humilde/orgulloso, generoso/egoísta, celoso/enojado (the caro/barato and enfermo/sano precedent); (2) the possession PARADIGM may share a hear-choose set — mi/tu/su (a1-u02, unchanged), mis/tus/sus (extended here, U6-7), mío/tuyo/suyo (same logic) — the person IS the contrast when the noun is identical; (3) a1-u05's corazón/cabeza/cuerpo set and its doler exception remain documented; corazón re-passes here and keeps its options; (4) a1-u02's hay/está/tengo and a1-u04's demonstrative-as-decoy exceptions remain documented but none of those ids co-occur here. NOT IDS, therefore NEVER option strings (phantom decoy, DEFECTS #14): padres, hijos, hijas, hermanos, hermanas, primos, primas, amigas, fieles, amables, orgullosa, celosa, enojada, egoístas, humildes, generosa, buena, mala (as -a form), tuya, mía, suya, buen, mal, paciencia, orgullo, celos, enojo, enojó, humildad, amistad, nieto, nieta, sobrino, sobrina, esposo, esposa, tuya-la-form, pródigo, siervo, hambre, fiesta, heredad.",
+  "targetLeadsOptions": true,
+  "pagination": "largest waves l3 = 12 and l4 = 12 — exactly AT the 12-per-page threshold (DEFECTS #18); no split required; if the renderer's threshold is strictly-below-12, split each 6+6. l1 = 9, l2 = 8.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "27 new ids, 0 collisions against the 339-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 + a1-u03 25 + a1-u04 30 + a1-u05 34 = 339). 14 re-passes are byte-identical re-serves with new:false + poolSource (padre/madre/hermano/hermana/hijo/hija/familia/bueno → a0-u01; mi → a0-u01; tu/su/nuestro/mío → a1-u02; corazón → a1-u05), never re-introduced as new, each carrying the source-of-record gloss exactly (one gloss per id pool-wide, U6-5). Pool after this pack = 366. EXACT-STRING MATCHING REQUIRED: padre/padres, hijo/hijos, primo/primero, mano/hermano, mi/mis, su/sus, tío/tía are DISTINCT (substring matchers report false collisions).",
+  "optionsBoundToIds": "Every option string is a bound pool id (339 existing + this pack's 27). Decoys are drawn from the same wave where possible (abuelo/padre/tío, primo/tío/vecino, amable/generoso/fiel) and from earlier ids for the function-word sets (mi/tu/su re-passes, gente/casa re-passes). No phantom decoys (DEFECTS #14).",
+  "grammar": "A1 register per THEOLOGY-guide §3.1: PRESENT TENSE ONLY — pretérito is A1-U7 and the parable's past-tense narration is NOT reproduced in any authored line; the scripture passage is exempt (standing ruling). No subjunctive; affirmative familiar imperatives only (toca, señala). Every say is one idea and the target word is repeated in caption + sign. Possessive agreement is taught by note + say, never by minting new ids; character adjectives are masculine citation forms or gender-invariant forms — the -a/-os/-as forms are never ids (a0-u06 descriptorDecision, a1-u04 E6).",
+  "csa": "Owner plain-truth directive applied: nothing softened, nothing added. The parable's sin is named plainly — the son takes his share, leaves, and wastes it (egoísta, malo); the older brother is proud, jealous and angry (orgulloso, celoso, enojado) — and the father's mercy is the story's own point (generoso, paciente, amable). No line moralizes beyond the text, no invented detail, no dramatization; character words describe the parable's people, NEVER the learner, and no system scores a learner's character (INT-1 holds). Repentance and restoration are the verse's own words (Lucas 15:24) — taught plainly per theology guide §3.3, with the father's mercy as the story's own point, never a measurement device.",
+  "formIdRule": "ids are the exact form the learner hears and the string on the tile. Possessive adjectives are BARE forms with the noun phrase in say/sign (the ¿Cuánto cuesta? phrase-vs-word precedent) — «¿De quién es?» lives in say/sign because de and quién are already bound ids. Family nouns are SINGULAR citation forms with plurals in say/reading only (moneda precedent). Character adjectives are masculine citation forms or gender-invariant forms; agreement forms are never ids."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "abuelo",
+    "say": "Mi abuelo es fiel.",
+    "options": [
+     "abuelo",
+     "padre",
+     "tío"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "amigo",
+    "say": "¿Es tu amigo?",
+    "options": [
+     "amigo",
+     "vecino",
+     "primo"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "mis",
+    "say": "Mis amigos están aquí.",
+    "options": [
+     "mis",
+     "tus",
+     "sus"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "generoso",
+    "say": "El padre es generoso.",
+    "options": [
+     "generoso",
+     "amable",
+     "fiel"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "orgulloso",
+    "say": "Un corazón orgulloso no ora.",
+    "options": [
+     "orgulloso",
+     "humilde",
+     "celoso"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "enojado",
+    "say": "El hermano está enojado.",
+    "options": [
+     "enojado",
+     "celoso",
+     "orgulloso"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "corazón",
+    "say": "Toca tu corazón.",
+    "sprite": "corazón",
+    "options": [
+     "corazón",
+     "cabeza",
+     "cuerpo"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "familia",
+    "say": "Señala la familia.",
+    "sprite": "familia",
+    "options": [
+     "familia",
+     "gente",
+     "casa"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "mis",
+    "sentence": "___ amigos están aquí.",
+    "choices": [
+     "mis",
+     "mi",
+     "mío"
+    ],
+    "note": "THE NUMBER-AGREEMENT ITEM: mi/mis/mío in one written set is legal here and only here — the written plural noun amigos resolves the form (a1-u04 E6 precedent); the hear-choose ban on mi/mis still holds."
+   },
+   {
+    "type": "gap-fill",
+    "es": "nuestra",
+    "sentence": "___ familia es grande.",
+    "choices": [
+     "nuestra",
+     "nuestro",
+     "nuestros"
+    ],
+    "note": "THE GENDER-AGREEMENT ITEM: the written feminine noun familia resolves nuestra (E6 precedent); the nuestro/nuestra/nuestros series never co-occurs in a hear-choose set."
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "lke-15-24",
+    "reference": "Lucas 15:24 (RV1909)",
+    "verse": "Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.",
+    "verseModern": "Porque este mi hijo muerto era, y ha revivido; se había perdido, y es hallado. Y comenzaron a regocijarse.",
+    "missing": "Porque este mi ___ muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.",
+    "missingModern": "Porque este mi ___ muerto era, y ha revivido; se había perdido, y es hallado. Y comenzaron a regocijarse.",
+    "captionSplit": [
+     "Porque este mi ___ muerto era,",
+     "y ha revivido; habíase perdido,",
+     "y es hallado. Y comenzaron á",
+     "regocijarse."
+    ],
+    "gapCount": 1,
+    "es": "hijo",
+    "en": "son",
+    "say": "«Porque este mi hijo muerto era, y ha revivido; habíase perdido, y es hallado. Y comenzaron á regocijarse.»",
+    "options": [
+     "hijo",
+     "padre",
+     "hermano",
+     "madre"
+    ],
+    "note": "VERIFIED 21:5X by lead (curl verses/LUK/015/024.json, RV1909M). hijo ×1 → gapCount 1. Options are all BOUND pool ids; decoys padre/hermano/madre are verse-free (mi occurs but is not an option string, U6-15). captionSplit in 1909 orthography per the u05 display convention — the modern line is served via verseModern/missingModern (display pick pending the owner RV decision)."
+   },
+   {
+    "type": "reading-item",
+    "passage": "Mi familia es grande. Mi padre es generoso y mi madre es paciente. Mi abuelo y mi abuela están en casa. Mi amigo es fiel y mis primos están aquí. Un corazón humilde es bueno.",
+    "question": "¿Cómo es el padre?",
+    "answer": "generoso",
+    "choices": [
+     "generoso",
+     "egoísta",
+     "celoso"
+    ],
+    "note": "READING-ITEM RULE applied: the answer is attested verbatim in the passage and every content word in the choices is a bound pool id (citation form for the distractors). The passage demonstrates possessive agreement (mi/mis) and ser + character adjective together."
+   },
+   {
+    "type": "speak",
+    "target": "Mi padre es generoso.",
+    "translation": "My father is generous.",
+    "minScore": 60
+   }
+  ],
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02/u03/u04/u05; lead maps them onto the p1-p8 shapes when exam-a1 is authored. exam-a0's es=object shape applied to hear-act items at filing.",
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
+  },
+  "artDebt": "hear-act #7-8 need prop sprites for corazón (a1-u05's hear-act debt carries here if unshipped) and familia (NEW — a GROUP sprite, the largest art ask in the pack; a 2-3-figure family silhouette acceptable) plus the señala/toca action icons owed by DEFECTS #17. LENGTH debt (extends DEFECTS #20/D6, both directions): SHORT tiles — mi/tu/su (2), mis/tus/sus/tío/tía (3) — need min-width AND distinct geometry; mi/mis and su/sus differ by ONE character = the pack's biggest rendering risk (Reviewer correctness check). LONG tiles — orgulloso/nuestros (9), generoso/paciente (8) — must wrap/scale without clipping. NO new accent pair introduced (cómo/como, tu/tú, esta/está remain the pool's three). If either sprite is not ready, swap both hear-act items to hear-choose (corazón has cabeza/cuerpo; familia has gente/casa) — the pattern slot is unchanged."
+ },
+ "provenance": {
+  "author": "curriculum-author session 7fb75a92 (report-only, read-only delegation)",
+  "validatedBy": "lead 2026-11-10 21:5X (scripted union check + rulings U6-1..U6-15; Lucas 15:24 verified by lead curl per design §3; independent verification PASS by researcher session 1e695f5f — re-passes 14/14 byte-identical, 27/27 new, no phantoms, no duplicates)",
+  "map": "content/curriculum-map.md, A1 row 6: «Family and friends in depth; possessives; describing people's character — The prodigal son (Lucas 15)»",
+  "schemaPrecedent": "build/content-packs/a1-u05.json exactly (sign kept, provenance = new + poolSource, waves l1-l4 + replay-5 convention, qna/nearFormRule/examContribution/provenance block shape). ONE DELIBERATE ADDITION: verifyRequest {osis, chapter, verse, curlTemplate} per SCRIPTURE-library-design §3 step 2, with every text field null because the author never writes verse text (read-only session: no shell, no curl).",
+  "rulings": "U6-1 SCRIPTURE CHOICE (LEAD-RULED ON FILING): the pack's one scripture block binds the GOSPEL verse — Lucas 15:24 (verifyRequest LUK/015/024), teaches=hijo. Reason: pillar 3 ranks Gospels (tier 1) above the rest of the OT (tier 5) for NEW coverage, and E3 (the A1 Gospel quota, ≥7, recorded twice as a hard constraint) needs U6/U8 to carry ≥3 after U5's 4-of-7. 1 Samuel 16:7 (VERIFIED, ledger #20, teaches=corazón) is NOT bound in this pack — its natural home is A1-U7 (David and Goliath, 1 Sam 17), where corazón is bindable (the U5-4 precondition is satisfied here: corazón re-passes new:false in l4). Alternatives considered and rejected: Lucas 15:20 (padre occurs twice → gapCount 2, the mi/tu/su paradigm precedent is against multi-gap A1 verses), Lucas 15:32 (no teachable pool id), Lk 15:22 (MILESTONE-RESERVED, never bindable without a lead ruling). U6-2 CONFIRMED: Lucas 15:22 is MILESTONE-RESERVED (Ring of Restoration, C2/U5-4) — v.24 is the pack's binding; the robe/ring/shoes imagery is never quoted. U6-3 PENDING TEXT (U6-3 = the lead's curl): the author wrote NO verse text — all text fields null + verifyRequest. The lead fills verse (text_original verbatim) / verseModern (R1-R6 + the R7 PROPOSED enclitic rule) / captionSplit (≤44/line, byte-joining) / say (« + verse + ») / missing / missingModern, confirms teachesForm hijo occurs exactly ONCE (→ gapCount 1; if twice → gapCount 2 + oneTapFillsAll: true, the gn-1-3 luz precedent), confirms decoys padre/hermano/madre are verse-free, then sets status: verified. Nothing here ships or is filed to exam-a1 before that (design §3). U6-4 TEACHES-WORD CAP: hijo would be at 2 verses if mat-5-9 (design batch #16, teaches hijo←«hijos») is later bound — recorded, not a defect; the cap is legal. U6-5 GLOSS DISCIPLINE: all 14 re-passes carry the source-of-record gloss byte-identically (one gloss per id pool-wide; the a1-u03/a1-u04 verification precedent). U6-6 PADRES IS A DIFFERENT WORD: parents — never an option string, never used in any authored line (phantom decoy + wrong-semantics double guard). U6-7 PARADIGM EXCEPTION EXTENDED (REVIEWER CALL REQUESTED): mis/tus/sus and the stressed mío/tuyo/suyo join the mi/tu/su hear-choose exception under the same logic (the person IS the contrast when the noun is identical); mi/mis, tu/tus, su/sus, mío/mi, tuyo/tu, suyo/su and the whole nuestro/nuestra/nuestros series may NOT — the number/gender/stress contrast is tested in gap-fill with the written noun (E6). If the Reviewer wants the stricter reading throughout, the two gap-fill items already carry the number and gender contrasts. U6-8 GENDER PARADIGM PAIRS: hermano/hermana, hijo/hija, abuelo/abuela, tío/tía, primo/prima, amigo/amiga, vecino/vecina + padre/madre never share a hear-choose set (one-letter pairs, C5) — the gender contrast is tested in gap-fill/reading with the written article. U6-9 PRODIGAL-SON NARRATION: no ring, robe, pig or servant vocabulary is bound (anillo is the Ring of Restoration milestone item; siervo/pródigo/hambre/fiesta/heredad are deferred, listed in qna.charset as never-option-strings) — the parable's story is told through the CHARACTER words, not its props. U6-10 DEFERRED TO LATER UNITS: agradecido (gracias is a synonym decoy), esposa/esposo, nieto/nieta, sobrino/sobrina, mayor/menor (mayo near-form + A2-U3 comparatives), hambre, fiesta, siervo, pródigo, heredad, «de quién» as an id (the pattern lives in say/sign). U6-11 A1-U8 OWES (unchanged by this pack): vas + cuestan (C7/E8), se levantan + tarde/a veces/almuerzo/nariz/medicina/fiebre/diente (U5-5), and ≥2 more Gospel verses (E3: 5 of ≥7 after U6). U6-12 TILE-LENGTH DEBT: SHORT tiles — mi/tu/su (2 chars), mis/tus/sus/tío/tía (3) — need min-width AND distinct geometry; mi/mis and su/sus differ by ONE character — the pack's biggest rendering risk (Reviewer correctness check, extends DEFECTS #20/D6). LONG tiles — orgulloso/nuestros (9), generoso/paciente (8) — must wrap/scale without clipping. NO new accent pair is introduced: tío/tía differ by the FINAL VOWEL, not an accent (U6-8); the pool still holds exactly three accent pairs (cómo/como, tu/tú, esta/está). U6-13 RENDERING-RISK NOTE: the pack's SHORT tiles are the possessives that LIVE in every game HUD string — if the min-width rule cannot distinguish mi/mis at game size, the hear-choose items degrade to say-only comprehension (fallback documented, not silent). U6-14 FAMILY-SPRITE ART ASK: the familia hear-act item needs a GROUP sprite (2-3-figure silhouette) — the largest art ask in the pack; fallback to hear-choose (familia/gente/casa) documented. U6-15 mi IN THE VERSE: «este mi hijo» — mi is a0-u01's id, a verse word that is a pool id but NOT an option string in the verse item; recorded so no later check flags it (the mi/mío ban is about option SETS, not verse words).",
+  "taughtPoolBefore": 338,
+  "newIds": 27,
+  "taughtPoolAfter": 365
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "abuelo",
+  "abuela",
+  "tío",
+  "tía",
+  "primo",
+  "prima",
+  "amigo",
+  "amiga",
+  "vecino",
+  "vecina",
+  "mis",
+  "tus",
+  "sus",
+  "nuestra",
+  "nuestros",
+  "malo",
+  "amable",
+  "generoso",
+  "humilde",
+  "orgulloso",
+  "celoso",
+  "paciente",
+  "tuyo",
+  "suyo",
+  "fiel",
+  "enojado",
+  "egoísta"
+ ]
+}

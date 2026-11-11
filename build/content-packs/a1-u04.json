@@ -1,0 +1,880 @@
+{
+ "packId": "a1-u04",
+ "unitId": "a1-u04",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "El mercado del pueblo — comprar y vender, los precios, la ropa, los colores y su concordancia, y señalar las cosas con este/esta",
+ "storyThread": "Los mercaderes de Proverbios 31 (RV1909): la mujer hacendosa hace telas y las vende, y entrega cintas al mercader. L1 = el mercado y los precios; L2 = la ropa; L3 = los colores y la concordancia; L4 = este/esta: señalar lo que compramos.",
+ "grammarTargets": [
+  "comprar/vender/costar in the present, finite forms only: compro, vende, cuesta (a1-u01 finite-form convention; a0-verbs' infinitive hacer stays the one exception). No compra (the noun) as an id — it would be a second id space",
+  "precio (noun) vs cuesta (verb): the unit's own noun/verb pair; the phrase «¿Cuánto cuesta?» lives in say/sign, the tile is cuesta (formIdRule)",
+  "colour agreement: the id is the masculine citation form (amarillo, rojo, negro) or the invariant (verde, azul, púrpura); the -a/-os/-as forms are NOT ids and are never option strings — the agreement switch is carried in the note and demonstrated in the say (a0-u06 descriptorDecision precedent)",
+  "demonstratives este/esta/esto/estos/estas + ese/esa: bare forms as tiles, the noun phrase in say/sign. este is a DUAL-SENSE re-pass (a0-u05 «east») — gloss widened at source per E1",
+  "cuestan deliberately EXCLUDED (plural price question) — the -n minimal-pair family, deferred with va/van and tiene/tienen (E8; joins A1-U8's deferred list)",
+  "present tense ONLY — pretérito is A1-U7. The scripture passage is past-tense and is exempt per the standing scripture ruling"
+ ],
+ "waves": {
+  "l1": [
+   "mercado",
+   "tienda",
+   "moneda",
+   "mercader",
+   "compro",
+   "vende",
+   "precio",
+   "cuesta",
+   "caro",
+   "barato",
+   "dinero"
+  ],
+  "l2": [
+   "ropa",
+   "vestido",
+   "camisa",
+   "pantalón",
+   "falda",
+   "zapato",
+   "sombrero",
+   "cinturón",
+   "tela",
+   "abrigo"
+  ],
+  "l3": [
+   "verde",
+   "blanco",
+   "amarillo",
+   "rojo",
+   "azul",
+   "negro",
+   "púrpura",
+   "color"
+  ],
+  "l4": [
+   "este",
+   "esta",
+   "esto",
+   "estos",
+   "estas",
+   "ese",
+   "esa"
+  ]
+ },
+ "waveNotes": "l1 (11) = the market and the prices: 3 byte-identical re-passes (mercado a1-u03 — the D4 FORWARD-BIND IS DISCHARGED HERE as new:false/poolSource a1-u03, never re-introduced; tienda a0-u03; moneda a0-u03) + 8 new. mercado and mercader sit deliberately in ONE wave because the -der/-do contrast is the teaching point, but they never share an option set (near-form rule). l2 (10) = the clothes, all new: ropa/vestido/camisa/pantalón/falda/zapato/sombrero/cinturón/tela/abrigo. l3 (8) = the colours and the agreement: verde/blanco re-pass (a0-u03) + amarillo (closes an unbound spoken form — a0-u04 already says «Mira el maíz. Es amarillo.» with no id behind it, the F5 hole in reverse), rojo, azul, negro, púrpura, color. The invariant colours (verde, azul, púrpura) sit with the agreeing ones on purpose: one wave shows both behaviours. l4 (7) = the demonstratives: este re-pass (a0-u05, dual sense) + esta/esto/estos/estas/ese/esa new. The paradigm is in ONE wave (the a1-u02 tener- and a1-u03 ir-paradigm precedent) with the one-letter minimal pairs kept out of every hear-choose set. Largest wave = 11 — under the 12-per-page threshold (DEFECTS #18), no pagination. Wave 5 = adaptive replay from progress.misses (unchanged convention — matches a1-u01/a1-u02/a1-u03).",
+ "words": [
+  {
+   "id": "mercado",
+   "es": "mercado",
+   "en": "market",
+   "say": "Prudencia vende ropa en el mercado.",
+   "caption": "El mercado del pueblo",
+   "sign": "El mercado",
+   "options": [
+    "mercado",
+    "tienda",
+    "plaza"
+   ],
+   "new": false,
+   "poolSource": "a1-u03",
+   "note": "D4 FORWARD-BIND DISCHARGED: a1-u03 bound mercado with the explicit instruction that A1-U4 must RE-PASS it (new:false, poolSource a1-u03) and never re-introduce it. Byte-identical id, richer A1 sentence. mercado/mercader never share an option set."
+  },
+  {
+   "id": "tienda",
+   "es": "tienda",
+   "en": "shop",
+   "say": "La tienda tiene mucha ropa.",
+   "caption": "La tienda de ropa",
+   "sign": "La tienda",
+   "options": [
+    "tienda",
+    "mercado",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass (second A1 serve — spaced review of a1-u03). tienda (a shop) vs mercado (the market itself) is the unit's own place contrast."
+  },
+  {
+   "id": "moneda",
+   "es": "moneda",
+   "en": "coin",
+   "say": "Una moneda es dinero.",
+   "caption": "Una moneda de plata",
+   "sign": "La moneda",
+   "options": [
+    "moneda",
+    "precio",
+    "dinero"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass; the coin you pay with. moneda (a coin) vs dinero (money in general) is the taught contrast, NOT a near pair — different sounds. The plural monedas appears in say/reading text only; the id stays singular (a0-u03 form)."
+  },
+  {
+   "id": "mercader",
+   "es": "mercader",
+   "en": "merchant",
+   "say": "El mercader trae tela de lejos.",
+   "caption": "El mercader",
+   "sign": "El mercader",
+   "options": [
+    "mercader",
+    "tienda",
+    "moneda"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "SCRIPTURE TEACHES-WORD (Proverbios 31:24, VERIFIED — teachesForm mercader, occurs once). The unit's title word. mercader/mercado never share an option set: the -der/-do ending IS the listening discrimination."
+  },
+  {
+   "id": "compro",
+   "es": "compro",
+   "en": "I buy",
+   "say": "Compro pan y queso en el mercado.",
+   "caption": "Compro en el mercado",
+   "sign": "Compro pan",
+   "options": [
+    "compro",
+    "vende",
+    "cuesta"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "comprar 1st singular, present. compro/vende/cuesta is the unit's shop-verb contrast set (documented exception — the contrast IS the teaching point). compra (the noun, «la compra») is NOT an id — never an option string."
+  },
+  {
+   "id": "vende",
+   "es": "vende",
+   "en": "he / she sells",
+   "say": "Prudencia vende tela en la tienda.",
+   "caption": "Prudencia vende tela",
+   "sign": "Vende tela",
+   "options": [
+    "vende",
+    "compro",
+    "precio"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "vender 3rd singular, present. Prudencia = the market seller (proper noun in say only, never a tile). E5 RESOLVED: the verse reads «vendió» — vende does NOT occur as a token, so vende may serve as a decoy."
+  },
+  {
+   "id": "precio",
+   "es": "precio",
+   "en": "price",
+   "say": "¿Cuál es el precio del pan?",
+   "caption": "El precio del pan",
+   "sign": "El precio",
+   "options": [
+    "precio",
+    "moneda",
+    "cuesta"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "the price (noun). precio/cuesta is the noun/verb pair: the precio is a number, cuesta is what the thing does. precioso is not an id — never an option string."
+  },
+  {
+   "id": "cuesta",
+   "es": "cuesta",
+   "en": "it costs",
+   "say": "¿Cuánto cuesta la camisa?",
+   "caption": "¿Cuánto cuesta?",
+   "sign": "¿Cuánto cuesta?",
+   "options": [
+    "cuesta",
+    "precio",
+    "compro"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "costar 3rd singular, present. The phrase «¿Cuánto cuesta?» lives in say/sign; the tile is cuesta (formIdRule, a0-u06 question-word precedent). cuánto alone is NOT a pool id (a1-u02 phantom-decoy ruling) and cuántos never shares a set with cuesta (cuán- cluster). cuestan deferred — E8."
+  },
+  {
+   "id": "caro",
+   "es": "caro",
+   "en": "expensive, dear",
+   "say": "El abrigo es caro.",
+   "caption": "El abrigo es caro",
+   "sign": "Es caro",
+   "options": [
+    "caro",
+    "barato",
+    "grande"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "caro/cara agree: el abrigo es caro, la camisa es cara. The -a form is NOT an id — never an option string. caro/barato sit together deliberately (the opposite pair is the teaching point); caro/claro is a listening note only (claro is not an id)."
+  },
+  {
+   "id": "barato",
+   "es": "barato",
+   "en": "cheap, inexpensive",
+   "say": "La tela es barata.",
+   "caption": "La tela es barata",
+   "sign": "Es barato",
+   "options": [
+    "barato",
+    "caro",
+    "nuevo"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "barato/barata agree. barato/barro NEVER share a set (barro is a0-u05 — extends a1-u03's barro/burro and barro/carro rule)."
+  },
+  {
+   "id": "dinero",
+   "es": "dinero",
+   "en": "money",
+   "say": "No tengo mucho dinero.",
+   "caption": "Dinero para el pan",
+   "sign": "El dinero",
+   "options": [
+    "dinero",
+    "moneda",
+    "precio"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "money in general (like ropa = clothes in general); moneda is one coin. dinero/moneda is the taught contrast, not a near pair."
+  },
+  {
+   "id": "ropa",
+   "es": "ropa",
+   "en": "clothes",
+   "say": "Prudencia vende ropa nueva.",
+   "caption": "Ropa nueva",
+   "sign": "La ropa",
+   "options": [
+    "ropa",
+    "tela",
+    "tienda"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "clothes as a mass (like dinero); tela is the cloth they are made of — the pair is the teaching point. rojo/ropa never share a set (ro- cluster). E5 re-check: ropa does NOT occur in the verse («telas» is the verse's word — a different token from the pool id tela)."
+  },
+  {
+   "id": "vestido",
+   "es": "vestido",
+   "en": "dress",
+   "say": "El vestido es azul.",
+   "caption": "El vestido azul",
+   "sign": "El vestido",
+   "options": [
+    "vestido",
+    "camisa",
+    "falda"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "the garment (a dress), not the participle of vestir. vestir is not an id — never an option string. One of the garments the Proverbios 31 household makes and wears."
+  },
+  {
+   "id": "camisa",
+   "es": "camisa",
+   "en": "shirt",
+   "say": "La camisa es blanca.",
+   "caption": "La camisa blanca",
+   "sign": "La camisa",
+   "options": [
+    "camisa",
+    "vestido",
+    "sombrero"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "camisa/cama NEVER share a set (cam- cluster; cama is a0-u03). The say demonstrates feminine agreement with blanca."
+  },
+  {
+   "id": "pantalón",
+   "es": "pantalón",
+   "en": "trousers, pants",
+   "say": "El pantalón es nuevo.",
+   "caption": "El pantalón azul",
+   "sign": "El pantalón",
+   "options": [
+    "pantalón",
+    "falda",
+    "zapato"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "masculine despite the -ón ending; el pantalón, los pantalones. pantalón/falda is a taught garment contrast."
+  },
+  {
+   "id": "falda",
+   "es": "falda",
+   "en": "skirt",
+   "say": "La falda es azul.",
+   "caption": "La falda azul",
+   "sign": "La falda",
+   "options": [
+    "falda",
+    "pantalón",
+    "vestido"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "falda (skirt) vs falta (fault, from faltar) is a real listening trap — falta is NOT a pool id, so it is never an option string (phantom-decoy rule); note only."
+  },
+  {
+   "id": "zapato",
+   "es": "zapato",
+   "en": "shoe",
+   "say": "Tengo dos zapatos nuevos.",
+   "caption": "Los zapatos nuevos",
+   "sign": "El zapato",
+   "options": [
+    "zapato",
+    "sombrero",
+    "camisa"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "one zapato, two zapatos; the say shows the plural agreement nuevos. TPR prop for hear-act (artDebt)."
+  },
+  {
+   "id": "sombrero",
+   "es": "sombrero",
+   "en": "hat",
+   "say": "El sombrero es grande.",
+   "caption": "El sombrero grande",
+   "sign": "El sombrero",
+   "options": [
+    "sombrero",
+    "zapato",
+    "falda"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "sombrero/sombra is a listening note only (sombra is not an id — never an option string). TPR prop for hear-act (artDebt)."
+  },
+  {
+   "id": "cinturón",
+   "es": "cinturón",
+   "en": "belt",
+   "say": "El cinturón es negro.",
+   "caption": "El cinturón negro",
+   "sign": "El cinturón",
+   "options": [
+    "cinturón",
+    "camisa",
+    "pantalón"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "cinturón = belt. The Proverbios 31 merchant trades in cintas (ribbons/sashes) — cintas is a verse word, NOT an id, and cinturón/cintas never share a set. Also the natural word for the Armor belt (Ef 6:14 «ceñidos vuestros lomos de verdad»), a future armor-layer tie-in — no binding declared here."
+  },
+  {
+   "id": "tela",
+   "es": "tela",
+   "en": "cloth, fabric",
+   "say": "La tela es roja.",
+   "caption": "La tela roja",
+   "sign": "La tela",
+   "options": [
+    "tela",
+    "ropa",
+    "mercader"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "the merchant's goods — what the mercader brings and what the household weaves. tela (cloth) vs ropa (finished clothes) is the taught contrast. E5 note: the verse's token is «telas» (plural) — tela stays a legal decoy (exact-token rule), though it is not in the verse-complete options."
+  },
+  {
+   "id": "abrigo",
+   "es": "abrigo",
+   "en": "coat",
+   "say": "Tengo un abrigo nuevo.",
+   "caption": "Un abrigo nuevo",
+   "sign": "El abrigo",
+   "options": [
+    "abrigo",
+    "camisa",
+    "sombrero"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "a warm coat. abrigar is not an id — never an option string. Carries the caro sentence («El abrigo es caro»)."
+  },
+  {
+   "id": "verde",
+   "es": "verde",
+   "en": "green",
+   "say": "La tela verde es barata.",
+   "caption": "Verde como el campo",
+   "sign": "Es verde",
+   "options": [
+    "verde",
+    "blanco",
+    "rojo"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass at A1 with agreement: verde does NOT change — la tela verde, el zapato verde. verde/verano never share a set (ver- cluster; verano a0-u06)."
+  },
+  {
+   "id": "blanco",
+   "es": "blanco",
+   "en": "white",
+   "say": "La nieve es blanca.",
+   "caption": "Blanco como la nieve",
+   "sign": "Es blanco",
+   "options": [
+    "blanco",
+    "negro",
+    "verde"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass; blanco/blanca agrees with the thing (el zapato blanco, la camisa blanca). blanca is NOT an id — never an option string (phantom-decoy rule)."
+  },
+  {
+   "id": "amarillo",
+   "es": "amarillo",
+   "en": "yellow",
+   "say": "El maíz es amarillo.",
+   "caption": "Amarillo como el sol",
+   "sign": "Es amarillo",
+   "options": [
+    "amarillo",
+    "azul",
+    "rojo"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "CLOSES AN UNBOUND SPOKEN FORM: a0-u04 already says «Mira el maíz. Es amarillo.» with no id behind amarillo (F5 hole in reverse, a1-u02's en precedent) — the say reuses that sentence's words. amarillo/amarilla agree; amarilla is NOT an id."
+  },
+  {
+   "id": "rojo",
+   "es": "rojo",
+   "en": "red",
+   "say": "La tela roja es cara.",
+   "caption": "Rojo como la tela",
+   "sign": "Es rojo",
+   "options": [
+    "rojo",
+    "verde",
+    "negro"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "rojo/roja agree; roja is NOT an id. rojo/ropa never share a set (ro- cluster)."
+  },
+  {
+   "id": "azul",
+   "es": "azul",
+   "en": "blue",
+   "say": "El cielo es azul.",
+   "caption": "Azul como el cielo",
+   "sign": "Es azul",
+   "options": [
+    "azul",
+    "blanco",
+    "amarillo"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "INVARIANT: el pantalón azul, la falda azul — one form, like verde and grande. The say uses the learner's own cielo (a0-u01)."
+  },
+  {
+   "id": "negro",
+   "es": "negro",
+   "en": "black",
+   "say": "El sombrero es negro.",
+   "caption": "Negro como la noche",
+   "sign": "Es negro",
+   "options": [
+    "negro",
+    "blanco",
+    "rojo"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "negro/negra agree: el sombrero negro, la falda negra. negra is NOT an id — never an option string."
+  },
+  {
+   "id": "púrpura",
+   "es": "púrpura",
+   "en": "purple",
+   "say": "La tela púrpura es cara.",
+   "caption": "La tela púrpura",
+   "sign": "Es púrpura",
+   "options": [
+    "púrpura",
+    "azul",
+    "verde"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "the royal/dyed cloth colour of Proverbios 31's household (and of the tabernacle curtains) — the story's own colour, invariant like verde and azul: la tela púrpura, el vestido púrpura. Included as a colour word in its own right; the scripture block does NOT depend on it. FUTURE: Proverbios 31:22 («de lino fino y púrpura es su vestido», fetched 21:3X) is the natural binding if a later unit wants púrpura/vestido as scripture words — recorded, not bound."
+  },
+  {
+   "id": "color",
+   "es": "color",
+   "en": "colour",
+   "say": "¿De qué color es la falda?",
+   "caption": "¿De qué color?",
+   "sign": "¿Qué color?",
+   "options": [
+    "color",
+    "precio",
+    "ropa"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "the noun that makes every colour question work; the pattern «¿De qué color es...?» lives in say/sign (formIdRule). color/calor NEVER share a set — a real listening trap (calor alone is not an id; hace calor is)."
+  },
+  {
+   "id": "este",
+   "es": "este",
+   "en": "this (m.)",
+   "say": "Este vestido es nuevo.",
+   "caption": "Este vestido",
+   "sign": "Este vestido",
+   "options": [
+    "este",
+    "mi",
+    "su"
+   ],
+   "new": false,
+   "poolSource": "a0-u05",
+   "note": "DUAL SENSE — E1 RULED: a0-u05's gloss widened AT SOURCE to «this (m.); also east as a direction» (a0-packs.json:101). Here it is RE-SERVED as the demonstrative (new:false, poolSource a0-u05, never re-introduced as new). este/esta/esto/estos/estas never share a hear-choose set."
+  },
+  {
+   "id": "esta",
+   "es": "esta",
+   "en": "this (f.)",
+   "say": "Esta camisa es blanca.",
+   "caption": "Esta camisa",
+   "sign": "Esta camisa",
+   "options": [
+    "esta",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "E2 CONFIRMED — THIRD ACCENT PAIR: esta (this, f.) vs está (is, a0-verbs) differ only by the accent (pool pairs: cómo/como, tu/tú, esta/está). Never in the same option set; tile-size accent distinctness is a Reviewer correctness check (DEFECTS #20 family, widened to three)."
+  },
+  {
+   "id": "esto",
+   "es": "esto",
+   "en": "this (neuter)",
+   "say": "¿Qué es esto? Es tela.",
+   "caption": "¿Qué es esto?",
+   "sign": "¿Qué es esto?",
+   "options": [
+    "esto",
+    "qué",
+    "cuál"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "NEUTER: it points at a thing you have not named — «¿Qué es esto?» — and never takes a noun. esto/esta/estos never share a set (one-letter differences)."
+  },
+  {
+   "id": "estos",
+   "es": "estos",
+   "en": "these (m.)",
+   "say": "Estos zapatos son nuevos.",
+   "caption": "Estos zapatos",
+   "sign": "Estos zapatos",
+   "options": [
+    "estos",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "estos + masculine plural noun: estos zapatos, estos sombreros. estos/estas never share a set (final -os/-as only)."
+  },
+  {
+   "id": "estas",
+   "es": "estas",
+   "en": "these (f.)",
+   "say": "Estas telas son rojas.",
+   "caption": "Estas telas rojas",
+   "sign": "Estas telas",
+   "options": [
+    "estas",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "estas + feminine plural noun: estas telas, estas camisas. estas/estos never share a set; estás (tú estás) is not a pool id — never an option string."
+  },
+  {
+   "id": "ese",
+   "es": "ese",
+   "en": "that (m.)",
+   "say": "Ese vestido es caro.",
+   "caption": "Ese vestido",
+   "sign": "Ese vestido",
+   "options": [
+    "ese",
+    "mi",
+    "tu"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "ese = that (near the person you speak to); este = this (near me). The distance contrast is the point; ese/este never share a set."
+  },
+  {
+   "id": "esa",
+   "es": "esa",
+   "en": "that (f.)",
+   "say": "Esa falda es azul.",
+   "caption": "Esa falda azul",
+   "sign": "Esa falda",
+   "options": [
+    "esa",
+    "su",
+    "mi"
+   ],
+   "new": true,
+   "poolSource": "a1-u04",
+   "note": "esa + feminine noun: esa falda. esa/ese never share a set (final -a/-e only)."
+  }
+ ],
+ "scripture": {
+  "verseId": "pro-31-24",
+  "reference": "Proverbios 31:24 (RV1909)",
+  "status": "verified",
+  "verse": "Hizo telas, y vendió; y dió cintas al mercader.",
+  "verseModern": "Hizo telas, y vendió; y dio cintas al mercader.",
+  "captionSplit": [
+   "Hizo telas, y vendió; y dió",
+   "cintas al mercader."
+  ],
+  "say": "«Hizo telas, y vendió; y dió cintas al mercader.»",
+  "teaches": "mercader",
+  "teachesForm": "mercader",
+  "gapCount": 1,
+  "decoys": [
+   "precio",
+   "tienda",
+   "ropa"
+  ],
+  "verify": "VERIFIED 21:3X by lead — single curl verses/PRO/031/024.json (danielmiranda/rv1909hispano, translation RV1909M); text_original byte-identical. teachesForm = mercader, occurs ONCE (gapCount 1). verseModern by R2 only (dió→dio; vendió is already modern orthography and is untouched; no R1 standalone particles). Decoy re-check (E5): precio/tienda/ropa do NOT occur in the verse; vende does NOT occur («vendió» is a different token); «telas» occurs — plural of pool id tela, different token, and tela is not in the verse-complete options. Fallbacks 31:14/31:22 fetched but NOT needed (v14/c22 recorded in the ledger for future candidates).",
+  "ledger": "FIRST PROVERBS COVERAGE (priority tier 4 — Proverbs is tier 4 in pillar 3's order: Gospels → rest of NT → Psalms → Proverbs → rest of OT). E3(b) CONFIRMED: the ratified curriculum map assigns Proverbs 31 to A1-U4 — the tier order governs NEW coverage elsewhere, not this unit's spine (design §2b conflict ruling, lead 20:40). E3(c) HARD CONSTRAINT RECORDED: A1's Gospel quota is ≥7; after this pack A1 stands at 3 Gospel verses (Mt 7:13, Mt 7:14, Lk 2:1-7) — U5 (Mc 1/Lc 5), U6 (Lc 15) and U8 (Mt 4/Mc 1/Lc 5) MUST carry the remaining ≥4. One scripture block per pack (§5.5 quota) holds. The passage is the virtuous-woman poem (Proverbios 31:10-31), the household that buys, weaves and sells — the unit's own theme. Proverbios 31:22 («de lino fino y púrpura es su vestido») fetched as a future-binding candidate (púrpura/vestido), not bound here. INT-1 holds: the Proverbios 31 character is never a measurement device."
+ },
+ "qna": {
+  "sayMax": 36,
+  "captionMax": 22,
+  "signMax": 16,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). Proper nouns Prudencia (the seller) and any verse name appear in say text and are never tiles.",
+  "nearFormRule": "Never in the same hear-choose option set — INHERITED and still binding: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro (a1-u02); va/van, ve/ven, ve/va, a/al, pueblo/puerta/puente, plaza/plato/planta, barro/burro, barro/carro, viaje/viejo, camello/camino, cruza/crece/cree, espera/escribe, cama/casa (a1-u03). NEW IN THIS PACK: mercader/mercado (both pool ids — the -der/-do ending is the whole discrimination); esta/está (THIRD accent pair — accent only); este/esta/esto/estos/estas (final vowel/-s only — the va/van family); estos/estas; ese/esa; ese/este; camisa/cama; barato/barro; color/calor (calor alone is not an id; hace calor is); verde/verano; rojo/ropa; cuesta/cuántos (cuán- cluster); cinturón/cintas (cintas is a verse word, not an id). DOCUMENTED EXCEPTIONS (deliberate, kept): (1) the taught contrast sets sit TOGETHER — caro/barato, dinero/moneda, ropa/tela, compro/vende/cuesta — because the contrast IS the teaching point (a0-verbs hay/está/tengo and a1-u03 derecha/izquierda precedent); (2) demonstrative paradigm members MAY share a WAVE but NEVER a hear-choose option set — the gender/number contrast is tested in gap-fill and reading, where the written noun resolves it (tiene/tienen precedent, C5); (3) a1-u02's mi/tu/su exception ids appear here only as DECOYS, never as targets; (4) a1-u02's hay/está/tengo, mi/tu/su, cuántos/cuándo exceptions remain documented; here mi/tu/su co-occur ONLY as decoys inside demonstrative sets — legal under exception (3) (possession paradigm as decoys, never as targets). NOT IDS, therefore NEVER option strings (phantom decoy, DEFECTS #14): blanca, roja, amarilla, negra, nuevas, monedas, cuánto, cuestan, falta, sombra, claro, calor, cintas, manto, precioso, vestir, compra (the noun).",
+  "targetLeadsOptions": true,
+  "pagination": "largest wave l1 = 11 ids, l2 = 10, l3 = 8, l4 = 7 — all under the 12-per-page threshold (DEFECTS #18). No split required. If the renderer's threshold is strictly-below-12, split l1 6+5.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "30 new ids, 0 collisions against the 275-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 + a1-u03 25 = 275). 6 re-passes are byte-identical re-serves with new:false + poolSource (mercado a1-u03, tienda a0-u03, moneda a0-u03, verde a0-u03, blanco a0-u03, este a0-u05), never re-introduced as new. Pool after this pack = 305.",
+  "optionsBoundToIds": "Every option string is a bound pool id (275 existing + this pack's 30). Decoys are drawn from the same wave where possible (compro/vende/cuesta, camisa/vestido/falda) and from earlier A1 function/determiner ids for the demonstratives (mi a0-u01, su/tu a1-u02, qué/cuál a0-u06). No phantom decoys (DEFECTS #14).",
+  "grammar": "A1 register per THEOLOGY-guide §3.1 and the inherited A1 ruling: PRESENT TENSE ONLY — pretérito is A1-U7 (the scripture passage is exempt per the standing scripture ruling). No subjunctive, no negative commands, no vosotros. Every say is one idea and the target word is repeated in caption + sign. Agreement is taught by note + say, not by minting feminine ids.",
+  "csa": "Owner plain-truth directive applied: no sanitizing rules apply, and nothing is softened. The merchants of Proverbios 31 are honest traders — the unit's virtue is diligence and generosity (the passage's own point). No invented detail: the scripture block carries only the fetched verse. Money and trade are taught plainly without greed-framing or prosperity-framing either way. INT-1 holds — no doctrine-assent gate anywhere.",
+  "formIdRule": "ids are the exact form the learner hears and the string on the tile. Verbs are FINITE PRESENT forms (compro, vende, cuesta), not infinitives (a1-u01 convention; a0-verbs' hacer is the standing exception). Colours are masculine citation forms (amarillo, rojo, negro) or the invariant form (verde, azul, púrpura) — the -a/-os/-as agreement forms are NEVER ids (a0-u06 descriptorDecision). Demonstratives are the bare forms with the noun phrase in say/sign. Phrases («¿Cuánto cuesta?», «¿De qué color es...?») live in say/sign, the tile stays a word."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "mercado",
+    "say": "Prudencia vende ropa en el mercado.",
+    "options": [
+     "mercado",
+     "tienda",
+     "plaza"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "mercader",
+    "say": "El mercader trae tela de lejos.",
+    "options": [
+     "mercader",
+     "tienda",
+     "moneda"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "cuesta",
+    "say": "¿Cuánto cuesta la camisa?",
+    "options": [
+     "cuesta",
+     "precio",
+     "compro"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "camisa",
+    "say": "La camisa es blanca.",
+    "options": [
+     "camisa",
+     "vestido",
+     "sombrero"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "amarillo",
+    "say": "El maíz es amarillo.",
+    "options": [
+     "amarillo",
+     "azul",
+     "rojo"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "esta",
+    "say": "Esta camisa es blanca.",
+    "options": [
+     "esta",
+     "mi",
+     "su"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "zapato",
+    "say": "Toca el zapato.",
+    "sprite": "zapato",
+    "options": [
+     "zapato",
+     "sombrero",
+     "camisa"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "sombrero",
+    "say": "Señala el sombrero.",
+    "sprite": "sombrero",
+    "options": [
+     "sombrero",
+     "zapato",
+     "abrigo"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "esta",
+    "sentence": "___ camisa es blanca.",
+    "choices": [
+     "esta",
+     "este",
+     "estas"
+    ],
+    "note": "THE AGREEMENT ITEM. Three demonstratives in one written set is legal here and only here — the hear-choose ban on este/esta/estos does not apply to gap-fill, where the written noun camisa resolves the gender (E6)."
+   },
+   {
+    "type": "gap-fill",
+    "es": "compro",
+    "sentence": "Yo ___ pan en el mercado.",
+    "choices": [
+     "compro",
+     "vende",
+     "cuesta"
+    ]
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "pro-31-24",
+    "reference": "Proverbios 31:24 (RV1909)",
+    "verse": "Hizo telas, y vendió; y dió cintas al mercader.",
+    "verseModern": "Hizo telas, y vendió; y dio cintas al mercader.",
+    "missing": "Hizo telas, y vendió; y dió cintas al ___.",
+    "missingModern": "Hizo telas, y vendió; y dio cintas al ___.",
+    "captionSplit": [
+     "Hizo telas, y vendió; y dió",
+     "cintas al ___."
+    ],
+    "gapCount": 1,
+    "en": "merchant",
+    "es": "mercader",
+    "say": "«Hizo telas, y vendió; y dió cintas al mercader.»",
+    "options": [
+     "mercader",
+     "precio",
+     "tienda",
+     "ropa"
+    ]
+   },
+   {
+    "type": "reading-item",
+    "passage": "En el mercado hay mucha gente. Prudencia vende ropa en su tienda. La camisa es blanca y la falda es azul. El vestido cuesta veinte monedas. El mercader trae tela nueva.",
+    "question": "¿De qué color es la falda?",
+    "answer": "azul",
+    "choices": [
+     "azul",
+     "verde",
+     "negro"
+    ],
+    "note": "READING-ITEM RULE applied: the answer is attested verbatim in the passage and every content word in the choices is a bound pool id (citation form for the distractors). The passage itself is where the agreement is demonstrated (blanca, azul, nueva)."
+   },
+   {
+    "type": "speak",
+    "target": "¿Cuánto cuesta esta camisa?",
+    "translation": "How much does this shirt cost?",
+    "minScore": 60
+   }
+  ],
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02/a1-u03; lead maps them onto the p1-p8 shapes when exam-a1 is authored. exam-a0's es=object shape applied to hear-act items at filing (lead ruling, same as a1-u02/a1-u03 items 7-8).",
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
+  },
+  "artDebt": "hear-act #7-8 need prop sprites for zapato and sombrero (both NEW art) plus the señala/toca action icons already owed by DEFECTS #17. No sprites needed for any hear-choose wave (text tiles only). SECOND, SEPARATE DEBT (extends DEFECTS #20): the pool now holds THREE accent pairs (cómo/como, tu/tú, esta/está) — tile-size accent distinctness is a Reviewer correctness check for this pack, and esta/está is the tightest of the three (a 4-character tile differing only by one accent mark). Also: no agreement surface form (blanca, roja, amarilla, negra) may be rendered as a tile — they are note/say text only. If the clothing art is not ready, swap both hear-act items to hear-choose (zapato and sombrero both have clean within-wave decoy sets) — the pattern slot is unchanged."
+ },
+ "provenance": {
+  "author": "curriculum-author session 8b79cc82 (report-only)",
+  "validatedBy": "lead 2026-11-10 21:3X (scripted union check + rulings E1-E8; scripture verified by lead curl per design §3)",
+  "map": "content/curriculum-map.md, A1 row 4: «Shopping, prices, clothes, colours agreement, demonstratives — The merchants of Proverbs 31»",
+  "schemaPrecedent": "build/content-packs/a1-u03.json exactly (sign kept, provenance = new + poolSource, waves l1-l4 + replay-5 convention, qna/nearFormRule/examContribution/provenance block shape)",
+  "rulings": "E1 RULED: a0-u05 este gloss widened AT SOURCE (a0-packs.json:101) — «this (m.); also east as a direction»; este re-passed here as demonstrative. E2 CONFIRMED: esta/está = the pool's THIRD accent pair; DEFECTS #20 tile check widened to three; esta/está permanently banned from shared sets. E3 CONFIRMED: (a) Proverbios 31:24 verified by lead curl — first Proverbs coverage; (b) tier-order ruling holds (map wins for story threads); (c) A1 Gospel quota is a HARD constraint: 3 of ≥7 served — U5/U6/U8 must carry ≥4 more. E4: teachesForm = mercader (singular, from the fetch). E5 RESOLVED: vende does NOT occur in the verse (vendió is a different token); decoys precio/tienda/ropa confirmed verse-free. E6 KEPT AS AUTHORED: agreement tested via demonstrative gap-fill + reading; adjectives never option strings (recognition at A1; production in speak/reading). E7: Prudencia stays as say-text name; no NPC binding declared (mission_prudencia_mercado_done is the natural future target). E8: cuestan deferred to A1-U8's deferred list (joins vas/tienen); l1 = 11 ids, no split needed. D4 DISCHARGED: mercado re-passed new:false/poolSource a1-u03.",
+  "taughtPoolBefore": 274,
+  "newIds": 30,
+  "taughtPoolAfter": 304
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "mercader",
+  "compro",
+  "vende",
+  "precio",
+  "cuesta",
+  "caro",
+  "barato",
+  "dinero",
+  "ropa",
+  "vestido",
+  "camisa",
+  "pantalón",
+  "falda",
+  "zapato",
+  "sombrero",
+  "cinturón",
+  "tela",
+  "abrigo",
+  "amarillo",
+  "rojo",
+  "azul",
+  "negro",
+  "púrpura",
+  "color",
+  "esta",
+  "esto",
+  "estos",
+  "estas",
+  "ese",
+  "esa"
+ ]
+}

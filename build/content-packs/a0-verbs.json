@@ -1,0 +1,464 @@
+{
+ "packId": "a0-verbs",
+ "unitId": "a0-verbs",
+ "contentBinding": "a0-verbs-l1",
+ "optional": false,
+ "priority": "P0 — exam-a0 hear-act (toca/señala/abre) and hear-choose prompts (da/dice/hacer) depend on these forms; gap inventory G1",
+ "why": "Shipped content speaks ~25 verb forms + the three TPR commands that no pack teaches. a1-u01 already assumes hay and esta/estan as known grammar (CONTENT-a1-pack.md), so this pack closes that hole too. Includes sol + paz as real pool words, killing the phantom decoys of DEFECTS #14.",
+ "theme": "Acciones y órdenes — the verbs the world already speaks, plus how things are",
+ "storyThread": "Un día en el pueblo: mirar, hablar, comer, orar, y la paz de casa",
+ "words": [
+  {
+   "id": "hay",
+   "es": "hay",
+   "en": "there is / there are",
+   "say": "Hay pan en la mesa.",
+   "caption": "Hay pan en la mesa",
+   "note": "one form for both singular and plural",
+   "options": [
+    "hay",
+    "está",
+    "tengo"
+   ]
+  },
+  {
+   "id": "está",
+   "es": "está",
+   "en": "is (where something is)",
+   "say": "La olla está en la mesa.",
+   "caption": "La olla está en la mesa",
+   "note": "from estar; hay names a thing, está says where it is",
+   "options": [
+    "está",
+    "hay",
+    "tengo"
+   ]
+  },
+  {
+   "id": "tengo",
+   "es": "tengo",
+   "en": "I have",
+   "say": "Yo tengo un libro.",
+   "caption": "Yo tengo un libro",
+   "note": "from tener; yo tengo = I have",
+   "options": [
+    "tengo",
+    "está",
+    "me gusta"
+   ]
+  },
+  {
+   "id": "me gusta",
+   "es": "me gusta",
+   "en": "I like",
+   "say": "Me gusta el pan.",
+   "caption": "Me gusta el pan",
+   "note": "literally «it is pleasing to me»",
+   "options": [
+    "me gusta",
+    "tengo",
+    "hay"
+   ]
+  },
+  {
+   "id": "mira",
+   "es": "mira",
+   "en": "look! (look at)",
+   "say": "Mira la casa. Mira el árbol.",
+   "caption": "Mira la casa",
+   "note": "command from mirar; the form children hear most",
+   "options": [
+    "mira",
+    "dice",
+    "da"
+   ]
+  },
+  {
+   "id": "dice",
+   "es": "dice",
+   "en": "says",
+   "say": "El jet dice palabras.",
+   "caption": "El jet dice palabras",
+   "note": "from decir",
+   "options": [
+    "dice",
+    "mira",
+    "da"
+   ]
+  },
+  {
+   "id": "paz",
+   "es": "paz",
+   "en": "peace",
+   "say": "En mi casa hay paz.",
+   "caption": "En mi casa hay paz",
+   "note": "closes DEFECTS #14: real pool word for the pan/paz pair",
+   "options": [
+    "paz",
+    "pan",
+    "sal"
+   ]
+  },
+  {
+   "id": "ora",
+   "es": "ora",
+   "en": "prays",
+   "say": "Ana ora a Dios.",
+   "caption": "Ana ora a Dios",
+   "note": "from orar; sounds like hora (hour) — the sentence carries the meaning",
+   "options": [
+    "ora",
+    "dice",
+    "mira"
+   ]
+  },
+  {
+   "id": "vamos",
+   "es": "vamos",
+   "en": "let's go / we go",
+   "say": "¡Vamos al pueblo!",
+   "caption": "Vamos al pueblo",
+   "note": "from ir; ¡vamos! = let's go",
+   "options": [
+    "vamos",
+    "vivo",
+    "tengo"
+   ]
+  },
+  {
+   "id": "vivo",
+   "es": "vivo",
+   "en": "I live",
+   "say": "Yo vivo aquí.",
+   "caption": "Yo vivo aquí",
+   "note": "from vivir",
+   "options": [
+    "vivo",
+    "vamos",
+    "tengo"
+   ]
+  },
+  {
+   "id": "quieres",
+   "es": "quieres",
+   "en": "you want",
+   "say": "¿Quieres jugar conmigo?",
+   "caption": "¿Quieres jugar?",
+   "note": "from querer; e → ie in the stressed form",
+   "options": [
+    "quieres",
+    "jugamos",
+    "vamos"
+   ]
+  },
+  {
+   "id": "jugamos",
+   "es": "jugamos",
+   "en": "we play",
+   "say": "Pip y yo jugamos.",
+   "caption": "Pip y yo jugamos",
+   "note": "from jugar; nosotros jugamos",
+   "options": [
+    "jugamos",
+    "quieres",
+    "vamos"
+   ]
+  },
+  {
+   "id": "hacer",
+   "es": "hacer",
+   "en": "to do, to make",
+   "say": "Me gusta hacer pan.",
+   "caption": "Me gusta hacer pan",
+   "note": "the infinitive: to make, to do",
+   "options": [
+    "hacer",
+    "me gusta",
+    "como"
+   ]
+  },
+  {
+   "id": "da",
+   "es": "da",
+   "en": "gives",
+   "say": "Mamá te da pan.",
+   "caption": "Mamá te da pan",
+   "note": "from dar",
+   "options": [
+    "da",
+    "dice",
+    "tengo"
+   ]
+  },
+  {
+   "id": "también",
+   "es": "también",
+   "en": "also, too",
+   "say": "Yo también vivo aquí.",
+   "caption": "Yo también",
+   "note": "también = me too",
+   "options": [
+    "también",
+    "ahora",
+    "muy"
+   ]
+  },
+  {
+   "id": "muy",
+   "es": "muy",
+   "en": "very",
+   "say": "La casa es muy grande.",
+   "caption": "Muy grande",
+   "note": "muy grande = very big",
+   "options": [
+    "muy",
+    "aquí",
+    "también"
+   ]
+  },
+  {
+   "id": "ahora",
+   "es": "ahora",
+   "en": "now",
+   "say": "Ahora yo como pan.",
+   "caption": "Ahora como pan",
+   "note": "the h is silent: ah-OH-rah",
+   "options": [
+    "ahora",
+    "aquí",
+    "muy"
+   ]
+  },
+  {
+   "id": "crece",
+   "es": "crece",
+   "en": "grows",
+   "say": "El trigo crece en el campo.",
+   "caption": "El trigo crece",
+   "note": "from crecer",
+   "options": [
+    "crece",
+    "vivo",
+    "como"
+   ]
+  },
+  {
+   "id": "sol",
+   "es": "sol",
+   "en": "sun",
+   "say": "Hay sol en el cielo.",
+   "caption": "Hay sol en el cielo",
+   "note": "closes DEFECTS #14: real pool word for the sal/sol pair",
+   "options": [
+    "sol",
+    "sal",
+    "paz"
+   ]
+  },
+  {
+   "id": "como",
+   "es": "como",
+   "en": "I eat",
+   "say": "Como pan y queso.",
+   "caption": "Como pan y queso",
+   "note": "from comer; como also means «like, as»",
+   "options": [
+    "como",
+    "bebo",
+    "hacer"
+   ]
+  },
+  {
+   "id": "bebo",
+   "es": "bebo",
+   "en": "I drink",
+   "say": "Bebo agua fría.",
+   "caption": "Bebo agua fría",
+   "note": "from beber",
+   "options": [
+    "bebo",
+    "como",
+    "duermo"
+   ]
+  },
+  {
+   "id": "duermo",
+   "es": "duermo",
+   "en": "I sleep",
+   "say": "Yo duermo en mi cama.",
+   "caption": "Duermo en mi cama",
+   "note": "from dormir; o → ue in the stressed form",
+   "options": [
+    "duermo",
+    "bebo",
+    "como"
+   ]
+  },
+  {
+   "id": "lleva",
+   "es": "lleva",
+   "en": "carries, leads",
+   "say": "El camino lleva al pueblo.",
+   "caption": "El camino lleva al pueblo",
+   "note": "from llevar; also in this pack's scripture",
+   "options": [
+    "lleva",
+    "vamos",
+    "da"
+   ]
+  },
+  {
+   "id": "grande",
+   "es": "grande",
+   "en": "big, large",
+   "say": "La mesa es grande.",
+   "caption": "La mesa es grande",
+   "note": "one form for masculine and feminine",
+   "options": [
+    "grande",
+    "pequeña",
+    "bonita"
+   ]
+  },
+  {
+   "id": "pequeña",
+   "es": "pequeña",
+   "en": "small, little",
+   "say": "La uva es pequeña.",
+   "caption": "La uva es pequeña",
+   "note": "pequeño / pequeña; ñ = ny as in canyon",
+   "options": [
+    "pequeña",
+    "grande",
+    "bonita"
+   ]
+  },
+  {
+   "id": "bonita",
+   "es": "bonita",
+   "en": "pretty, lovely",
+   "say": "La casa es bonita.",
+   "caption": "La casa es bonita",
+   "note": "bonito / bonita",
+   "options": [
+    "bonita",
+    "grande",
+    "pequeña"
+   ]
+  },
+  {
+   "id": "aquí",
+   "es": "aquí",
+   "en": "here",
+   "say": "Aquí está mi casa.",
+   "caption": "Aquí está mi casa",
+   "note": "aquí = here, allí = there",
+   "options": [
+    "aquí",
+    "ahora",
+    "muy"
+   ]
+  },
+  {
+   "id": "toca",
+   "es": "toca",
+   "en": "touch (command)",
+   "say": "Toca la puerta.",
+   "caption": "Toca la puerta",
+   "note": "TPR command from tocar — the exam says «Toca la casa»",
+   "options": [
+    "toca",
+    "señala",
+    "abre"
+   ]
+  },
+  {
+   "id": "señala",
+   "es": "señala",
+   "en": "point at (command)",
+   "say": "Señala el árbol.",
+   "caption": "Señala el árbol",
+   "note": "TPR command from señalar; ñ = ny",
+   "options": [
+    "señala",
+    "toca",
+    "abre"
+   ]
+  },
+  {
+   "id": "abre",
+   "es": "abre",
+   "en": "open (command)",
+   "say": "Abre la ventana.",
+   "caption": "Abre la ventana",
+   "note": "TPR command from abrir — the exam says «Abre la ventana»",
+   "options": [
+    "abre",
+    "toca",
+    "señala"
+   ]
+  }
+ ],
+ "waves": {
+  "1": [
+   "hay",
+   "está",
+   "tengo",
+   "me gusta",
+   "mira",
+   "dice",
+   "paz",
+   "ora",
+   "aquí"
+  ],
+  "2": [
+   "vamos",
+   "vivo",
+   "quieres",
+   "jugamos",
+   "hacer",
+   "da",
+   "también",
+   "muy",
+   "ahora"
+  ],
+  "3": [
+   "crece",
+   "sol",
+   "como",
+   "bebo",
+   "duermo",
+   "lleva",
+   "grande",
+   "pequeña",
+   "bonita"
+  ],
+  "4": [
+   "toca",
+   "señala",
+   "abre"
+  ],
+  "5": "adaptive replay from progress.misses"
+ },
+ "WAVE_NOTE": "wave 4 is the TPR wave — render as hear-act (3 action icons keyed by es), not text-only; it is the only wave that needs sprites. LEAD RULE 19:59: waves 1-4 + replay-5 as delivered — matches on-disk pack convention.",
+ "scripture": {
+  "reference": "1 Tesalonicenses 5:17 (RV1909)",
+  "verse": "Orad sin cesar.",
+  "captionSplit": [
+   "Orad sin cesar."
+  ],
+  "say": "«Orad sin cesar.»",
+  "teaches": "ora",
+  "verify": "VERIFIED 20:02 by lead against RV1909 primary source (danielmiranda/rv1909hispano verses/1TH/005/017.json, text_original, RV1909M). Swapped in 20:22 per researcher recommendation: frees Mateo 7:14 for a1-u01's exclusive use; teaches ora = this pack's own word (better binding than lleva)."
+ },
+ "QA": {
+  "wordCount": 30,
+  "sayMaxChars": 28,
+  "captionMaxChars": 25,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ only in rendered fields; « » appear only in English notes and scripture.say (spoken-only)",
+  "grammar": "present tense + affirmative imperatives (mira/toca/señala/abre/vamos) only; no past, no subjunctive, no subjunctive formulas in authored lines; scripture exempt per lead ruling",
+  "duplicateCheck": "zero overlap with unit-01.json (52 ids) or a0-packs.json (49 ids) — union becomes 131 unique ids",
+  "optionsBoundToIds": "every option string is a bound id: 30 from this pack + pan/sal (a0-u04). No phantom decoys (DEFECTS #14)",
+  "formIdRule": "ids are the form the learner hears and the string on screen (mirar→mira, estar→está, decir→dice, tener→tengo, gustar→me gusta, ir→vamos, vivir→vivo, querer→quieres, jugar→jugamos, dar→da, comer→como, beber→bebo, dormir→duermo, crecer→crece, llevar→lleva, orar→ora, tocar→toca, señalar→señala, abrir→abre; only hacer stays infinitive)"
+ }
+}

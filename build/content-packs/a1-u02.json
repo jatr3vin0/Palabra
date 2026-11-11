@@ -1,0 +1,824 @@
+{
+ "packId": "a1-u02",
+ "unitId": "a1-u02",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "La casa de Obed-Edom — la casa y los muebles, tener y hay, la posesión, las preposiciones de lugar",
+ "storyThread": "La casa de Obed-Edom (2 Samuel 6:10-11): el arca queda en la casa tres meses y Dios bendice la casa. L1 = la casa por dentro (re-pass de a0-u03 at A1); L2 = lo que la casa tiene (tener/hay); L3 = de quién es (posesión); L4 = dónde está cada cosa (preposiciones). La lámpara de la casa es la palabra (Salmo 119:105).",
+ "grammarTargets": [
+  "hay vs está/están (existencial vs locativo) — re-pass a0-verbs + a1-u01, deepened",
+  "tener paradigm: tengo/tienes/tiene/tienen (tenemos deliberately out of unit — near-form budget; A1-U5/U8 own it)",
+  "possession: mi/tu/su/nuestro + de + mío (mío/mía agrees with the thing owned)",
+  "prepositions of place + de-phrases: debajo de, detrás de, delante de, cerca de, lejos de; junto a takes NO de",
+  "¿Cuántos hay? — closes the a0-u06 cuántos/cuándo listening trap",
+  "adjective agreement review on house nouns (limpio/limpia, blanco/blanca) — re-pass a0-u06 + a0-u03, no new ids"
+ ],
+ "waves": {
+  "l1": [
+   "casa",
+   "mesa",
+   "silla",
+   "cama",
+   "ventana",
+   "puerta",
+   "pared",
+   "techo",
+   "suelo",
+   "lámpara",
+   "alfombra",
+   "patio"
+  ],
+  "l2": [
+   "hay",
+   "tengo",
+   "tienes",
+   "tiene",
+   "tienen",
+   "cuántos"
+  ],
+  "l3": [
+   "mi",
+   "tu",
+   "su",
+   "nuestro",
+   "de",
+   "mío"
+  ],
+  "l4": [
+   "en",
+   "sobre",
+   "debajo",
+   "dentro",
+   "entre",
+   "detrás",
+   "delante",
+   "cerca",
+   "lejos",
+   "junto a"
+  ]
+ },
+ "waveNotes": "l1 (12) = the house itself: 7 byte-identical re-passes from a0-u03 at A1 difficulty + 5 new objects. Exactly AT the 12-per-page threshold (DEFECTS #18) — no split required; if the renderer's threshold is strictly-below-12, split 6+6. l2 (6) = hay vs tener in depth: 3 re-passes (hay, tengo, tienes) + tiene/tienen + cuántos; hear-choose only, no sprites. l3 (6) = possession: mi (re-pass a0-u01) + tu/su/nuestro/de/mío; mi/tu/su is the paradigm set, mi/mío and tu/tú never co-occur. l4 (10) = prepositions of place, all new; hear-choose with the say carrying the relation, no sprites in this wave. No wave exceeds 12. Wave 5 = adaptive replay from progress.misses (unchanged convention, not a key in this object — matches a1-u01).",
+ "words": [
+  {
+   "id": "casa",
+   "es": "casa",
+   "en": "house",
+   "say": "La casa de Obed-Edom es grande.",
+   "caption": "La casa de Obed-Edom",
+   "sign": "La casa",
+   "options": [
+    "casa",
+    "tienda",
+    "cueva"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "re-pass a0-u03 at A1: same id, richer sentence. Obed-Edom (2 Samuel 6:10-11) is a proper noun, never a tile."
+  },
+  {
+   "id": "mesa",
+   "es": "mesa",
+   "en": "table",
+   "say": "La mesa está en el patio.",
+   "caption": "La mesa del patio",
+   "sign": "La mesa",
+   "options": [
+    "mesa",
+    "silla",
+    "cama"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "silla",
+   "es": "silla",
+   "en": "chair",
+   "say": "Hay dos sillas aquí.",
+   "caption": "Dos sillas aquí",
+   "sign": "La silla",
+   "options": [
+    "silla",
+    "mesa",
+    "puerta"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "cama",
+   "es": "cama",
+   "en": "bed",
+   "say": "La cama está en la casa.",
+   "caption": "La cama",
+   "sign": "La cama",
+   "options": [
+    "cama",
+    "alfombra",
+    "silla"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "ventana",
+   "es": "ventana",
+   "en": "window",
+   "say": "La ventana está abierta.",
+   "caption": "La ventana abierta",
+   "sign": "La ventana",
+   "options": [
+    "ventana",
+    "puerta",
+    "techo"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "puerta",
+   "es": "puerta",
+   "en": "door",
+   "say": "La puerta de la casa es verde.",
+   "caption": "La puerta de casa",
+   "sign": "La puerta",
+   "options": [
+    "puerta",
+    "ventana",
+    "suelo"
+   ],
+   "new": false,
+   "poolSource": "a0-u03"
+  },
+  {
+   "id": "pared",
+   "es": "pared",
+   "en": "wall (inside)",
+   "say": "La pared está limpia.",
+   "caption": "La pared limpia",
+   "sign": "La pared",
+   "options": [
+    "pared",
+    "suelo",
+    "techo"
+   ],
+   "new": false,
+   "poolSource": "a0-u03",
+   "note": "pared = inside wall (a0-u03), muro = city wall (a1-u01). Both are pool ids now — never each other's decoy."
+  },
+  {
+   "id": "techo",
+   "es": "techo",
+   "en": "ceiling, roof",
+   "say": "El techo es blanco.",
+   "caption": "El techo blanco",
+   "sign": "El techo",
+   "options": [
+    "techo",
+    "suelo",
+    "pared"
+   ],
+   "new": true,
+   "poolSource": "a1-u02"
+  },
+  {
+   "id": "suelo",
+   "es": "suelo",
+   "en": "floor",
+   "say": "El saco está en el suelo.",
+   "caption": "El saco en el suelo",
+   "sign": "El suelo",
+   "options": [
+    "suelo",
+    "techo",
+    "mesa"
+   ],
+   "new": true,
+   "poolSource": "a1-u02"
+  },
+  {
+   "id": "lámpara",
+   "es": "lámpara",
+   "en": "lamp",
+   "say": "La lámpara está en la mesa.",
+   "caption": "La lámpara",
+   "sign": "La lámpara",
+   "options": [
+    "lámpara",
+    "cesta",
+    "mesa"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "scripture teaches-word: Salmo 119:105 «Lámpara es á mis pies tu palabra». The lamp in the house is the word lighting the road."
+  },
+  {
+   "id": "alfombra",
+   "es": "alfombra",
+   "en": "rug",
+   "say": "La alfombra está limpia.",
+   "caption": "La alfombra nueva",
+   "sign": "La alfombra",
+   "options": [
+    "alfombra",
+    "mesa",
+    "silla"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "alfombra (rug) sits ON the suelo (floor) — the pair is taught in the same wave."
+  },
+  {
+   "id": "patio",
+   "es": "patio",
+   "en": "courtyard, patio",
+   "say": "El patio tiene una mesa.",
+   "caption": "El patio de casa",
+   "sign": "El patio",
+   "options": [
+    "patio",
+    "casa",
+    "tienda"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "patio = the courtyard inside the house wall — Obed-Edom's house has one."
+  },
+  {
+   "id": "hay",
+   "es": "hay",
+   "en": "there is / there are",
+   "say": "En la casa hay una mesa.",
+   "caption": "Hay una mesa",
+   "sign": "Hay",
+   "options": [
+    "hay",
+    "está",
+    "tengo"
+   ],
+   "new": false,
+   "poolSource": "a0-verbs",
+   "note": "a0-verbs grammar-contrast set kept deliberately: hay names a thing, está says where it is. está/están (the a1-u01 exception pair) never co-occur here."
+  },
+  {
+   "id": "tengo",
+   "es": "tengo",
+   "en": "I have",
+   "say": "Tengo una cama nueva.",
+   "caption": "Tengo una cama",
+   "sign": "Tengo",
+   "options": [
+    "tengo",
+    "tienes",
+    "está"
+   ],
+   "new": false,
+   "poolSource": "a0-verbs"
+  },
+  {
+   "id": "tienes",
+   "es": "tienes",
+   "en": "you have",
+   "say": "¿Tienes una alfombra?",
+   "caption": "¿Tienes una alfombra?",
+   "sign": "¿Tienes?",
+   "options": [
+    "tienes",
+    "tengo",
+    "hay"
+   ],
+   "new": false,
+   "poolSource": "a0-u02"
+  },
+  {
+   "id": "tiene",
+   "es": "tiene",
+   "en": "he / she has",
+   "say": "Obed-Edom tiene una casa.",
+   "caption": "Obed-Edom tiene",
+   "sign": "Tiene",
+   "options": [
+    "tiene",
+    "tengo",
+    "hay"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "tener 3rd singular. Near-form rule: tiene/tienen never share an option set (final -n is the only difference)."
+  },
+  {
+   "id": "tienen",
+   "es": "tienen",
+   "en": "they have",
+   "say": "Ellos tienen dos casas.",
+   "caption": "Ellos tienen dos casas",
+   "sign": "Tienen",
+   "options": [
+    "tienen",
+    "tengo",
+    "hay"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "tener 3rd plural; the spoken subject (ellos vs Obed-Edom) is what distinguishes it from tiene."
+  },
+  {
+   "id": "cuántos",
+   "es": "cuántos",
+   "en": "how many",
+   "say": "¿Cuántos hay en la mesa?",
+   "caption": "¿Cuántos hay?",
+   "sign": "¿Cuántos?",
+   "options": [
+    "cuántos",
+    "cuándo",
+    "qué"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "closes the a0-u06 cuántos/cuándo trap by contrasting the two DELIBERATELY at A1 — tiles are visually distinct and the say carries the question."
+  },
+  {
+   "id": "mi",
+   "es": "mi",
+   "en": "my",
+   "say": "Mi casa tiene un patio.",
+   "caption": "Mi casa",
+   "sign": "Mi casa",
+   "options": [
+    "mi",
+    "tu",
+    "su"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "unit-01.json vocab (file unitId a0-u01). mi/tu/su is the unit's possession paradigm set, not a near-form collision."
+  },
+  {
+   "id": "tu",
+   "es": "tu",
+   "en": "your (familiar)",
+   "say": "Tu casa tiene dos ventanas.",
+   "caption": "Tu casa",
+   "sign": "Tu casa",
+   "options": [
+    "tu",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "tu (possessive) vs tú (pronoun, a0-u01) differ by the accent only — same family as cómo/como (DEFECTS #20). Never in the same option set; tile-size distinctness is a Reviewer check."
+  },
+  {
+   "id": "su",
+   "es": "su",
+   "en": "his / her / your (polite)",
+   "say": "Su casa está en la ciudad.",
+   "caption": "Su casa",
+   "sign": "Su casa",
+   "options": [
+    "su",
+    "mi",
+    "tu"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "one form, three owners — the sentence names the owner."
+  },
+  {
+   "id": "nuestro",
+   "es": "nuestro",
+   "en": "our",
+   "say": "Nuestro patio es grande.",
+   "caption": "Nuestro patio",
+   "sign": "Nuestro patio",
+   "options": [
+    "nuestro",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "nuestro/nuestra: nuestro patio, nuestra casa. Never a decoy for nuevo (a0-u06)."
+  },
+  {
+   "id": "de",
+   "es": "de",
+   "en": "of",
+   "say": "La casa de Ana es grande.",
+   "caption": "La casa de Ana",
+   "sign": "La casa de Ana",
+   "options": [
+    "de",
+    "mi",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "the possession marker: la casa DE Ana. First bare function-word preposition in the pool — a0 packs kept prepositions out; the map puts them in U2."
+  },
+  {
+   "id": "mío",
+   "es": "mío",
+   "en": "mine",
+   "say": "El patio es mío.",
+   "caption": "El patio es mío",
+   "sign": "Es mío",
+   "options": [
+    "mío",
+    "nuestro",
+    "su"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "mío/mía agree with the THING owned: el patio es mío, la casa es mía. mi/mío never share an option set."
+  },
+  {
+   "id": "en",
+   "es": "en",
+   "en": "in, on, at",
+   "say": "Ana está en su casa.",
+   "caption": "En su casa",
+   "sign": "En la mesa",
+   "options": [
+    "en",
+    "sobre",
+    "dentro"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "the most frequent preposition in shipped text was unbound until now — F5 hole in reverse (a heard word replay cannot serve)."
+  },
+  {
+   "id": "sobre",
+   "es": "sobre",
+   "en": "on, on top of",
+   "say": "El plato está sobre la mesa.",
+   "caption": "Sobre la mesa",
+   "sign": "Sobre la mesa",
+   "options": [
+    "sobre",
+    "debajo",
+    "detrás"
+   ],
+   "new": true,
+   "poolSource": "a1-u02"
+  },
+  {
+   "id": "debajo",
+   "es": "debajo",
+   "en": "under, below",
+   "say": "El saco está debajo de la mesa.",
+   "caption": "Debajo de la mesa",
+   "sign": "Debajo",
+   "options": [
+    "debajo",
+    "sobre",
+    "dentro"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "takes de: debajo DE la mesa."
+  },
+  {
+   "id": "dentro",
+   "es": "dentro",
+   "en": "inside",
+   "say": "El pan está dentro de la cesta.",
+   "caption": "Dentro de la cesta",
+   "sign": "Dentro",
+   "options": [
+    "dentro",
+    "sobre",
+    "detrás"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "dentro DE la cesta."
+  },
+  {
+   "id": "entre",
+   "es": "entre",
+   "en": "between",
+   "say": "La mesa está entre dos sillas.",
+   "caption": "Entre dos sillas",
+   "sign": "Entre",
+   "options": [
+    "entre",
+    "junto a",
+    "detrás"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "entre never shares an option set with en (en/entre is a listening trap)."
+  },
+  {
+   "id": "detrás",
+   "es": "detrás",
+   "en": "behind",
+   "say": "El patio está detrás de la casa.",
+   "caption": "Detrás de la casa",
+   "sign": "Detrás",
+   "options": [
+    "detrás",
+    "delante",
+    "sobre"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "detrás DE la casa."
+  },
+  {
+   "id": "delante",
+   "es": "delante",
+   "en": "in front of",
+   "say": "Hay una mesa delante de la puerta.",
+   "caption": "Delante de la puerta",
+   "sign": "Delante",
+   "options": [
+    "delante",
+    "detrás",
+    "entre"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "delante DE la puerta."
+  },
+  {
+   "id": "cerca",
+   "es": "cerca",
+   "en": "near, close",
+   "say": "La tienda está cerca de casa.",
+   "caption": "Cerca de casa",
+   "sign": "Cerca",
+   "options": [
+    "cerca",
+    "lejos",
+    "dentro"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "cerca DE casa; cerca/lejos is the taught opposite pair."
+  },
+  {
+   "id": "lejos",
+   "es": "lejos",
+   "en": "far",
+   "say": "El río está lejos de casa.",
+   "caption": "Lejos de casa",
+   "sign": "Lejos",
+   "options": [
+    "lejos",
+    "cerca",
+    "entre"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "lejos DE casa."
+  },
+  {
+   "id": "junto a",
+   "es": "junto a",
+   "en": "next to",
+   "say": "La silla está junto a la mesa.",
+   "caption": "Junto a la mesa",
+   "sign": "Junto a",
+   "options": [
+    "junto a",
+    "debajo",
+    "detrás"
+   ],
+   "new": true,
+   "poolSource": "a1-u02",
+   "note": "closes an unbound spoken form: a1-u01's muro line says «El muro está junto a la puerta» with no id behind «junto a». junto a takes NO de."
+  }
+ ],
+ "scripture": {
+  "verseId": "psa-119-105",
+  "reference": "Salmo 119:105 (RV1909)",
+  "verse": "Lámpara es á mis pies tu palabra, y lumbrera á mi camino.",
+  "verseModern": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",
+  "captionSplit": [
+   "Lámpara es á mis pies",
+   "tu palabra, y lumbrera",
+   "á mi camino."
+  ],
+  "say": "«Lámpara es á mis pies tu palabra, y lumbrera á mi camino.»",
+  "teaches": "lámpara",
+  "teachesForm": "Lámpara",
+  "decoys": [
+   "ventana",
+   "cesta",
+   "mesa"
+  ],
+  "verify": "VERIFIED — SCRIPTURE-rv1909-verified.md («Salmo 119:105 ✓», verified at source verses/PSA/119/105.json, RV1909M); text byte-identical to the verified entry, «NUN.» acrostic heading omitted per that entry's standard.",
+  "ledger": "REASSIGNED to a1-u02 (lead confirmed 21:10): ledger tagged it a1-u01 but a1-u01 ships only Mateo 7:13-14 (one scripture block per pack) — the verse was never served. teaches=lámpara is a NEW id first taught in this pack (a0-u02 teaches=hoy precedent). teachesForm=Lámpara records the verse-initial capital per the design's surface-form rule (bueno←«Buena» precedent). Tie-in: lámpara = the has_lantern item's verse (Armor/display map)."
+ },
+ "qna": {
+  "sayMax": 34,
+  "captionMax": 22,
+  "signMax": 15,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). Obed-Edom is ASCII (hyphen) and is a proper noun, never a tile.",
+  "nearFormRule": "Never in the same word-round option set: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro. cuánto is NOT a pool id — never use it as a decoy (phantom decoy, DEFECTS #14). DOCUMENTED EXCEPTIONS (lead-confirmed 21:10): (1) hay/está/tengo is the a0-verbs grammar-contrast set (kept — hay names a thing, está says where it is); (2) mi/tu/su is the possession paradigm (kept); (3) cuántos/cuándo appear TOGETHER in one set deliberately — this is the a0-u06 flag being closed at A1, tiles visually distinct.",
+  "targetLeadsOptions": true,
+  "pagination": "largest wave l1 = 12 ids = exactly the 12-per-page threshold (DEFECTS #18) — no split required; if the renderer's threshold is strictly-below-12, split l1 6+6. l4 = 10, l2/l3 = 6.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "23 new ids, 0 collisions against the 227-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 = 227). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 250.",
+  "optionsBoundToIds": "Every option string is a bound pool id (227 existing + this pack's 23). No phantom decoys.",
+  "grammar": "A1 register per THEOLOGY-guide §3.1: present tense allowed, past allowed but unused, NO subjunctive anywhere in this pack. Every say is one idea, target word repeated.",
+  "csa": "Owner plain-truth directive applied: no sanitizing rules apply; the unit's story is a household blessed. INT-1 holds — no doctrine-assent gate anywhere."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "lámpara",
+    "say": "La lámpara está en la mesa.",
+    "options": [
+     "lámpara",
+     "cesta",
+     "ventana"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "techo",
+    "say": "El techo es blanco.",
+    "options": [
+     "techo",
+     "suelo",
+     "pared"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "suelo",
+    "say": "El saco está en el suelo.",
+    "options": [
+     "suelo",
+     "techo",
+     "cama"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "tiene",
+    "say": "Obed-Edom tiene una casa.",
+    "options": [
+     "tiene",
+     "tengo",
+     "hay"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "nuestro",
+    "say": "Nuestro patio es grande.",
+    "options": [
+     "nuestro",
+     "mi",
+     "su"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "junto a",
+    "say": "La silla está junto a la mesa.",
+    "options": [
+     "junto a",
+     "debajo",
+     "detrás"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "ventana",
+    "say": "Toca la ventana.",
+    "sprite": "ventana",
+    "options": [
+     "ventana",
+     "mesa",
+     "puerta"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "lámpara",
+    "say": "Señala la lámpara.",
+    "sprite": "lámpara",
+    "options": [
+     "lámpara",
+     "cesta",
+     "silla"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "de",
+    "sentence": "La casa ___ Ana es grande.",
+    "choices": [
+     "de",
+     "mi",
+     "su"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "tienen",
+    "sentence": "Ellos ___ dos casas.",
+    "choices": [
+     "tienen",
+     "tengo",
+     "hay"
+    ]
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "psa-119-105",
+    "reference": "Salmo 119:105 (RV1909)",
+    "verse": "Lámpara es á mis pies tu palabra, y lumbrera á mi camino.",
+    "verseModern": "Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",
+    "missing": "___ es á mis pies tu palabra, y lumbrera á mi camino.",
+    "missingModern": "___ es a mis pies tu palabra, y lumbrera a mi camino.",
+    "captionSplit": [
+     "___ es á mis pies",
+     "tu palabra, y lumbrera",
+     "á mi camino."
+    ],
+    "es": "lámpara",
+    "say": "«Lámpara es á mis pies tu palabra, y lumbrera á mi camino.»",
+    "options": [
+     "lámpara",
+     "ventana",
+     "cesta",
+     "mesa"
+    ]
+   },
+   {
+    "type": "reading-item",
+    "passage": "Obed-Edom tiene una casa grande. La casa tiene dos ventanas y una puerta. La mesa está junto a la ventana. El saco está en el suelo. La lámpara está sobre la mesa.",
+    "question": "¿Dónde está el saco?",
+    "answer": "en el suelo",
+    "choices": [
+     "en el suelo",
+     "sobre la mesa",
+     "en la cesta"
+    ]
+   },
+   {
+    "type": "speak",
+    "target": "La lámpara está en la mesa.",
+    "translation": "The lamp is on the table.",
+    "minScore": 60
+   }
+  ],
+  "patternsRef": "Item kinds below are matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak); lead maps them onto the p1-p8 shapes when exam-a1 is authored.",
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
+  },
+  "artDebt": "hear-act #7-8 need prop sprites for ventana/mesa/puerta (check the 14 in EXAM-a0 ruling 8) plus NEW art for lámpara. If art is not ready, swap both to hear-choose — the pattern slot is unchanged."
+ },
+ "provenance": {
+  "author": "curriculum-author session 632df516",
+  "validatedBy": "lead 2026-11-10 21:10 (scripted union check + rulings)",
+  "map": "content/curriculum-map.md, A1 row 2: «tener and hay in depth; possession; house and furniture; prepositions of place — The house of Obed-Edom»",
+  "schemaPrecedent": "build/content-packs/a1-u01.json (F3 ruling: keep sign, drop firstTaught, provenance = new + poolSource)",
+  "rulings": "A1-SPEC-updates.md (C1-C9): C1 psa-119-105 reassigned a1-u01→a1-u02 CONFIRMED; C2 Rut 1:16 stays U6 narration, Lk 15:22 stays milestone-reserved; C3 cuántos/cuándo deliberate contrast CONFIRMED (exception documented); C4 tu/tú second accent pair — Reviewer tile check now covers two pairs; C5 tiene/tienen conservative (never same set); C6 muro/pared never same set, junto a binding closes a1-u01 hole; C7 tenemos excluded to A1-U5/U8; C8 mi poolSource a0-u01 = unit-01.json (valid source of record); C9 waveNotes kept (WAVE_NOTE precedent).",
+  "taughtPoolBefore": 226,
+  "newIds": 23,
+  "taughtPoolAfter": 249
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "techo",
+  "suelo",
+  "lámpara",
+  "alfombra",
+  "patio",
+  "tiene",
+  "tienen",
+  "cuántos",
+  "tu",
+  "su",
+  "nuestro",
+  "de",
+  "mío",
+  "en",
+  "sobre",
+  "debajo",
+  "dentro",
+  "entre",
+  "detrás",
+  "delante",
+  "cerca",
+  "lejos",
+  "junto a"
+ ]
+}

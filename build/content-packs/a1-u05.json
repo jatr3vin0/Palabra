@@ -1,0 +1,887 @@
+{
+ "packId": "a1-u05",
+ "unitId": "a1-u05",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "La rutina del día y el cuerpo — los verbos reflexivos, la rutina en detalle, el cuerpo y la salud, y doler",
+ "storyThread": "La curación del leproso (Marcos 1:41). L1 = los verbos reflexivos: me levanto, me lavo, me visto (la persona). L2 = la rutina en detalle: por la mañana / por la noche, el orden del día. L3 = el cuerpo. L4 = la salud, el dolor y doler: «Me duele la cabeza.»",
+ "grammarTargets": [
+  "reflexive verbs: the pronoun is part of the id (me levanto, not levanto + a separate me) — the me gusta (a0-verbs) and me llamo (unit-01) precedent; me/te/se are never standalone ids",
+  "the levantarse person paradigm in ONE wave (me levanto / te levantas / se levanta / nos levantamos — the a1-u02 tener and a1-u03 ir paradigm precedent); se levantan deliberately excluded (C7 precedent) → A1-U8 deferred list",
+  "doler works like gustar: the body part is the SUBJECT and the person is the PRONOUN (me duele la cabeza = the head hurts me). Three pronoun phrases bound (me duele, te duele, le duele); duelen excluded (the duele/duelen minimal pair, tiene/tienen family) → A2-U2",
+  "body parts take the DEFINITE ARTICLE, not the possessive (me lavo la cara, me duele la cabeza) — taught by note + say, no new ids",
+  "present tense ONLY — pretérito is A1-U7; no subjunctive; affirmative familiar imperatives only (toca, abre — a1-u03 precedent). The scripture passage is exempt per the standing scripture ruling",
+  "tenemos lands here (C7 DISCHARGED: a1-u02 excluded it to A1-U5/U8; U8 owes no second serve — vas and cuestan still do)"
+ ],
+ "waves": {
+  "l1": [
+   "me levanto",
+   "te levantas",
+   "se levanta",
+   "nos levantamos",
+   "me lavo",
+   "me visto",
+   "me peino",
+   "me acuesto",
+   "me despierto"
+  ],
+  "l2": [
+   "mañana",
+   "noche",
+   "temprano",
+   "siempre",
+   "después",
+   "primero",
+   "desayuno",
+   "cena",
+   "tenemos"
+  ],
+  "l3": [
+   "cuerpo",
+   "cabeza",
+   "cara",
+   "ojo",
+   "boca",
+   "mano",
+   "brazo",
+   "pierna",
+   "pie",
+   "corazón"
+  ],
+  "l4": [
+   "enfermo",
+   "sano",
+   "médico",
+   "dolor",
+   "leproso",
+   "me duele",
+   "te duele",
+   "le duele"
+  ]
+ },
+ "waveNotes": "l1 (9) = the reflexive verbs, all new: the levantarse person paradigm + five routine verbs. The paradigm sits in ONE wave (a1-u02 tener and a1-u03 ir precedent) with its members NEVER sharing a hear-choose set (one-letter pairs, C5); the person contrast is tested in gap-fill with the written subject (E6 precedent). se levantan deliberately absent → A1-U8. l2 (9) = the routine in detail: 2 byte-identical re-passes (mañana, noche — a0-u01/unit-01.json) + 7 new. después/primero sit together on purpose (the order pair IS the teaching point, caro/barato precedent). l3 (10) = the body, all new: cuerpo/cabeza/cara/ojo/boca/mano/brazo/pierna/pie/corazón. ojo + mano close a0-u02's unbound spoken form «Dos ojos, dos manos» (F5 hole in reverse). corazón is F9 UNBLOCKED (bindable in U6 with 1 Sam 16:7, not bound here). l4 (8) = health/doler: enfermo/sano (opposite pair, kept), médico, dolor + the doler paradigm (me duele/te duele/le duele — the pronoun phrases MAY share a set, mi/tu/su precedent), leproso (the story's own word). Largest wave = 10 — under the 12-per-page threshold (DEFECTS #18), no pagination. Wave 5 = adaptive replay from progress.misses (unchanged convention).",
+ "words": [
+  {
+   "id": "me levanto",
+   "es": "me levanto",
+   "en": "I get up",
+   "say": "Me levanto a las siete.",
+   "caption": "Me levanto",
+   "sign": "Me levanto",
+   "options": [
+    "me levanto",
+    "me acuesto",
+    "me peino"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "levantarse 1st singular, present. The pronoun is part of the id (me gusta / me llamo precedent); me is never a standalone id. Paradigm members never share a hear-choose set (one-letter pairs, C5). me llamo (unit-01) is never a decoy here (me l- cluster)."
+  },
+  {
+   "id": "te levantas",
+   "es": "te levantas",
+   "en": "you get up",
+   "say": "¿A qué hora te levantas?",
+   "caption": "¿Te levantas?",
+   "sign": "¿Te levantas?",
+   "options": [
+    "te levantas",
+    "me acuesto",
+    "me despierto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "levantarse 2nd singular. The question «¿A qué hora...?» lives in say/sign (formIdRule)."
+  },
+  {
+   "id": "se levanta",
+   "es": "se levanta",
+   "en": "he / she gets up",
+   "say": "Ana se levanta temprano.",
+   "caption": "Ana se levanta",
+   "sign": "Se levanta",
+   "options": [
+    "se levanta",
+    "me peino",
+    "me visto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "levantarse 3rd singular. Ana is a proper noun in say only, never a tile. se levanta/me levanto never share a set (one letter)."
+  },
+  {
+   "id": "nos levantamos",
+   "es": "nos levantamos",
+   "en": "we get up",
+   "say": "Nos levantamos temprano.",
+   "caption": "Nos levantamos",
+   "sign": "Nos levantamos",
+   "options": [
+    "nos levantamos",
+    "me despierto",
+    "me lavo"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "levantarse 1st plural — pairs with tenemos (l2). se levantan deferred (C7 → A1-U8)."
+  },
+  {
+   "id": "me lavo",
+   "es": "me lavo",
+   "en": "I wash myself",
+   "say": "Me lavo la cara.",
+   "caption": "Me lavo la cara",
+   "sign": "Me lavo",
+   "options": [
+    "me lavo",
+    "me peino",
+    "me visto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "lavarse 1st singular. BODY PART + DEFINITE ARTICLE: me lavo LA cara, never «mi cara» — the unit's own grammar note, carried in the say."
+  },
+  {
+   "id": "me visto",
+   "es": "me visto",
+   "en": "I get dressed",
+   "say": "Me visto después del desayuno.",
+   "caption": "Me visto",
+   "sign": "Me visto",
+   "options": [
+    "me visto",
+    "me lavo",
+    "me peino"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "vestirse 1st singular (o→i). me visto (verb phrase) vs vestido (a1-u04 noun) never share a set — different lengths, different tiles (DEFECTS #20 family)."
+  },
+  {
+   "id": "me peino",
+   "es": "me peino",
+   "en": "I comb my hair",
+   "say": "Me peino el pelo.",
+   "caption": "Me peino",
+   "sign": "Me peino",
+   "options": [
+    "me peino",
+    "me visto",
+    "me acuesto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "peinarse 1st singular. pelo is say-text only — NOT a pool id and never an option string."
+  },
+  {
+   "id": "me acuesto",
+   "es": "me acuesto",
+   "en": "I go to bed",
+   "say": "Me acuesto a las nueve.",
+   "caption": "Me acuesto",
+   "sign": "Me acuesto",
+   "options": [
+    "me acuesto",
+    "me levanto",
+    "me despierto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "acostarse 1st singular (o→ue). The day's three ends share sets on purpose (semantic contrast set, not a near pair)."
+  },
+  {
+   "id": "me despierto",
+   "es": "me despierto",
+   "en": "I wake up",
+   "say": "Me despierto a las seis.",
+   "caption": "Me despierto",
+   "sign": "Me despierto",
+   "options": [
+    "me despierto",
+    "me acuesto",
+    "me levanto"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "despertarse 1st singular (e→ie). The finest distinction of the routine: wake (me despierto) vs get up (me levanto) — both ids."
+  },
+  {
+   "id": "mañana",
+   "es": "mañana",
+   "en": "morning; tomorrow",
+   "say": "Por la mañana me levanto.",
+   "caption": "Por la mañana",
+   "sign": "Por la mañana",
+   "options": [
+    "mañana",
+    "noche",
+    "temprano"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass (unit-01.json = a0-u01 source of record, C8). The routine frame «por la mañana» lives in say/sign; the tile stays the word. mano/mañana never share a set (man- cluster). hasta mañana is a separate unit-01 phrase id — never an option string."
+  },
+  {
+   "id": "noche",
+   "es": "noche",
+   "en": "night",
+   "say": "Por la noche me acuesto.",
+   "caption": "Por la noche",
+   "sign": "Por la noche",
+   "options": [
+    "noche",
+    "mañana",
+    "después"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "re-pass; the two halves of the routine day sit together on purpose (documented contrast pair). buenas noches is a separate unit-01 phrase id."
+  },
+  {
+   "id": "temprano",
+   "es": "temprano",
+   "en": "early",
+   "say": "Me levanto temprano.",
+   "caption": "Temprano",
+   "sign": "Temprano",
+   "options": [
+    "temprano",
+    "siempre",
+    "después"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "adverb, bare form. tarde (routine sense) is NOT an id — «buenas tardes» is a unit-01 phrase id; the afternoon/late gloss split defers (conflict 5). temprano/tarde pair defers with it."
+  },
+  {
+   "id": "siempre",
+   "es": "siempre",
+   "en": "always",
+   "say": "Siempre como en casa.",
+   "caption": "Siempre",
+   "sign": "Siempre",
+   "options": [
+    "siempre",
+    "después",
+    "primero"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "frequency adverb. nunca (a1-u01) is never a decoy for siempre (polarity-only guessing)."
+  },
+  {
+   "id": "después",
+   "es": "después",
+   "en": "after, then",
+   "say": "Después del desayuno me visto.",
+   "caption": "Después",
+   "sign": "Después",
+   "options": [
+    "después",
+    "primero",
+    "siempre"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "sequence adverb; después de + noun. después/primero together on purpose (order pair = teaching point)."
+  },
+  {
+   "id": "primero",
+   "es": "primero",
+   "en": "first",
+   "say": "Primero me lavo la cara.",
+   "caption": "Primero",
+   "sign": "Primero",
+   "options": [
+    "primero",
+    "después",
+    "siempre"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "sequence adverb; no accent (primer is the adjective form, NOT an id — never an option string)."
+  },
+  {
+   "id": "desayuno",
+   "es": "desayuno",
+   "en": "breakfast",
+   "say": "El desayuno es pan y leche.",
+   "caption": "El desayuno",
+   "sign": "El desayuno",
+   "options": [
+    "desayuno",
+    "cena",
+    "pan"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the NOUN. The homograph verb form (yo desayuno) is NOT a separate id. The say reuses the learner's own pan/leche (a0-u04). Meal pair cena/desayuno kept (taught contrast)."
+  },
+  {
+   "id": "cena",
+   "es": "cena",
+   "en": "dinner, supper",
+   "say": "La cena está en la mesa.",
+   "caption": "La cena",
+   "sign": "La cena",
+   "options": [
+    "cena",
+    "desayuno",
+    "pan"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the NOUN. cenar is not an id. SHORT tile (4 chars) — min-width rule (DEFECTS #20/D6). cena/cena-verb homograph: only the noun is an id."
+  },
+  {
+   "id": "tenemos",
+   "es": "tenemos",
+   "en": "we have",
+   "say": "Tenemos una rutina.",
+   "caption": "Tenemos una rutina",
+   "sign": "Tenemos",
+   "options": [
+    "tenemos",
+    "hay",
+    "está"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "C7 DISCHARGED: tener 1st plural — a1-u02 excluded it to A1-U5/U8; it lands HERE, so U8 owes no second serve (vas, cuestan still do). tengo/tenemos never share a hear-choose set (teng- stem; the written subject Nosotros resolves them in the gap-fill item)."
+  },
+  {
+   "id": "cuerpo",
+   "es": "cuerpo",
+   "en": "body",
+   "say": "Mi cuerpo está sano.",
+   "caption": "El cuerpo",
+   "sign": "El cuerpo",
+   "options": [
+    "cuerpo",
+    "cabeza",
+    "mano"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "whole → parts is the wave's teaching shape: cuerpo with cabeza/mano in one set on purpose."
+  },
+  {
+   "id": "cabeza",
+   "es": "cabeza",
+   "en": "head",
+   "say": "Me duele la cabeza.",
+   "caption": "La cabeza",
+   "sign": "La cabeza",
+   "options": [
+    "cabeza",
+    "cara",
+    "mano"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the doler anchor: «Me duele la cabeza» — body part with the DEFINITE article, never «mi cabeza». cara/cabeza in one set on purpose (part-of-body contrast)."
+  },
+  {
+   "id": "cara",
+   "es": "cara",
+   "en": "face",
+   "say": "La cara está limpia.",
+   "caption": "La cara",
+   "sign": "La cara",
+   "options": [
+    "cara",
+    "cabeza",
+    "boca"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "cara/casa and cara/cama never share a set (one-letter pairs, DEFECTS #20)."
+  },
+  {
+   "id": "ojo",
+   "es": "ojo",
+   "en": "eye",
+   "say": "Tengo dos ojos.",
+   "caption": "Un ojo",
+   "sign": "El ojo",
+   "options": [
+    "ojo",
+    "boca",
+    "mano"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "CLOSES an unbound spoken form: a0-u02 says «Dos ojos, dos manos» with no id behind ojo/mano (F5 hole in reverse). Plural ojos in say/reading only; the id stays singular (moneda precedent). SHORT tile (3 chars) — min-width rule."
+  },
+  {
+   "id": "boca",
+   "es": "boca",
+   "en": "mouth",
+   "say": "Abre la boca.",
+   "caption": "La boca",
+   "sign": "La boca",
+   "options": [
+    "boca",
+    "ojo",
+    "cara"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "TPR-ready: abre is a0-verbs, the natural hear-act swap (artDebt). boca/bota never share a set (b- cluster; bota not an id — note only)."
+  },
+  {
+   "id": "mano",
+   "es": "mano",
+   "en": "hand",
+   "say": "Toca mi mano.",
+   "caption": "La mano",
+   "sign": "La mano",
+   "options": [
+    "mano",
+    "brazo",
+    "pie"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "SCRIPTURE TEACHES-WORD (Marcos 1:41, VERIFIED — «extendió su mano», occurs once). CLOSES two unbound spoken forms (a0-u02 «Dos ojos, dos manos»; a0-u03 caption «Una moneda en mi mano»). mano is FEMININE despite -o (note). mano/mañana and mano/hermano never share a set."
+  },
+  {
+   "id": "brazo",
+   "es": "brazo",
+   "en": "arm",
+   "say": "Toca tu brazo.",
+   "caption": "El brazo",
+   "sign": "El brazo",
+   "options": [
+    "brazo",
+    "pierna",
+    "mano"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "brazo/barro never share a set (a0-u05). tu is a1-u02's possessive id — decoy only, never a target here."
+  },
+  {
+   "id": "pierna",
+   "es": "pierna",
+   "en": "leg",
+   "say": "La pierna está sana.",
+   "caption": "La pierna",
+   "sign": "La pierna",
+   "options": [
+    "pierna",
+    "brazo",
+    "pie"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "pierna/piedra and pie/pierna never share a set (pier- cluster, prefix family)."
+  },
+  {
+   "id": "pie",
+   "es": "pie",
+   "en": "foot",
+   "say": "El pie está sucio.",
+   "caption": "El pie",
+   "sign": "El pie",
+   "options": [
+    "pie",
+    "mano",
+    "pierna"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "SHORT tile (3 chars) — min-width + distinct geometry. pie is a PREFIX of pierna/piedra: never a shared set. Plural pies appears in Salmo 119:105 (verified, a1-u02) — the id stays singular."
+  },
+  {
+   "id": "corazón",
+   "es": "corazón",
+   "en": "heart",
+   "say": "Toca tu corazón.",
+   "caption": "El corazón",
+   "sign": "El corazón",
+   "options": [
+    "corazón",
+    "cabeza",
+    "cuerpo"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "F9 UNBLOCKED, NOT BOUND: corazón becomes a pool id here, so 1 Samuel 16:7 (verified, ledger #20) is bindable in A1-U6 with teaches=corazón. Not bound here (one scripture block per pack, §5.5). U6 must re-pass corazón new:false — never re-introduce it."
+  },
+  {
+   "id": "enfermo",
+   "es": "enfermo",
+   "en": "sick, ill",
+   "say": "El hombre está enfermo.",
+   "caption": "Está enfermo",
+   "sign": "Enfermo",
+   "options": [
+    "enfermo",
+    "sano",
+    "médico"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "enfermo/enferma agree; the -a form is NOT an id (descriptorDecision). enfermo/sano sit together on purpose (the opposite pair is the teaching point, caro/barato precedent)."
+  },
+  {
+   "id": "sano",
+   "es": "sano",
+   "en": "healthy, well",
+   "say": "El cuerpo está sano.",
+   "caption": "Está sano",
+   "sign": "Sano",
+   "options": [
+    "sano",
+    "enfermo",
+    "médico"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "sano/sana agree; sanar/sanó are NOT ids (a verse FORM token is a different token — exact-token rule). SHORT tile (4 chars)."
+  },
+  {
+   "id": "médico",
+   "es": "médico",
+   "en": "doctor",
+   "say": "El médico ayuda al enfermo.",
+   "caption": "El médico",
+   "sign": "El médico",
+   "options": [
+    "médico",
+    "enfermo",
+    "dolor"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "citation form; médica is NOT an id. medicina NOT an id (never an option string). al is a1-u03's contraction — the say uses it."
+  },
+  {
+   "id": "dolor",
+   "es": "dolor",
+   "en": "pain",
+   "say": "Tengo dolor de cabeza.",
+   "caption": "Dolor de cabeza",
+   "sign": "Dolor",
+   "options": [
+    "dolor",
+    "me duele",
+    "enfermo"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the NOUN. dolor/me duele share a set on purpose (the noun/verb pair is the teaching point, precio/cuesta precedent). doler (the infinitive) is not an id — its bound forms are me duele/te duele/le duele."
+  },
+  {
+   "id": "leproso",
+   "es": "leproso",
+   "en": "leper",
+   "say": "El leproso está enfermo.",
+   "caption": "El leproso",
+   "sign": "El leproso",
+   "options": [
+    "leproso",
+    "enfermo",
+    "sano"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the story's own word and the fallback verse binding (Marcos 1:40 «Y un leproso vino á él» — fetched, recorded as a candidate). Plain truth: the man is sick and asks for help — no gore, no invented detail, no illness-as-punishment reading (CK-11). A2-U2 (the ten lepers) will re-pass this id."
+  },
+  {
+   "id": "me duele",
+   "es": "me duele",
+   "en": "it hurts me / I have (a pain)",
+   "say": "Me duele la cabeza.",
+   "caption": "Me duele la cabeza",
+   "sign": "Me duele",
+   "options": [
+    "me duele",
+    "te duele",
+    "le duele"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "doler works like gustar: the body part is the SUBJECT, the person is the PRONOUN. The three pronoun phrases MAY share a hear-choose set (mi/tu/su precedent) — the pronoun IS the contrast. The body part stays in say/sign with the definite article. duelen NOT an id → A2-U2."
+  },
+  {
+   "id": "te duele",
+   "es": "te duele",
+   "en": "it hurts you",
+   "say": "¿Te duele la cabeza?",
+   "caption": "¿Te duele la cabeza?",
+   "sign": "¿Te duele?",
+   "options": [
+    "te duele",
+    "me duele",
+    "le duele"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "the question a parent or friend asks (¿Te duele?). Never shares a set with the levantarse paradigm forms."
+  },
+  {
+   "id": "le duele",
+   "es": "le duele",
+   "en": "it hurts him / her",
+   "say": "Al hombre le duele la pierna.",
+   "caption": "Le duele la pierna",
+   "sign": "Le duele",
+   "options": [
+    "le duele",
+    "me duele",
+    "te duele"
+   ],
+   "new": true,
+   "poolSource": "a1-u05",
+   "note": "indirect object with a + person («Al hombre...», al is a1-u03's contraction). The body part stays singular + definite article (pierna — already an id)."
+  }
+ ],
+ "scripture": {
+  "verseId": "mrk-1-41",
+  "reference": "Marcos 1:41 (RV1909)",
+  "status": "verified",
+  "verse": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+  "verseModern": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+  "captionSplit": [
+   "Y Jesús, teniendo misericordia de él,",
+   "extendió su mano, y le tocó, y le",
+   "dice: Quiero, sé limpio."
+  ],
+  "say": "«Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.»",
+  "teaches": "mano",
+  "teachesForm": "mano",
+  "gapCount": 1,
+  "decoys": [
+   "brazo",
+   "pierna",
+   "ojo"
+  ],
+  "verify": "VERIFIED 21:4X by lead — single curl verses/MRK/001/041.json (danielmiranda/rv1909hispano, RV1909M); text_original byte-identical. teachesForm = mano, occurs ONCE («extendió su mano») → gapCount 1. verseModern = text_original UNCHANGED: every spelling is already modern (extendió/tocó are correct modern 3rd-singular preterites; sé keeps its imperative accent; él keeps the pronoun accent — no R1/R2/R4 target). Decoy re-check: brazo/pierna/ojo do NOT occur in the verse; «misericordia» is a verse word not in the pool and never a decoy anywhere.",
+  "ledger": "FIRST MARK COVERAGE in the whole course (design §2a measured Mark 0; a1-u03 fixed Luke, this pack fixes Mark — priority tier 1, Gospels). E3 QUOTA: after U5 A1 stands at 4 of ≥7 Gospel verses (Mt 7:13, Mt 7:14, Lk 2:1-7, Mrk 1:41) — A1-U6 (Lucas 15:22 Lk-side... note: Lk 15:22 is milestone-RESERVED, C2/U5-4: U6's Gospel verse must be a NEW binding, e.g. Lucas 15 narration or Mi 6/Mt pools) and A1-U8 (Mt 4/Mc 1/Lc 5) must carry ≥3 more. Fetched as future candidates (NOT bound): lke-5-13 «Entonces, extendiendo la mano, le tocó diciendo: Quiero: sé limpio. Y luego la lepra se fué de él.» (also carries mano; note se fué → R2 target if ever bound) and mrk-1-40 «Y un leproso vino á él, rogándole; é hincada la rodilla, le dice: Si quieres, puedes limpiarme.» (carries leproso; R1 targets á/é). INT-1 holds: compassion, a hand, a touch, a word — no illness-as-punishment reading (CK-11)."
+ },
+ "qna": {
+  "sayMax": 30,
+  "captionMax": 22,
+  "signMax": 15,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). Proper noun Ana appears in say text and is never a tile. pelo, rutina, tarde, almuerzo, nariz, medicina, fiebre, diente are say-text only and NEVER option strings.",
+  "nearFormRule": "Never in the same hear-choose option set — INHERITED and still binding: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro (a1-u02); va/van, ve/ven, ve/va, a/al, pueblo/puerta/puente, plaza/plato/planta, barro/burro, barro/carro, viaje/viejo, camello/camino, cruza/crece/cree, espera/escribe, cama/casa (a1-u03); mercader/mercado, esta/está, este/esta/esto/estos/estas, estos/estas, ese/esa, ese/este, camisa/cama, barato/barro, color/calor, verde/verano, rojo/ropa, cuesta/cuántos, cinturón/cintas (a1-u04). NEW IN THIS PACK: the levantarse paradigm — me levanto/te levantas/se levanta/nos levantamos NEVER share a hear-choose set (one-letter pairs, C5); tengo/tenemos (teng- stem); me llamo (unit-01)/me lavo/me levanto (me l- cluster); me visto/vestido (a1-u04); mano/mañana; mano/hermano; cara/casa; cara/cama; pierna/piedra; pie/pierna/piedra; siempre/nunca (polarity). DOCUMENTED EXCEPTIONS (deliberate, kept): (1) the taught contrast sets sit TOGETHER — enfermo/sano, cena/desayuno, después/primero, cuerpo/cabeza/mano, dolor/me duele (the precio/cuesta precedent); (2) the doler paradigm me duele/te duele/le duele MAY share a hear-choose set (mi/tu/su precedent) — the pronoun IS the contrast, while the levantarse paradigm may NOT (Reviewer call U5-7 recorded); (3) the day's three ends (me despierto/me levanto/me acuesto) share sets (semantic set, not a near pair); (4) a1-u02's hay/está/tengo, mi/tu/su, cuántos/cuándo exceptions remain documented; hay/está appear here only as tenemos's decoys. NOT IDS, therefore NEVER option strings (phantom decoy, DEFECTS #14): tarde, a veces, almuerzo, nariz, medicina, fiebre, diente, pelo, duelen, lepra, sanó, primer, médica, enferma, sana, sanas, ojos, pies, rutina, desayuno/cena as VERBS, me/te/se/nos standalone, levantar/lavar/vestir/peinar/acostar/despertar infinitives.",
+  "targetLeadsOptions": true,
+  "pagination": "largest wave l3 = 10, l1/l2 = 9, l4 = 8 — all under the 12-per-page threshold (DEFECTS #18). No split required.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "34 new ids, 0 collisions against the 305-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 + a1-u03 25 + a1-u04 30 = 305). 2 re-passes are byte-identical re-serves with new:false + poolSource a0-u01 (mañana, noche), never re-introduced as new. Pool after this pack = 339. Exact-string matching required: me levanto/me llamo, me visto/vestido, tenemos/tengo/tiene/tienen, mano/hermano, pie/pierna/piedra are DISTINCT ids (substring matchers report false collisions).",
+  "optionsBoundToIds": "Every option string is a bound pool id (305 existing + this pack's 34). Decoys drawn from the same wave where possible (me acuesto/me peino, cabeza/cara, brazo/mano) and from earlier ids for the function words (hay/está a0-verbs, pan/leche a0-u04, mesa a0-u03, plaza a1-u03). No phantom decoys (DEFECTS #14).",
+  "grammar": "A1 register per THEOLOGY-guide §3.1: PRESENT TENSE ONLY — pretérito is A1-U7; no subjunctive; affirmative familiar imperatives only (toca, abre); no negative commands, no vosotros. The reflexive pronoun is bound inside the id — me/te/se are never standalone ids (me gusta precedent). Every say is one idea and the target word is repeated in caption + sign. Scripture is exempt from the tense rule (standing ruling).",
+  "csa": "Owner plain-truth directive applied: nothing softened, nothing added. The leper is sick and asks for help; the healing is rendered as the Gospels render it — compassion, a hand, a touch, a word — with no invented detail, no gore, and no dramatization beyond the text. Sickness and pain are named plainly (enfermo, dolor, me duele). No line interprets illness as punishment or as a measure of faith (CK-11), and the pack makes no claim about why the man was sick. INT-1 holds — no doctrine-assent gate anywhere.",
+  "formIdRule": "ids are the exact form the learner hears and the string on the tile. Reflexive verbs are FINITE forms WITH the pronoun — exactly as me gusta (a0-verbs) and me llamo (unit-01); me/te/se are never standalone ids. doler binds as three pronoun phrases with the body part in say/sign (the ¿Cuánto cuesta? phrase-vs-word precedent). Body parts are SINGULAR citation forms with plurals in say/reading only (moneda precedent). Adverbs are bare; the routine phrases live in say/sign."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "me levanto",
+    "say": "Me levanto a las siete.",
+    "options": [
+     "me levanto",
+     "me acuesto",
+     "me peino"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "me visto",
+    "say": "Me visto después del desayuno.",
+    "options": [
+     "me visto",
+     "me lavo",
+     "me peino"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "temprano",
+    "say": "Me levanto temprano.",
+    "options": [
+     "temprano",
+     "siempre",
+     "después"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "desayuno",
+    "say": "El desayuno es pan y leche.",
+    "options": [
+     "desayuno",
+     "cena",
+     "pan"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "cuerpo",
+    "say": "Mi cuerpo está sano.",
+    "options": [
+     "cuerpo",
+     "cabeza",
+     "mano"
+    ]
+   },
+   {
+    "type": "hear-choose",
+    "es": "le duele",
+    "say": "Al hombre le duele la pierna.",
+    "options": [
+     "le duele",
+     "me duele",
+     "te duele"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "cabeza",
+    "say": "Toca la cabeza.",
+    "sprite": "cabeza",
+    "options": [
+     "cabeza",
+     "cara",
+     "mano"
+    ]
+   },
+   {
+    "type": "hear-act",
+    "es": "mano",
+    "say": "Señala la mano.",
+    "sprite": "mano",
+    "options": [
+     "mano",
+     "brazo",
+     "pie"
+    ]
+   },
+   {
+    "type": "gap-fill",
+    "es": "se levanta",
+    "sentence": "Ana ___ temprano.",
+    "choices": [
+     "se levanta",
+     "me levanto",
+     "me acuesto"
+    ],
+    "note": "THE PERSON ITEM. Three persons/verbs in one written set is legal here and only here — the written subject Ana resolves the -a/-o contrast (a1-u04 E6 precedent)."
+   },
+   {
+    "type": "gap-fill",
+    "es": "tenemos",
+    "sentence": "Nosotros ___ una rutina.",
+    "choices": [
+     "tenemos",
+     "tengo",
+     "hay"
+    ],
+    "note": "C7 DISCHARGE ITEM: the written subject Nosotros resolves tengo/tenemos (C5 conservative in hear-choose, legal in gap-fill)."
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "mrk-1-41",
+    "reference": "Marcos 1:41 (RV1909)",
+    "verse": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+    "verseModern": "Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.",
+    "missing": "Y Jesús, teniendo misericordia de él, extendió su ___, y le tocó, y le dice: Quiero, sé limpio.",
+    "missingModern": "Y Jesús, teniendo misericordia de él, extendió su ___, y le tocó, y le dice: Quiero, sé limpio.",
+    "captionSplit": [
+     "Y Jesús, teniendo misericordia de él,",
+     "extendió su ___, y le tocó, y le",
+     "dice: Quiero, sé limpio."
+    ],
+    "gapCount": 1,
+    "en": "hand",
+    "es": "mano",
+    "say": "«Y Jesús, teniendo misericordia de él, extendió su mano, y le tocó, y le dice: Quiero, sé limpio.»",
+    "options": [
+     "mano",
+     "brazo",
+     "pierna",
+     "ojo"
+    ]
+   },
+   {
+    "type": "reading-item",
+    "passage": "Me levanto temprano. Me lavo la cara y me visto. Después como pan y leche. Por la noche me acuesto a las nueve. Hoy el cuerpo está enfermo: me duele la cabeza.",
+    "question": "¿Cuándo me acuesto?",
+    "answer": "por la noche",
+    "choices": [
+     "por la noche",
+     "por la mañana",
+     "temprano"
+    ],
+    "note": "READING-ITEM RULE applied: the answer is attested verbatim in the passage and every content word in the choices is a bound pool id (noche/mañana re-passed ids, temprano new). The passage demonstrates the reflexive routine and the doler construction together."
+   },
+   {
+    "type": "speak",
+    "target": "Me duele la cabeza.",
+    "translation": "My head hurts.",
+    "minScore": 60
+   }
+  ],
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02/u03/u04; lead maps them onto the p1-p8 shapes when exam-a1 is authored. exam-a0's es=object shape applied to hear-act items at filing.",
+  "breakdown": {
+   "hear-choose": 6,
+   "hear-act": 2,
+   "gap-fill": 2,
+   "verse-complete": 1,
+   "reading-item": 1,
+   "speak": 1
+  },
+  "artDebt": "hear-act #7-8 need prop sprites for cabeza and mano (both NEW art) plus the señala/toca action icons owed by DEFECTS #17. LENGTH debt (extends DEFECTS #20/D6, both directions): SHORT tiles — pie (3), ojo (3), cena (4), sano (4), mano (4) — need min-width and distinct geometry; LONG tiles — nos levantamos (14), me despierto (12), te levantas (12) — must wrap/scale without clipping. No new accent pair (cómo/como, tu/tú, esta/está remain the pool's three). If body-part art is not ready, swap both hear-act items to hear-choose (cabeza and mano both have clean within-wave decoy sets) — the pattern slot is unchanged."
+ },
+ "provenance": {
+  "author": "curriculum-author session 0f41ef60 (report-only)",
+  "validatedBy": "lead 2026-11-10 21:4X (scripted union check + rulings U5-1..U5-8; Marcos 1:41 verified by lead curl per design §3)",
+  "map": "content/curriculum-map.md, A1 row 5: «Reflexive verbs; daily routine in detail; body and health; doler — The healing of the leper»",
+  "schemaPrecedent": "build/content-packs/a1-u04.json exactly (sign kept, provenance = new + poolSource, waves l1-l4 + replay-5 convention, qna/nearFormRule/examContribution/provenance block shape). The author's qna.conflictsToResolve key is DROPPED at filing (validator strictness) — its content lives in provenance.rulings + the ledger.",
+  "rulings": "U5-1 BY CONSTRUCTION: the author authored NO verse text; the lead curled MRK 1:41 and filled every text field from the fetch (mano ×1, gapCount 1; verseModern identical — no R-rule target; decoys brazo/pierna/ojo verse-free confirmed). Fallbacks lke-5-13/mrk-1-40 fetched and recorded as candidates, not bound. U5-2: teaches=mano is a NEW id first taught in this pack (a1-u02 lámpara precedent), closing two unbound spoken forms (a0-u02 «Dos ojos, dos manos», a0-u03 «Una moneda en mi mano»). U5-3: C7 DISCHARGED — tenemos lands here; U8 owes vas + cuestan only. U5-4: F9 UNBLOCKED — corazón is a pool id here; 1 Sam 16:7 (ledger #20) is bindable in U6 with teaches=corazón; U6 must re-pass corazón new:false. U5-5: se levantan omitted (C7 precedent) → A1-U8 deferred list, joined by tarde/a veces/almuerzo/nariz/medicina/fiebre/diente. U5-6: doler ships as three pronoun phrases that MAY share a hear-choose set (mi/tu/su precedent); duelen → A2-U2 (ten lepers). U5-7: the levantarse paradigm members never share a set (C5 conservative); if the Reviewer wants stricter doler handling too, the two gap-fill items carry the person contrast. U5-8: body parts take the definite article, not the possessive — note + say only, no new ids, no new theological claim. CONFLICT 2 (quota): A1 = 4 of ≥7 Gospel verses after U5 — U6 and U8 must carry ≥3 more.",
+  "taughtPoolBefore": 304,
+  "newIds": 34,
+  "taughtPoolAfter": 338
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "me levanto",
+  "te levantas",
+  "se levanta",
+  "nos levantamos",
+  "me lavo",
+  "me visto",
+  "me peino",
+  "me acuesto",
+  "me despierto",
+  "temprano",
+  "siempre",
+  "después",
+  "primero",
+  "desayuno",
+  "cena",
+  "tenemos",
+  "cuerpo",
+  "cabeza",
+  "cara",
+  "ojo",
+  "boca",
+  "mano",
+  "brazo",
+  "pierna",
+  "pie",
+  "corazón",
+  "enfermo",
+  "sano",
+  "médico",
+  "dolor",
+  "leproso",
+  "me duele",
+  "te duele",
+  "le duele"
+ ]
+}
