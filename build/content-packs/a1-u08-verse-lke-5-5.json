@@ -1,0 +1,76 @@
+{
+ "schema": "palabra.scripture-packs.v1",
+ "rulesVersion": "verseModernRules-v1",
+ "packId": "a1-u08-verse-lke-5-5",
+ "unitId": "a1-u08",
+ "cefr": "A1",
+ "kind": "verse-pack",
+ "optional": true,
+ "priority": "P1",
+ "theme": "Segundo versículo de la unidad 8 — Lucas 5:5 (la red). Entrada de verse-pack independiente (LEAD RULING R-2), NO un campo scriptureAdditional.",
+ "words": [],
+ "verses": [
+  {
+   "verseId": "lke-5-5",
+   "status": "verified",
+   "reference": "Lucas 5:5 (RV1909)",
+   "book": {"osis": "LUK", "es": "Lucas", "testament": "NT", "gospel": true, "gospelOrder": 3},
+   "chapter": 5,
+   "verse": 5,
+   "priorityTier": 1,
+   "coverOrder": 1055,
+   "cefrBand": "A1",
+   "text_original": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+   "textSource": {"repo": "danielmiranda/rv1909hispano", "path": "verses/LUK/005/005.json", "translationField": "RV1909M", "verifiedBy": "curriculum-author filing session (feat/exam-a1)", "verifiedAt": "2026-11-11T11:14Z"},
+   "verse": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+   "verseModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+   "verseModernMode": "display",
+   "displayNotes": "verseModern = text_original UNCHANGED: no standalone á, no fué/dió/vió, no R4/R7 target (echaré keeps its future accent). The corpus text_modernized is identical to text_original.",
+   "captionSplit": ["Y respondiendo Simón, le dijo: Maestro,", "habiendo trabajado toda la noche,", "nada hemos tomado; mas en tu palabra", "echaré la ___."],
+   "say": "«Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.»",
+   "keyWord": "red",
+   "teaches": "red",
+   "teachesForm": "red",
+   "gapCount": 1,
+   "oneTapFillsAll": false,
+   "missing": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+   "missingModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+   "distractors": ["cesta", "moneda", "pan"],
+   "decoys": ["cesta", "moneda", "pan"],
+   "verify": "VERIFIED 11:14 by the filing session's re-curl (danielmiranda/rv1909hispano, verses/LUK/005/005.json, text_original, RV1909M); ledger entry written the same session. teachesForm = red occurs ONCE («echaré la red») → gapCount 1. DECOY RE-CHECK (B2): nada OCCURS («nada hemos tomado») and noche OCCURS, so nada/nadie/noche are NEVER decoys here; maestro also occurs and is never a decoy. Chosen decoys cesta/moneda/pan are verse-free bound ids. Verse words that ARE pool ids but are NOT option strings: noche (a1-u05), nada (a1-u02). Simón is a proper noun — SAY-TEXT ONLY.",
+   "ledger": "SEVENTH Gospel-quota verse — E3 CLOSES at 7 of ≥7 (Mt 7:13, Mt 7:14, Lk 2:1-7, Mrk 1:41, Lk 15:24, Mt 4:21, Lk 5:5). The 5:10 candidate was dropped: Lk 5:10 does NOT contain pescador, so the pack does NOT claim pescador as verse-bound (B5); the 5:10→5:5 fallback is recorded. Filed as its own verse-pack entry per LEAD RULING R-2 — both verses render through the existing pack resolver, so no engineer schema work is queued behind this filing."
+  }
+ ],
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "verse-complete",
+    "verseId": "lke-5-5",
+    "reference": "Lucas 5:5 (RV1909)",
+    "verse": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+    "verseModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+    "missing": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+    "missingModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+    "captionSplit": ["Y respondiendo Simón, le dijo: Maestro,", "habiendo trabajado toda la noche,", "nada hemos tomado; mas en tu palabra", "echaré la ___."],
+    "gapCount": 1,
+    "oneTapFillsAll": false,
+    "es": "red",
+    "en": "net",
+    "say": "«Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.»",
+    "options": ["red", "cesta", "moneda", "pan"],
+    "formSeed": 807,
+    "note": "R-3 SLOT: u08's second verse slot. Byte-identical to the verse above and to the ledger entry. The verse is HEARD and READ before the gap is asked (owner quality bar 2026-11-11). Decoys cesta/moneda/pan are verse-free; nada/noche/maestro occur in the verse and are therefore never decoys (B2)."
+   }
+  ],
+  "breakdown": {"verse-complete": 1},
+  "artDebt": "None — verse-complete renders as text tiles.",
+  "patternsRef": "Same kind contract as a1-u02…a1-u07 verse-complete items."
+ },
+ "provenance": {
+  "author": "curriculum-author, exam-a1 filing session (feat/exam-a1)",
+  "validatedBy": "PENDING — rebase-pool.py unaffected (verse packs carry no word ids); Reviewer sign-off owed",
+  "rulings": "LEAD RULING R-2 (option b): lke-5-5 is filed as a SEPARATE §10-style verse-pack entry, never as a scriptureAdditional field. LEAD RULING R-4/U8-3: the owner-approved two-verse structure is preserved. B5: red is bound inside a1-u08's 17 new ids; pescador is NOT verse-bound.",
+  "schemaPrecedent": "build/SCRIPTURE-library-design.md §1 (palabra.scripture-packs.v1), a superset of the pack scripture block and of GAME-ROADMAP §10's VerseEntry (keyWord≡teaches, distractors≡decoys)."
+ }
+}

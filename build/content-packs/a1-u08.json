@@ -1,0 +1,627 @@
+{
+ "packId": "a1-u08",
+ "unitId": "a1-u08",
+ "cefr": "A1",
+ "optional": false,
+ "priority": "P1",
+ "theme": "La llamada de los discípulos — la red, el barco y el trabajo de la noche (Mateo 4:21; Lucas 5:5). Unidad de consolidación de A1.",
+ "storyThread": "La llamada de los discípulos: junto al agua, dos hermanos y su padre en el barco, las redes que remendaban, la voz que llamó, la noche de trabajo sin pesca y la red que se echa a la palabra del Maestro. L1 = la llamada (llamó, red, barco, pescador, maestro, trabajó). L2 = lo que pasó después (escucharon, vas, cuestan, se levantan, tarde, a veces). L3 = el cuidado del cuerpo, repaso de U5 (almuerzo, nariz, medicina, fiebre, diente). L4 = el repaso de la historia — the five named re-passes (hermano, padre, noche, luego, camino).",
+ "grammarTargets": [
+  "CONSOLIDATION UNIT — no new grammar. The two taught tenses meet in one pack: present (vas, cuestan, se levantan) and regular preterite (llamó, trabajó, escucharon); the tense contrast is tested in gap-fill with the written time marker (ayer / hoy), never by ear alone",
+  "the -ar preterite plural spine -aron is closed here (escucharon) after U7 opened it with llegaron; the person paradigm escucharon/escuchó NEVER shares a hear-choose set (C5/U5-7) and is resolved by the written subject in gap-fill (a1-u04 E6 precedent)",
+  "ir 2nd singular vas completes the paradigm a1-u03 left open (va/van) — the last open cell of A1's ir table",
+  "costar → cuestan completes the deferred E8 id; cuestan/cuesta is a person paradigm, never a shared hear-choose set",
+  "levantarse 3rd plural se levantan closes the U5-5 deferral; the reflexive pronoun stays attached to the tile (14 chars — LONG-tile debt)",
+  "IRREGULAR PRETERITES REMAIN UNBOUND AND UNUSED IN AUTHORED LINES: fue, dijo, vio, vino, tuvo, hizo, dio, pudo, estuvo, hubo, trajo + stem-changing 3rd persons → A2-U1. llamó/trabajó/escucharon are all REGULAR (B7)",
+  "no verse question is ever blind: Mateo 4:21 is HEARD and READ in its own block before any verse item is asked (owner quality bar 2026-11-11)"
+ ],
+ "waves": {
+  "l1": [
+   "llamó",
+   "red",
+   "barco",
+   "pescador",
+   "maestro",
+   "trabajó"
+  ],
+  "l2": [
+   "escucharon",
+   "vas",
+   "cuestan",
+   "se levantan",
+   "tarde",
+   "a veces"
+  ],
+  "l3": [
+   "almuerzo",
+   "nariz",
+   "medicina",
+   "fiebre",
+   "diente"
+  ],
+  "l4": [
+   "hermano",
+   "padre",
+   "noche",
+   "luego",
+   "camino"
+  ]
+ },
+ "waveNotes": "l1 (6) = the call: the two verse teaches-words (llamó mat-4-21, red lke-5-5) plus the story's nouns (barco, pescador, maestro) and the regular preterite trabajó. red/redes and trabajo/trabajó are the pack's two sharpest pairs, both documented. l2 (6) = what happened next: the -aron plural (escucharon), the two deferred paradigm cells (vas, cuestan), the deferred reflexive plural (se levantan) and two deferred time words (tarde, a veces). l3 (5) = the U5-5 deferred health/meal words, a body-care round that reuses U5's doler + definite-article pattern. l4 (5) = the FIVE NAMED RE-PASSES required by LEAD RULING R-4 (hermano, padre, noche, luego, camino) — all new:false with poolSource, glosses byte-identical, so the rebase chain can verify 399→416 exactly. tenemos is NOT among them: it landed at a1-u05 (C7 partially discharged there).",
+ "words": [
+  {
+   "id": "llamó",
+   "es": "llamó",
+   "en": "called",
+   "say": "Jesús llamó a los hermanos.",
+   "caption": "Jesús llamó",
+   "sign": "Llamó",
+   "options": [
+    "llamó",
+    "escuchó",
+    "volvió"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "llamar, pretérito 3rd singular (-ó) — a REGULAR -ar preterite, legal post-U7 (B7; irregulars remain A2-U1). SCRIPTURE TEACHES-WORD of this pack: Mateo 4:21 «…y los llamó» (VERIFIED ledger, re-curl 11:14) binds here with teaches=llamó — the word is inside the 17 new ids, so the verse never binds to a phantom (B5). The say PARAPHRASES the call with bound ids and does NOT quote the verse. llamó/llama: llama is NOT an id, so no accent pair; llamó/llamaron is not a pair either (llamaron is not bound)."
+  },
+  {
+   "id": "red",
+   "es": "red",
+   "en": "net",
+   "say": "Simón echa la red al agua.",
+   "caption": "Echa la red",
+   "sign": "La red",
+   "options": [
+    "red",
+    "barco",
+    "cesta"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "SCRIPTURE TEACHES-WORD of the companion verse pack: Lucas 5:5 «mas en tu palabra echaré la red» (VERIFIED ledger, re-curl 11:14) binds with teaches=red. **red ≠ redes**: Mateo 4:21's token is the PLURAL «redes» — different string, never an id, and the pack's sharpest one-token pair (exact-string rule). echar is say-text only, never an option string."
+  },
+  {
+   "id": "barco",
+   "es": "barco",
+   "en": "boat",
+   "say": "El barco está en el agua.",
+   "caption": "El barco",
+   "sign": "Barco",
+   "options": [
+    "barco",
+    "red",
+    "casa"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The boat of Mateo 4:21 («en el barco con Zebedeo, su padre») — narrated, never quoted outside the scripture block. barco OCCURS in the mat-4-21 verse, so barco is never a decoy in that verse item (recorded). barco/banco: banco is not an id, no pair."
+  },
+  {
+   "id": "pescador",
+   "es": "pescador",
+   "en": "fisherman",
+   "say": "El pescador trabaja de noche.",
+   "caption": "El pescador",
+   "sign": "Pescador",
+   "options": [
+    "pescador",
+    "maestro",
+    "hermano"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The trade of the called disciples. NOT verse-bound: Lk 5:10 does NOT contain pescador, so the 5:10→5:5 fallback leaves pescador a plain taught word (B5 — the pack never claims it as verse-bound). pescador/pescado/pescar NEVER share a set (es- cluster); pescador/mercader inherited ban (a1-u04) holds."
+  },
+  {
+   "id": "maestro",
+   "es": "maestro",
+   "en": "teacher",
+   "say": "El maestro habla a Simón.",
+   "caption": "El maestro",
+   "sign": "Maestro",
+   "options": [
+    "maestro",
+    "pescador",
+    "padre"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "Lucas 5:5 opens «Maestro, habiendo trabajado toda la noche» — maestro OCCURS in that verse as a vocative, so maestro is never a decoy in the lke-5-5 item (recorded). Capitalised Maestro is the verse's address to Jesus; the taught tile is the ordinary noun (teacher). Simón is say-text only (proper noun, a1-u06/u07 rule)."
+  },
+  {
+   "id": "trabajó",
+   "es": "trabajó",
+   "en": "worked",
+   "say": "Simón trabajó toda la noche.",
+   "caption": "Trabajó de noche",
+   "sign": "Trabajó",
+   "options": [
+    "trabajó",
+    "llamó",
+    "escuchó"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "trabajar, pretérito 3rd singular (-ó), regular. The verse's own night of work is the participle «habiendo trabajado» (a DIFFERENT token — never an id). trabajo/trabajó = an accent pair created by this pack: never a shared hear-choose set (documented, U8-4)."
+  },
+  {
+   "id": "escucharon",
+   "es": "escucharon",
+   "en": "they listened",
+   "say": "Los hermanos escucharon la voz.",
+   "caption": "Escucharon la voz",
+   "sign": "Escucharon",
+   "options": [
+    "escucharon",
+    "llamó",
+    "trabajó"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "escuchar, pretérito 3rd plural (-aron) — the plural spine of U7's -ar preterite, closing the -aron gap the llegaron item opened (U7-7). escucharon/escuchó NEVER share a hear-choose set (person paradigm, C5/U5-7); the plural is resolved by the written subject in gap-fill. voz is say-text only."
+  },
+  {
+   "id": "vas",
+   "es": "vas",
+   "en": "you go",
+   "say": "Tú vas al agua hoy.",
+   "caption": "Vas al agua",
+   "sign": "Vas",
+   "options": [
+    "vas",
+    "tarde",
+    "almuerzo"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "ir 2nd singular present — the LAST open cell of the ir paradigm (va/van landed at a1-u03). U5-3/C7 DISCHARGED with cuestan. vas/va/van NEVER share a hear-choose set (a1-u03 inherited ban + person paradigm); the person is tested in gap-fill with the written subject Tú."
+  },
+  {
+   "id": "cuestan",
+   "es": "cuestan",
+   "en": "they cost",
+   "say": "Dos panes cuestan una moneda.",
+   "caption": "Cuestan una moneda",
+   "sign": "Cuestan",
+   "options": [
+    "cuestan",
+    "mercado",
+    "moneda"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "costar 3rd plural present — the deferred E8 id (a1-u04). cuestan/cuesta NEVER share a hear-choose set (person paradigm, and cuesta/cuántos is an inherited a1-u04 ban); the plural is tested in gap-fill with the written subject. moneda/mercado are the market decoy field."
+  },
+  {
+   "id": "se levantan",
+   "es": "se levantan",
+   "en": "they get up",
+   "say": "Ellos se levantan temprano.",
+   "caption": "Se levantan",
+   "sign": "Se levantan",
+   "options": [
+    "se levantan",
+    "desayuno",
+    "temprano"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "levantarse 3rd plural — the U5-5 deferred id. The levantarse paradigm NEVER shares a hear-choose set (me levanto/me lavo/me levanto, U5-7/C5): se levantan/se levanta/me levanto are three distinct ids and three distinct forms. The reflexive pronoun stays attached to the tile (14 chars — the pack's LONG-tile debt)."
+  },
+  {
+   "id": "tarde",
+   "es": "tarde",
+   "en": "late; afternoon",
+   "say": "Simón vuelve tarde a casa.",
+   "caption": "Vuelve tarde",
+   "sign": "Tarde",
+   "options": [
+    "tarde",
+    "temprano",
+    "luego"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred time word. tarde/temprano is the pack's clean time contrast (kept in one set on purpose, documented — the pair is the meaning, like después/primero at a1-u05). tarde/tardó: tardó is NOT an id, no pair. vuelve is say-text only (a1-u07 rule)."
+  },
+  {
+   "id": "a veces",
+   "es": "a veces",
+   "en": "sometimes",
+   "say": "A veces Ana come tarde.",
+   "caption": "A veces",
+   "sign": "A veces",
+   "options": [
+    "a veces",
+    "luego",
+    "por fin"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred frequency phrase — ONE id of two tokens (never split). It shares a set with the sequence words luego/por fin under a1-u07's documented sequence exception. a veces/vez: vez alone is not an id."
+  },
+  {
+   "id": "almuerzo",
+   "es": "almuerzo",
+   "en": "lunch",
+   "say": "El almuerzo está en la mesa.",
+   "caption": "El almuerzo",
+   "sign": "Almuerzo",
+   "options": [
+    "almuerzo",
+    "desayuno",
+    "cena"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred meal word, completing the day's meals set with a1-u05's desayuno/cena — the three meals sit together on purpose (documented exception, U8-5). almuerzo/almorzar: almorzar is not an id. mesa is a1-u02's id."
+  },
+  {
+   "id": "nariz",
+   "es": "nariz",
+   "en": "nose",
+   "say": "Me duele la nariz.",
+   "caption": "Me duele la nariz",
+   "sign": "La nariz",
+   "options": [
+    "nariz",
+    "mano",
+    "cabeza"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred body word; the say reuses U5's doler pattern with the definite article (U5-8: body parts take el/la, never the possessive). nariz/narices: narices is not an id. mano/cabeza are a1-u05's ids (body set, documented)."
+  },
+  {
+   "id": "medicina",
+   "es": "medicina",
+   "en": "medicine",
+   "say": "La medicina está en la mesa.",
+   "caption": "La medicina",
+   "sign": "Medicina",
+   "options": [
+    "medicina",
+    "diente",
+    "nariz"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred health word. medicina/médico: médico is not an id (never an option string). The health field (medicina/fiebre/diente/nariz) is a meaning cluster, not a near-form pair."
+  },
+  {
+   "id": "fiebre",
+   "es": "fiebre",
+   "en": "fever",
+   "say": "Ana tiene fiebre hoy.",
+   "caption": "Tiene fiebre",
+   "sign": "Fiebre",
+   "options": [
+    "fiebre",
+    "medicina",
+    "diente"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred health word; tiene is a1-u02's id and the say reuses the possession pattern. Plain-truth care language (someone is ill, there is medicine) — INT-1 holds, no threat imagery."
+  },
+  {
+   "id": "diente",
+   "es": "diente",
+   "en": "tooth",
+   "say": "Me duele un diente.",
+   "caption": "Me duele un diente",
+   "sign": "Un diente",
+   "options": [
+    "diente",
+    "nariz",
+    "mano"
+   ],
+   "new": true,
+   "poolSource": "a1-u08",
+   "note": "The U5-5 deferred body word, closing the deferred list. diente/dientes: dientes is not an id (exact-string rule). The doler + definite-article pattern is U5-8's."
+  },
+  {
+   "id": "hermano",
+   "es": "hermano",
+   "en": "brother",
+   "say": "Juan es el hermano de Jacobo.",
+   "caption": "Su hermano",
+   "sign": "Hermano",
+   "options": [
+    "hermano",
+    "padre",
+    "maestro"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "RE-PASS (unit-01.json = a0-u01 source of record, C8; gloss byte-identical «brother») — never re-introduced. THE CALL IS A FAMILY STORY: two brothers in the boat (Mt 4:21). hermano OCCURS in the mat-4-21 verse, so hermano is never a decoy in that verse item (recorded). hermano/hermana NEVER share a set (one-letter pair, U6-8); mano/hermano inherited ban holds."
+  },
+  {
+   "id": "padre",
+   "es": "padre",
+   "en": "father",
+   "say": "Zebedeo es el padre de Juan.",
+   "caption": "Su padre",
+   "sign": "Padre",
+   "options": [
+    "padre",
+    "hermano",
+    "pescador"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "RE-PASS (unit-01.json = a0-u01 source of record, C8; gloss byte-identical «father»). «…con Zebedeo, su padre» (Mt 4:21) — padre OCCURS in the verse, so padre is never a decoy there (recorded). padre/madre inherited ban holds; padres (parents) is a DIFFERENT word (U6-6)."
+  },
+  {
+   "id": "noche",
+   "es": "noche",
+   "en": "night",
+   "say": "Toda la noche en el barco.",
+   "caption": "Toda la noche",
+   "sign": "Noche",
+   "options": [
+    "noche",
+    "tarde",
+    "luego"
+   ],
+   "new": false,
+   "poolSource": "a0-u01",
+   "note": "RE-PASS (unit-01.json = a0-u01 source of record, C8; gloss byte-identical «night»). The night of Lk 5:5 «habiendo trabajado toda la noche» — noche OCCURS in that verse, so noche is never a decoy in the lke-5-5 item (B2, recorded). ayer/hoy/mañana inherited ban holds; noche/mañana is not in that banned trio but the two are never paired in a set here."
+  },
+  {
+   "id": "luego",
+   "es": "luego",
+   "en": "then, later",
+   "say": "Luego los hermanos van al agua.",
+   "caption": "Luego van",
+   "sign": "Luego",
+   "options": [
+    "luego",
+    "por fin",
+    "después"
+   ],
+   "new": false,
+   "poolSource": "a1-u07",
+   "note": "RE-PASS (a1-u07; gloss byte-identical «then, later»). The sequence set luego/por fin/después is a1-u07's documented exception, kept unchanged — this is the pack's narration-order round."
+  },
+  {
+   "id": "camino",
+   "es": "camino",
+   "en": "path, road",
+   "say": "El camino va al agua.",
+   "caption": "El camino",
+   "sign": "Camino",
+   "options": [
+    "camino",
+    "barco",
+    "casa"
+   ],
+   "new": false,
+   "poolSource": "a0-u05",
+   "note": "RE-PASS (a0-u05; gloss byte-identical «path, road»). The path to the water closes the consolidation wave. camino/caminó: caminó is deliberately NOT bound (U7-2) and is never an option string."
+  }
+ ],
+ "scripture": {
+  "verseId": "mat-4-21",
+  "reference": "Mateo 4:21 (RV1909)",
+  "status": "verified",
+  "ledgerRef": "MATEO 4:21 entry (re-curl 11:14, verses/MAT/004/021.json, RV1909M)",
+  "verse": "Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+  "verseModern": "Y pasando de allí vio otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+  "captionSplit": [
+   "Y pasando de allí vió otros dos hermanos,",
+   "Jacobo, hijo de Zebedeo, y Juan su hermano,",
+   "en el barco con Zebedeo, su padre,",
+   "que remendaban sus redes; y los ___."
+  ],
+  "say": "«Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.»",
+  "teaches": "llamó",
+  "teachesForm": "llamó",
+  "gapCount": 1,
+  "oneTapFillsAll": false,
+  "decoys": [
+   "escuchó",
+   "volvió",
+   "respondió"
+  ],
+  "verify": "VERIFIED 11:14 by the filing session's re-curl (danielmiranda/rv1909hispano, verses/MAT/004/021.json, text_original, RV1909M); ledger entry written the same session. verseModern = R2 family only (vió→vio, the preterite-orthography rule already applied to dió→dio) — no standalone á, no R4/R7 target, and the corpus text_modernized is identical to text_original. teachesForm = llamó occurs ONCE («y los llamó») → gapCount 1, oneTapFillsAll n/a. Decoy re-check: escuchó/volvió/respondió do NOT occur in the verse. Verse words that ARE pool ids but are NOT option strings (U6-15 precedent): hermano, padre, hijo (a1-u06); barco (this pack); redes is the PLURAL of this pack's red — a different token. Proper nouns Jacobo, Zebedeo, Juan are SAY-TEXT ONLY, never captions, signs, tiles or option strings (a1-u06/u07 rule).",
+  "ledger": "SIXTH Gospel-quota verse: A1 = 6 of ≥7 (Mt 7:13, Mt 7:14, Lk 2:1-7, Mrk 1:41, Lk 15:24, Mt 4:21). THE CALL OF THE DISCIPLES — the U8 story the curriculum map assigns (consolidation + the call). The verse is quoted ONCE, in this block; the companion verse Lucas 5:5 lives in its OWN verse-pack entry (a1-u08-verse-lke-5-5.json) per LEAD RULING R-2, never as a scriptureAdditional field inside this block. INT-1 holds: the call is narrated plainly, no doctrine-assent gate."
+ },
+ "versePacks": [
+  "a1-u08-verse-lke-5-5"
+ ],
+ "qna": {
+  "sayMax": 32,
+  "captionMax": 22,
+  "signMax": 15,
+  "charset": "ASCII + á é í ó ú ñ ¿ ¡ in rendered fields; « » only in scripture.say (spoken-only). PROPER NOUNS — Simón, Pedro, Andrés, Jacobo, Juan, Zebedeo, Jesús, Jehová — appear in SAY text only, never in captions, signs, tiles or option strings (a1-u06/u07 rule). Dios IS a pool id (unit-01) and may appear in rendered fields. SAY-TEXT ONLY, never option strings: echar, voz, remendar, remendaban, trabaja, trabajar, llama, llaman, va, van, voy, cuesta, levanta, almorzar, médico, dientes, narices, lago, agua is a pool id only if bound (it is NOT bound by this pack).",
+  "nearFormRule": "Never in the same hear-choose option set — INHERITED and still binding: cómo/como, vivo/vive, cree/crece/creó, por qué/porque, muro/pared, mi/mío, tu/tú, tiene/tienen, tienes/tiene, en/entre, nuevo/nuestro (a1-u02); va/van, ve/ven, ve/va, a/al, pueblo/puerta/puente, plaza/plato/planta, barro/burro, barro/carro, viaje/viejo, camello/camino, cruza/crece/cree, espera/escribe, cama/casa (a1-u03); mercader/mercado, esta/está, este/esta/esto/estos/estas, estos/estas, ese/esa, ese/este, camisa/cama, barato/barro, color/calor, verde/verano, rojo/ropa, cuesta/cuántos, cinturón/cintas (a1-u04); the levantarse paradigm, tengo/tenemos, me llamo/me lavo/me levanto, me visto/vestido, mano/mañana, mano/hermano, cara/casa, cara/cama, pierna/piedra, pie/pierna/piedra, siempre/nunca (a1-u05); padre/madre, the seven gender pairs, mi/mis, tu/tus, su/sus, nuestro/nuestra/nuestros, mío/mi, tuyo/tu, suyo/su, primo/primero, abuelo/abrigo, tío/tiempo, generoso/gente, amable/amigo, vecino/verde (a1-u06). NEW IN THIS PACK: (1) THE PRETÉRITO ACCENT PAIR ora/oró — never a shared set; the tense contrast is tested in gap-fill with the written marker ayer (U7-2); (2) the LLEGAR PARADIGM llegué/llegaste/llegó/llegaron — never any two of them in one hear-choose set (C5/U5-7), tested in gap-fill with the written subject (U7-7); (3) lanza/lanzó (noun vs preterite, one character apart — the pack's sharpest pair); (4) salió/sal (prefix); (5) entró/entre and entonces/entró/entre (en- cluster); (6) escuchó/espera/escribe (es- cluster); (7) espada/espera (es- cluster); (8) llegó/lleva (lle- cluster); (9) león/lejos (le- cluster); (10) valle/calle (one-letter pair); (11) gigante/gente (g- cluster); (12) luego/hasta luego (superstring); (13) por fin/por qué/porque/por favor (por- cluster); (14) celebró/celoso (cel- cluster); (15) piedra/pierna (inherited). DOCUMENTED EXCEPTIONS (deliberate, kept): (a) ayer/hoy/mañana sit TOGETHER — the past/present/future frame is the teaching point; (b) subió/bajó sit together (hill/valley pair); (c) entró/salió and salió/volvió/entró sit together (the direction pairs); (d) escudo/espada/lanza sit together (the armory contrast); (e) después/primero/entonces/luego form the sequence set (a1-u05's order-pair exception, extended); (f) corazón/cabeza/cuerpo remain a1-u05's documented set and are also this pack's verse-complete options; (g) a1-u02's hay/está/tengo, mi/tu/su, cuántos/cuándo and a1-u04's demonstrative exceptions remain documented (none co-occur here). NOT IDS, therefore NEVER option strings (phantom decoy, DEFECTS #14): armadura, coraza, casco, batalla, monte, montes, fuerte, oso, campamento, suelo, frente, altura, soldado, filisteo, gigantes, hondo, abeja, calló, juego, caminó, and every present-tense partner listed in qna.charset. NEW IN THIS PACK (a1-u08, consolidation): (1) red/REDES — the verse's plural token is never an option string and never a tile (exact-string rule); (2) pescador/pescado/pescar — never a shared set (es- cluster); (3) maestro/mercado (inherited mercader/mercado family, extended); (4) trabajo/trabajó — the pack's own accent pair, never a shared hear-choose set (U8-4); (5) the -aron plural spine escucharon/escuchó — never a shared set (person paradigm, C5/U5-7); (6) vas/va/van and cuestan/cuesta — person paradigms, never shared sets (a1-u03/a1-u04 inherited); (7) se levantan/se levanta/me levanto — the levantarse paradigm, never a shared set (U5-7); (8) the three meals almuerzo/desayuno/cena sit together on purpose (documented exception, U8-5); (9) tarde/temprano sit together on purpose (the meaning is the contrast); (10) nariz/mano, diente/nariz, medicina/fiebre are a MEANING cluster, never a near-form pair; (11) diente/dientes and nariz/narices — the plurals are not ids.",
+  "targetLeadsOptions": true,
+  "pagination": "largest wave l3 = 12 — exactly AT the 12-per-page threshold (DEFECTS #18); no split required; if the renderer's threshold is strictly-below-12, split l3 6+6. l1 = 10, l2 = 9, l4 = 7.",
+  "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
+  "duplicateCheck": "17 new ids, 0 collisions against the 399-id taught pool (CANONICAL distinct-union chain — see ledger POOL BOOKKEEPING RE-BASED: unit-01 52 es-ids + a0-packs 49 nested + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 + a1-u03 25 + a1-u04 30 + a1-u05 34 + a1-u06 27 + a1-u07 34 = 399). 5 re-passes are byte-identical re-serves with new:false + poolSource (hermano/padre/noche → a0-u01; luego → a1-u07; camino → a0-u05), never re-introduced as new. Pool after this pack = 416. EXACT-STRING MATCHING REQUIRED: red/redes, llamó/llama, trabajo/trabajó, escucharon/escuchó, vas/va/van, cuestan/cuesta, se levantan/se levanta, diente/dientes, nariz/narices, luego/hasta luego, por fin/por favor are DISTINCT (substring matchers report false collisions).",
+  "optionsBoundToIds": "Every option string is a bound pool id (byte-identical). The 17 new ids are bound by THIS pack, so they are legal option strings inside it; no decoy is a phantom (DEFECTS #14) and no decoy is a verse word of the verse it decorates.",
+  "grammar": "A1 register per THEOLOGY-guide §3.1: THE PAST IS NOW TAUGHT — pretérito of REGULAR verbs only (this is A1's one pretérito wave; the standing present-only rule is discharged for authored lines from here on). Present tense remains for nouns and markers. No subjunctive; affirmative familiar imperatives only (toca, señala). IRREGULAR PRETERITES ARE NOT USED IN ANY AUTHORED LINE: fue, dijo, vio, vino, tuvo, hizo, dio, pudo, estuvo, hubo, trajo, pidió, durmió, murió, sintió → A2-U1. Every say is one idea and the target word is repeated in caption + sign. Scripture is exempt from the tense rule (standing ruling) and 16:7 is present-tense anyway.",
+  "csa": "Clean. The call of the disciples, a night of work, a shared meal and ordinary illness/care. No threat imagery, no violence, no doctrine-assent gate (INT-1). The five re-passes carry their original glosses; the health words name care plainly (fiebre/medicina) and are never applied to the learner as a condition."
+ },
+ "examContribution": {
+  "unit": "exam-a1",
+  "items": [
+   {
+    "type": "hear-choose",
+    "es": "barco",
+    "en": "boat",
+    "say": "El barco está en el agua.",
+    "options": [
+     "barco",
+     "red",
+     "casa"
+    ],
+    "formSeed": 801
+   },
+   {
+    "type": "hear-choose",
+    "es": "se levantan",
+    "en": "they get up",
+    "say": "Ellos se levantan temprano.",
+    "options": [
+     "se levantan",
+     "desayuno",
+     "temprano"
+    ],
+    "formSeed": 802
+   },
+   {
+    "type": "hear-choose",
+    "es": "cuestan",
+    "en": "they cost",
+    "say": "Dos panes cuestan una moneda.",
+    "options": [
+     "cuestan",
+     "mercado",
+     "moneda"
+    ],
+    "formSeed": 803
+   },
+   {
+    "type": "hear-act",
+    "es": "nariz",
+    "en": "nose",
+    "say": "Toca la nariz.",
+    "sprite": "nariz",
+    "options": [
+     "nariz",
+     "mano",
+     "cabeza"
+    ],
+    "formSeed": 804,
+    "note": "R6 SPRITE CHECK (B7): NO prop sprite exists for nariz (the confirmed set is exam-a0's puerta/casa/camino/moneda/pan/cesta) — this item ships as its hear-choose twin, same es/say/options, pattern slot unchanged. No u08 word has a sprite; the art debt files for the design pass and must not block the exam."
+   },
+   {
+    "type": "gap-fill",
+    "es": "vas",
+    "sentence": "Tú ___ al agua hoy.",
+    "choices": [
+     "vas",
+     "va",
+     "van"
+    ],
+    "formSeed": 805,
+    "note": "THE PERSON ITEM: three forms of ir in one WRITTEN set is legal here and only here — the written subject Tú resolves the 2nd singular (C5 in hear-choose, legal in gap-fill; a1-u07 llegaron precedent). The time marker hoy keeps the present tense unambiguous against U7's pretérito."
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "mat-4-21",
+    "reference": "Mateo 4:21 (RV1909)",
+    "verse": "Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+    "verseModern": "Y pasando de allí vio otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.",
+    "missing": "Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los ___.",
+    "missingModern": "Y pasando de allí vio otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los ___.",
+    "captionSplit": [
+     "Y pasando de allí vió otros dos hermanos,",
+     "Jacobo, hijo de Zebedeo, y Juan su hermano,",
+     "en el barco con Zebedeo, su padre,",
+     "que remendaban sus redes; y los ___."
+    ],
+    "gapCount": 1,
+    "oneTapFillsAll": false,
+    "es": "llamó",
+    "en": "called",
+    "say": "«Y pasando de allí vió otros dos hermanos, Jacobo, hijo de Zebedeo, y Juan su hermano, en el barco con Zebedeo, su padre, que remendaban sus redes; y los llamó.»",
+    "options": [
+     "llamó",
+     "escuchó",
+     "volvió",
+     "respondió"
+    ],
+    "formSeed": 806,
+    "note": "Byte-identical to this pack's scripture block (verified 11:14, ledger). The verse is HEARD and READ before the gap is asked (owner quality bar). Decoys escuchó/volvió/respondió are bound ids and verse-free; hermano/padre/barco occur in the verse and are therefore never decoys."
+   },
+   {
+    "type": "verse-complete",
+    "verseId": "lke-5-5",
+    "reference": "Lucas 5:5 (RV1909)",
+    "verse": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+    "verseModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.",
+    "missing": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+    "missingModern": "Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la ___.",
+    "captionSplit": [
+     "Y respondiendo Simón, le dijo: Maestro,",
+     "habiendo trabajado toda la noche,",
+     "nada hemos tomado; mas en tu palabra",
+     "echaré la ___."
+    ],
+    "gapCount": 1,
+    "oneTapFillsAll": false,
+    "es": "red",
+    "en": "net",
+    "say": "«Y respondiendo Simón, le dijo: Maestro, habiendo trabajado toda la noche, nada hemos tomado; mas en tu palabra echaré la red.»",
+    "options": [
+     "red",
+     "cesta",
+     "moneda",
+     "pan"
+    ],
+    "formSeed": 807,
+    "note": "SERVED FROM THE COMPANION VERSE PACK (a1-u08-verse-lke-5-5.json, R-2). Byte-identical to the ledger entry (re-curl 11:14). **B2 DECOY CONSTRAINT: nada and noche OCCUR in this verse — they are never decoys here; maestro also occurs. Chosen decoys cesta/moneda/pan are verse-free bound ids.** red/redes: the mat-4-21 verse's token is the plural, a different string."
+   },
+   {
+    "type": "speak",
+    "target": "Los hermanos escucharon la voz.",
+    "translation": "The brothers listened to the voice.",
+    "minScore": 60,
+    "deferred": true,
+    "formSeed": 808,
+    "note": "SPEAK-REF ONLY — R1: speak 0 in v1 (no scorer exists; never ship a dead slot). Authored so the channel has a U8 item the day the scorer lands; carries the -aron plural and the call narrative, no CSA exposure."
+   }
+  ],
+  "patternsRef": "Item kinds matched by KIND (hear-choose / hear-act / gap-fill / verse-complete / reading / speak), same contract as a1-u02…a1-u07; lead maps them onto the p1-p8 shapes when exam-a1 is authored. exam-a0's es=object shape applied to hear-act at filing.",
+  "breakdown": {
+   "hear-choose": 3,
+   "hear-act": 1,
+   "gap-fill": 1,
+   "verse-complete": 2,
+   "reading-item": 0,
+   "speak": 1
+  },
+  "artDebt": "R6/B7: NO u08 word has a prop sprite — nariz ships as its hear-choose twin and the art debt (nariz, diente, medicina, red, barco) files for the design pass. The toca/señala action icons remain owed by DEFECTS #17. LENGTH debt: se levantan = 14 chars (reflexive tile, wrap/scale), vas = 3 chars (min-width) — extends DEFECTS #20/D6."
+ },
+ "provenance": {
+  "author": "curriculum-author, exam-a1 filing session (feat/exam-a1)",
+  "validatedBy": "PENDING — rebase-pool.py reproduces 399→416; lead validation + Reviewer sign-off owed",
+  "map": "content/curriculum-map.md, A1 row 8: consolidation unit — the call of the disciples, carrying the deferred list and the closing Gospel verses",
+  "schemaPrecedent": "build/content-packs/a1-u07.json exactly (words shape, waves l1-l4, qna/nearFormRule/examContribution/provenance block shape, ordered newIdsMustLandInSharedPoolFirst). ONE DELIBERATE DIFFERENCE per LEAD RULING R-2: the second verse (lke-5-5) is NOT a scriptureAdditional field — it is its own verse-pack entry, a1-u08-verse-lke-5-5.json (schema palabra.scripture-packs.v1), so both verses render through the existing resolver with no engineer schema work.",
+  "rulings": "R-4 (B6): the 5 re-passes are NAMED in words[] and in provenance.repassIds (hermano, padre, noche, luego, camino) — tenemos is excluded because it landed at a1-u05. B5: the two verse teaches-words (llamó, red) are inside the 17 new ids, verified by rebase-pool.py, so no verse binds to a phantom. B7: llamó/trabajó/escucharon are REGULAR -ar preterites (legal post-U7); irregulars remain A2-U1. B2: nada/noche/maestro occur in lke-5-5 and hermano/padre/barco occur in mat-4-21, so none of them is ever a decoy in its own verse item. R-2: lke-5-5 filed as a separate verse-pack entry, never as scriptureAdditional. E3 CLOSES at 7 of ≥7 Gospel verses.",
+  "newIds": 17,
+  "repassIds": [
+   "hermano",
+   "padre",
+   "noche",
+   "luego",
+   "camino"
+  ],
+  "taughtPoolBefore": 399,
+  "taughtPoolAfter": 416,
+  "versePack": "a1-u08-verse-lke-5-5.json"
+ },
+ "newIdsMustLandInSharedPoolFirst": [
+  "llamó",
+  "red",
+  "barco",
+  "pescador",
+  "maestro",
+  "trabajó",
+  "escucharon",
+  "vas",
+  "cuestan",
+  "se levantan",
+  "tarde",
+  "a veces",
+  "almuerzo",
+  "nariz",
+  "medicina",
+  "fiebre",
+  "diente"
+ ]
+}
