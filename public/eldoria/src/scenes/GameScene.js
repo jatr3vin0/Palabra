@@ -588,6 +588,15 @@ window.GameScene = class GameScene extends Phaser.Scene {
       fontFamily: CONFIG.FONT, fontSize: '8px', color: color || '#ffffff',
     }).setShadow(1, 1, '#000000', 0).setOrigin(0.5).setDepth(70).setResolution(CONFIG.ZOOM * 2);
     this.tweens.add({ targets: t, y: y - 26, alpha: 0, duration: 900, onComplete: () => t.destroy() });
+    // Readable⇒heard (owner rule): every floating word speaks itself — pickup
+    // counts, key/door feedback, secrets, denials. Speech text mirrors the
+    // display text ('+3 flechas' → '3 flechas', '(4/12)' → '4 de 12').
+    // Pure-number pops ('+3') and the clash onomatopoeia ('¡clanc!', which IS
+    // its own sound effect and would chop narration mid-combat) stay visual.
+    const say = str.replace(/(\d)\s*\/\s*(\d)/g, '$1 de $2').replace(/[+()]/g, '');
+    if (window.PALABRA_VOICE_ON && window.Palabra && /[a-záéíóúñü]/i.test(str) && str !== '¡clanc!') {
+      window.Palabra.speak(say, 'narrator');
+    }
   }
 
   // ============================== giving ==============================
