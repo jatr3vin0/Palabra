@@ -625,8 +625,8 @@
   "targetLeadsOptions": true,
   "pagination": "largest wave l1 = 12 ids = exactly the 12-per-page threshold (DEFECTS #18) — no split required; if the renderer's threshold is strictly-below-12, split l1 6+6. l4 = 10, l2/l3 = 6.",
   "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
-  "duplicateCheck": "23 new ids, 0 collisions against the 227-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 = 227). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 250.",
-  "optionsBoundToIds": "Every option string is a bound pool id (227 existing + this pack's 23). No phantom decoys.",
+  "duplicateCheck": "23 new ids, 0 collisions against the 226-id taught pool (unit-01 52 es-ids (no te llamas — the \"53 incl. te llamas\" figure is void) + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 = 226). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 249.",
+  "optionsBoundToIds": "Every option string is a bound pool id (226 existing + this pack's 23). No phantom decoys.",
   "grammar": "A1 register per THEOLOGY-guide §3.1: present tense allowed, past allowed but unused, NO subjunctive anywhere in this pack. Every say is one idea, target word repeated.",
   "csa": "Owner plain-truth directive applied: no sanitizing rules apply; the unit's story is a household blessed. INT-1 holds — no doctrine-assent gate anywhere."
  },
@@ -794,7 +794,8 @@
   "rulings": "A1-SPEC-updates.md (C1-C9): C1 psa-119-105 reassigned a1-u01→a1-u02 CONFIRMED; C2 Rut 1:16 stays U6 narration, Lk 15:22 stays milestone-reserved; C3 cuántos/cuándo deliberate contrast CONFIRMED (exception documented); C4 tu/tú second accent pair — Reviewer tile check now covers two pairs; C5 tiene/tienen conservative (never same set); C6 muro/pared never same set, junto a binding closes a1-u01 hole; C7 tenemos excluded to A1-U5/U8; C8 mi poolSource a0-u01 = unit-01.json (valid source of record); C9 waveNotes kept (WAVE_NOTE precedent).",
   "taughtPoolBefore": 226,
   "newIds": 23,
-  "taughtPoolAfter": 249
+  "taughtPoolAfter": 249,
+  "poolTotalsCorrected": "R9e (exam-a1 filing session): the duplicateCheck string carried superseded totals; canonical chain is rebase-pool.py's distinct union — 226/249/274/304/338/365 and 399 pre-u08 / 416 post-u08."
  },
  "newIdsMustLandInSharedPoolFirst": [
   "techo",

@@ -686,8 +686,8 @@
   "targetLeadsOptions": true,
   "pagination": "largest wave l2/l4 = 10 ids, l1/l3 = 8 — all under the 12-per-page threshold (DEFECTS #18). No split required.",
   "englishLevel": "A1 — caption gloss optional, fades at immersion ≥1",
-  "duplicateCheck": "25 new ids, 0 collisions against the 250-id taught pool (unit-01 53 incl. te llamas + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 = 250). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 275.",
-  "optionsBoundToIds": "Every option string is a bound pool id (250 existing + this pack's 25). Decoys drawn from the same wave where possible (burro/camello/carro, dobla/sigue/cruza) and from a1-u02's function words for a/al (de, en). No phantom decoys (DEFECTS #14).",
+  "duplicateCheck": "25 new ids, 0 collisions against the 249-id taught pool (unit-01 52 es-ids (no te llamas — the \"53 incl. te llamas\" figure is void) + a0-packs 49 + a0-verbs 30 + a0-u02 45 + a0-u06 28 + a1-u01 22 + a1-u02 23 = 249). 11 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new. Pool after this pack = 274.",
+  "optionsBoundToIds": "Every option string is a bound pool id (249 existing + this pack's 25). Decoys drawn from the same wave where possible (burro/camello/carro, dobla/sigue/cruza) and from a1-u02's function words for a/al (de, en). No phantom decoys (DEFECTS #14).",
   "grammar": "A1 register per THEOLOGY-guide §3.1: present tense only, NO pretérito (A1-U7 owns it), NO subjunctive, affirmative familiar imperatives only (ve/ven/dobla/sigue/cruza/espera/mira). Every say is one idea and the target word is repeated in caption + sign. Scripture exempt from the tense rule (standing ruling).",
   "csa": "Owner plain-truth directive applied: no sanitizing rules apply. Content guard held voluntarily: NOTHING in this pack invents nativity detail beyond Lucas 2:1-7 — no donkey for María, no animals at the manger, no innkeeper, no «no hay lugar» dramatization. The donkey/camel/cart are generic transport vocabulary in their own sentences. The pesebre is stated plainly («Jesús está en el pesebre»), which is what the text says. INT-1 holds — no doctrine-assent gate anywhere.",
   "formIdRule": "ids are the exact form the learner hears and the string on the tile. Directions are BARE (derecha, izquierda, recto, arriba, abajo) while the phrase «a la derecha» / «todo recto» lives in say/sign — the tile stays a word (a0-u06 question-word precedent). ir forms are finite forms (voy/va/van), not the infinitive (a0-verbs formIdRule). al is the contraction, not a + el split."
@@ -874,7 +874,8 @@
   "rulings": "D1 ACCEPTED: lowercase teachesForm pesebre (no verse-initial capital binds here; v2 'Este' is the demonstrative sense, A1-U4's topic — the cap mechanism stays demonstrated in a1-u02). D2 CONFIRMED: a and al bound as ids (de/en precedent; a/al never share a set); short-tile min-width render rule added to the DEFECTS #20 family (Reviewer check). D3 CONFIRMED: rut-1-16 untouched (ledger #12 / C2 reservation); u03 ships Lucas 2:1-7 instead. D4 CONFIRMED: mercado forward-binds to A1-U4 — U4 must re-pass (new:false, poolSource a1-u03), never re-introduce. D5 CONFIRMED: passage ships as a full-screen scripture moment (18 caption lines; one scripture block per pack holds). D6 CONFIRMED: vas excluded → A1-U8 owns it (recorded so it is not lost). D7 CONFIRMED: pesebre added to carry the verse binding (a1-u02 lámpara precedent). Exam fixes at filing: hear-act items 7-8 es = OBJECT (puente/pesebre) per the exam-a0 shape ruling. Conflict #8 content guard recorded for the Reviewer: nothing invents nativity detail beyond Lucas 2:1-7.",
   "taughtPoolBefore": 249,
   "newIds": 25,
-  "taughtPoolAfter": 274
+  "taughtPoolAfter": 274,
+  "poolTotalsCorrected": "R9e (exam-a1 filing session): the duplicateCheck string carried superseded totals; canonical chain is rebase-pool.py's distinct union — 226/249/274/304/338/365 and 399 pre-u08 / 416 post-u08."
  },
  "newIdsMustLandInSharedPoolFirst": [
   "pueblo",

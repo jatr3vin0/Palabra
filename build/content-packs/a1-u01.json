@@ -654,7 +654,8 @@
   "nearFormRule": "Never in the same word-round option set: cómo/como, vivo/vive, cree/crece/creó, por qué/porque; muro/pared never each other's decoy (pared not in this pack). DOCUMENTED EXCEPTION (lead ruling 20:58): está/están IS the wave-1 grammar-contrast pair (están's set) — the spoken sentence carries the subject, tile-size distinctness is the enforced mitigation (DEFECTS #20 family). DOCUMENTED EXCEPTION: por qué/porque appear TOGETHER in this pack's question-word set — the unit's grammar point, tiles visually distinct (cuántos/cuándo precedent, lead 21:10).",
   "targetLeadsOptions": true,
   "pagination": "l1 = 14 ids > 12 threshold → render as two pages of 7 (DEFECTS #18)",
-  "englishLevel": "A1 — caption gloss optional, fades"
+  "englishLevel": "A1 — caption gloss optional, fades",
+  "duplicateCheck": "22 new ids, 0 collisions against the 204-id A0 pool (unit-01 52 es-ids + a0-packs 49 nested + a0-verbs 30 + a0-u02 45 + a0-u06 28 = 204). 15 re-passes are byte-identical re-serves with new:false + poolSource, never re-introduced as new — 37 word entries = 22 new + 15 re-passes (the earlier \"39 entries / 17 re-passes\" figure in EXAM-a1-u01-draft §2 is superseded; the TOTAL is unaffected: 204 + 22 = 226). Pool after this pack = 226. EXACT-STRING MATCHING REQUIRED: por qué/porque, tu/tú, esta/está, nunca/nada, tampoco/también are DISTINCT ids (substring matchers report false collisions)."
  },
  "examContribution": {
   "unit": "exam-a1",
