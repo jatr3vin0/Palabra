@@ -50,13 +50,19 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     this.txt(160, 162, '< > elegir  S guardar  Q salir', '#8888aa', 8, true);
     this.txt(160, 174, 'ESC o ENTER: volver al juego', '#8888aa', 8, true);
     this.saveNote = this.txt(160, 188, '', '#9affb0', 8, true);
+    // Parent control: music-only mute (voices stay). M key, or tap the row.
+    this.musicRow = this.txt(160, 198, '', '#88c8e8', 8, true);
+    this.refreshMusicRow();
 
     this.input.keyboard.on('keydown-LEFT', () => this.move(-1));
     this.input.keyboard.on('keydown-RIGHT', () => this.move(1));
-    // Palabra mobile: tapping the pause card (outside the equip row) closes it
+    // Palabra mobile: tapping the pause card closes it — EXCEPT the music row,
+    // which toggles the parent mute.
     this.input.on('pointerdown', (p) => {
-      if (p.y > 80) this.close();
+      if (p.y > 194) this.toggleMusic();
+      else if (p.y > 80) this.close();
     });
+    this.input.keyboard.on('keydown-M', () => this.toggleMusic());
     this.input.keyboard.on('keydown-S', () => {
       const ok = this.scene.get('Game').autoSave();
       this.saveNote.setText(ok ? '¡Guardado!' : '¡No se pudo guardar!');
@@ -106,6 +112,16 @@ window.PauseScene = class PauseScene extends Phaser.Scene {
     this.sel = (this.sel + d + this.owned.length) % this.owned.length;
     AUDIO.sfx('menuMove');
     this.refreshCursor();
+  }
+
+  refreshMusicRow() {
+    this.musicRow.setText('M: música: ' + (AUDIO.musicMuted ? 'NO' : 'SÍ'));
+  }
+
+  toggleMusic() {
+    AUDIO.setMusicMuted(!AUDIO.musicMuted);
+    this.refreshMusicRow();
+    if (window.GS) SAVE.write();
   }
 
   close() {

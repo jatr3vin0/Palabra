@@ -5,6 +5,7 @@ import { StatsBar, useProgress } from "~/components/Chrome";
 import { FrameGame, type MissionResult } from "~/components/FrameGame";
 import { stopSpeaking, speakSpanish } from "~/lib/voice";
 import { castParams, type VoiceKey } from "~/lib/voiceCast";
+import type { Progress } from "~/lib/storage";
 
 export const Route = createFileRoute("/adventure")({
   // ?fps=N passes a frame-rate cap down to the world boot (low-end devices /
@@ -42,7 +43,7 @@ type MissionRequest = {
 
 function Adventure() {
   const { fps } = Route.useSearch();
-  const [p] = useProgress();
+  const [p, update] = useProgress();
   const frameRef = useRef<HTMLIFrameElement | null>(null);
   const [mission, setMission] = useState<MissionRequest | null>(null);
   const [booted, setBooted] = useState(false);
@@ -50,6 +51,18 @@ function Adventure() {
   const duckedRef = useRef(false);
   /** Missions completed during this overlay session (avoid double reward posts). */
   const completedRef = useRef<Set<string>>(new Set());
+  // Parent music-only mute: the header button mirrors the profile; the world
+  // (pause-menu row) can also toggle it and echoes the state back.
+  const [musicMuted, setMusicMuted] = useState(false);
+  const updateRef = useRef(update);
+  const pRef = useRef<Progress | null>(p);
+  updateRef.current = update;
+  pRef.current = p;
+
+  useEffect(() => {
+    if (p) setMusicMuted(!!p.musicMuted);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p?.musicMuted]);
 
   const postTo = useCallback((msg: Record<string, unknown>) => {
     frameRef.current?.contentWindow?.postMessage({ source: "palabra-app", ...msg });
@@ -92,6 +105,17 @@ function Adventure() {
           postTo({ type: "palabra:missionOpen" });
           missionRef.current = m;
           setMission(m);
+          break;
+        }
+        case "palabra:musicState": {
+          // The world echoes its music-mute state (on boot from the save, and
+          // on pause-menu toggles): keep the header button in agreement.
+          const muted = !!msg.muted;
+          setMusicMuted(muted);
+          const cur = pRef.current;
+          if (cur && !!cur.musicMuted !== muted) {
+            updateRef.current({ ...cur, musicMuted: muted });
+          }
           break;
         }
         default:
@@ -142,6 +166,16 @@ function Adventure() {
     [postTo],
   );
 
+  // Parent music-only mute (quality bar): chiptune only — voices and SFX stay
+  // audible. Persists in the profile AND the world save (the world echoes back).
+  const toggleMusic = useCallback(() => {
+    const next = !musicMuted;
+    setMusicMuted(next);
+    const cur = pRef.current;
+    if (cur) updateRef.current({ ...cur, musicMuted: next });
+    postTo({ type: "palabra:music", muted: next });
+  }, [musicMuted, postTo]);
+
   // Leaving the adventure: stop speech, un-duck the world.
   useEffect(() => {
     return () => {
@@ -162,6 +196,17 @@ function Adventure() {
         </a>
         <div className="flex items-center gap-2">
           {p && <StatsBar p={p} />}
+          <button
+            type="button"
+            onClick={toggleMusic}
+            aria-label={musicMuted ? "Activar la música" : "Silenciar la música"}
+            title={musicMuted ? "Música: NO (las voces suenan)" : "Música: SÍ"}
+            className={`rounded-full px-3 py-1 text-xs font-black transition ${
+              musicMuted ? "bg-stone-800 text-stone-400 hover:bg-stone-700" : "bg-teal-700 text-teal-100 hover:bg-teal-600"
+            }`}
+          >
+            {musicMuted ? "🔇 Música" : "🎵 Música"}
+          </button>
           <a
             href="/"
             onClick={stopSpeaking}

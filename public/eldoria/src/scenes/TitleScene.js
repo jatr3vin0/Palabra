@@ -106,6 +106,8 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
     AUDIO.sfx('menuSelect');
     const existing = SAVE.load(this.sel);
     SAVE.start(this.sel);
+    // Apply the saved music-mute and tell the app so its header button agrees.
+    AUDIO.setMusicMuted(!!GS.musicMuted);
     AUDIO.stopSong();
     if (existing) {
       GS.hearts = Math.max(GS.hearts, Math.min(3, GS.maxHearts));

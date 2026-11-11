@@ -31,6 +31,8 @@ export type Progress = {
   misses: Record<string, MissRecord>;
   /** Progressive immersion 0–3: English captions/glosses fade as it rises. */
   englishLevel: number;
+  /** Parent control: chiptune music muted (voices + SFX stay). */
+  musicMuted: boolean;
 };
 
 function fresh(): Progress {
@@ -45,6 +47,7 @@ function fresh(): Progress {
     miniBest: 0,
     misses: {},
     englishLevel: 0,
+    musicMuted: false,
   };
 }
 

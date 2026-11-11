@@ -19,6 +19,7 @@ window.SAVE = {
       acorns: 0,
       keys: {},                      // mapId -> small key count
       flags: {},                     // string -> true
+      musicMuted: false,             // parent music-only mute (voices stay)
       checkpoint: Object.assign({}, CONFIG.START),
       playMs: 0,
       savedAt: 0,

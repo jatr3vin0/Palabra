@@ -73,19 +73,35 @@ window.Palabra = {
       ? window.game.scene.getScene('Game')
       : null;
     if (m && msg.won) {
+      // Gem-farming gate: the world reward pays ONCE per mission — a replay
+      // (win after the doneFlag is already set) earns XP/coins in Palabra but
+      // no world gems, so the banner says so instead of paying again.
+      const firstWin = !(m.doneFlag && window.Flags && Flags.get(m.doneFlag));
       if (m.doneFlag && window.Flags) Flags.set(m.doneFlag);
-      const gems = m.reward && m.reward.gems;
+      const gems = firstWin ? (m.reward && m.reward.gems) : 0;
       if (gs && gems) {
         gs.give({ gems: gems });
         gs.banner({
           art: 'gem',
           name: '¡Misión cumplida!',
-          desc: 'XP guardado en Palabra',
+          desc: '+' + gems + ' gemas · XP en Palabra',
         });
         if (window.AUDIO) window.AUDIO.playJingle('fanfare');
-      }
-      if (window.UIScene && window.Palabra) {
-        window.Palabra.speak('¡Misión cumplida! ¡Muy bien!', 'narrator');
+        if (window.UIScene && window.Palabra) {
+          window.Palabra.speak(
+            '¡Misión cumplida! Ganaste ' + gems + ' gemas para el mundo y puntos de experiencia en Palabra.',
+            'narrator',
+          );
+        }
+      } else {
+        gs.banner({
+          art: 'gem',
+          name: '¡Misión cumplida!',
+          desc: firstWin ? 'XP guardado en Palabra' : 'Repaso: XP en Palabra, sin gemas',
+        });
+        if (window.UIScene && window.Palabra) {
+          window.Palabra.speak('¡Misión cumplida! Puntos de experiencia guardados en Palabra.', 'narrator');
+        }
       }
     }
     // Returning to the world always writes the world save (save = world
@@ -116,6 +132,10 @@ window.addEventListener('message', (e) => {
       break;
     case 'palabra:missionResult':
       Palabra.missionResult(msg);
+      break;
+    case 'palabra:music':
+      // Parent music-only mute from the app header (voices stay).
+      if (window.AUDIO && window.AUDIO.setMusicMuted) window.AUDIO.setMusicMuted(!!msg.muted);
       break;
     case 'palabra:duck':
       Palabra.duck(!!msg.on);

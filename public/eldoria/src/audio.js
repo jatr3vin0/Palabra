@@ -4,7 +4,8 @@
 window.AUDIO = {
   songs: {}, sfxDefs: {},
   ctx: null, master: null, songGain: null, sfxGain: null, jingleGain: null,
-  muted: false, currentSong: null, _timer: null, _tracks: [],
+  songMute: null, jingleMute: null,
+  muted: false, musicMuted: false, currentSong: null, _timer: null, _tracks: [],
 
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
@@ -14,12 +15,21 @@ window.AUDIO = {
     this.master = this.ctx.createGain();
     this.master.gain.value = this.muted ? 0 : 0.5;   // honor a pre-init mute
     this.master.connect(this.ctx.destination);
+    // Parent mute control (quality bar): mutes MUSIC + jingles ONLY — voices
+    // (app pipeline) and sound effects stay audible. Dedicated mute buses keep
+    // this independent of master mute and the duck() ramps.
+    this.songMute = this.ctx.createGain();
+    this.songMute.gain.value = this.musicMuted ? 0 : 1;
+    this.songMute.connect(this.master);
+    this.jingleMute = this.ctx.createGain();
+    this.jingleMute.gain.value = this.musicMuted ? 0 : 1;
+    this.jingleMute.connect(this.master);
     this.songGain = this.ctx.createGain();
-    this.songGain.connect(this.master);
+    this.songGain.connect(this.songMute);
     this.sfxGain = this.ctx.createGain();
     this.sfxGain.connect(this.master);
     this.jingleGain = this.ctx.createGain();
-    this.jingleGain.connect(this.master);
+    this.jingleGain.connect(this.jingleMute);
     if (this._pendingSong) { const s = this._pendingSong; this._pendingSong = null; this.playSong(s); }
   },
 
@@ -27,6 +37,19 @@ window.AUDIO = {
     this.muted = !this.muted;
     if (this.master) this.master.gain.value = this.muted ? 0 : 0.5;
     return this.muted;
+  },
+
+  // Music-only mute. Persists into the world save (GS.musicMuted, default
+  // false) and echoes the new state to the app so the header button agrees.
+  setMusicMuted(on) {
+    this.musicMuted = !!on;
+    if (this.songMute) this.songMute.gain.value = this.musicMuted ? 0 : 1;
+    if (this.jingleMute) this.jingleMute.gain.value = this.musicMuted ? 0 : 1;
+    if (window.GS) GS.musicMuted = this.musicMuted;
+    if (window.Palabra) {
+      try { window.Palabra.post({ type: 'palabra:musicState', muted: this.musicMuted }); } catch (e) { /* not attached */ }
+    }
+    return this.musicMuted;
   },
 
   // Duck the chiptune while the kokoro voice speaks (or while a mini-game
@@ -110,10 +133,11 @@ window.AUDIO = {
     if (this._timer) { clearInterval(this._timer); this._timer = null; }
     if (!keepName) this.currentSong = null;
     if (this.ctx && this.songGain) {
-      // hard-cut anything scheduled by swapping the song bus
+      // hard-cut anything scheduled by swapping the song bus (back through the
+      // music-mute bus so a parent's mute survives every song change)
       this.songGain.disconnect();
       this.songGain = this.ctx.createGain();
-      this.songGain.connect(this.master);
+      this.songGain.connect(this.songMute || this.master);
     }
   },
 
