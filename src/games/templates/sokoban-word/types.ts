@@ -96,7 +96,6 @@ export function createController(): SokobanHandle {
   let pendingBoard: { board: SokobanBoard | null; namedEs: string | null } | undefined; // undefined = none queued
   let pendingName: string | null | undefined;
   let pendingBanner: { title: string; sub?: string } | null = null;
-  let pendingClear = false;
   let pendingCelebrate = false;
 
   function flush(): void {
@@ -108,7 +107,6 @@ export function createController(): SokobanHandle {
     pendingBoard = undefined;
     pendingName = undefined;
     pendingBanner = null;
-    pendingClear = false;
     pendingCelebrate = false;
   }
 
@@ -126,7 +124,7 @@ export function createController(): SokobanHandle {
       if (scene) scene.showBanner(title, sub);
     },
     clear() {
-      pendingClear = true;
+      pendingBoard = { board: null, namedEs: null };
       if (scene) scene.clear();
     },
     celebrate() {

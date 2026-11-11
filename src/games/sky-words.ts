@@ -509,12 +509,16 @@ class SkyScene extends Phaser.Scene {
   }
 }
 
-/** Boot the game inside a host element; returns the minimal handle React owns. */
+/** Boot the game inside a host element; returns the minimal handle React owns.
+ * The island is the seam: bridge/ctrl arrive untyped and are narrowed here. */
 export function createGame(
   parent: HTMLElement,
-  bridge: SkyWordsBridge,
-  ctrl: SkyWordsHandle,
+  bridgeDep: unknown,
+  ctrlDep: unknown,
+  _opts?: unknown,
 ): { destroy: (removeCanvas?: boolean) => void } {
+  const bridge = bridgeDep as SkyWordsBridge;
+  const ctrl = ctrlDep as SkyWordsHandle;
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent,

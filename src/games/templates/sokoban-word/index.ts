@@ -380,7 +380,7 @@ class SokobanScene extends Phaser.Scene {
 
   private buildDpad(): void {
     const mk = (x: number, y: number, dir: Dir, glyph: string): void => {
-      const zone = this.add.zone(x, y, 110, 110).setCircle(55).setInteractive({ useHandCursor: true });
+      const zone = this.add.zone(x, y, 104, 104).setInteractive({ useHandCursor: true });
       const ring = this.add.circle(x, y, 44, 0xfef3c7, 0.85).setStrokeStyle(3, 0xd97706, 1).setDepth(30);
       const label = this.add
         .text(x, y, glyph, { fontFamily: FONT, fontSize: "30px", color: "#92400e", fontStyle: "bold" })
@@ -798,13 +798,17 @@ function arrow(g: Phaser.GameObjects.Graphics, dx: number, dy: number, color: nu
   g.fillRect(cx - dx * 6 - Math.abs(side.x) / 2 - 3, cy - dy * 6 - Math.abs(side.y) / 2 - 3, 6 + Math.abs(side.x), 6 + Math.abs(side.y));
 }
 
-/** Boot the game inside a host element; returns the minimal handle React owns. */
+/** Boot the game inside a host element; returns the minimal handle React owns.
+ * The island is the seam: bridge/ctrl arrive untyped and are narrowed here. */
 export function createGame(
   parent: HTMLElement,
-  bridge: SokobanBridge,
-  ctrl: SokobanHandle,
-  opts?: SokobanSceneOptions,
+  bridgeDep: unknown,
+  ctrlDep: unknown,
+  optsDep?: unknown,
 ): { destroy: (removeCanvas?: boolean) => void } {
+  const bridge = bridgeDep as SokobanBridge;
+  const ctrl = ctrlDep as SokobanHandle;
+  const opts = (optsDep ?? {}) as SokobanSceneOptions;
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent,

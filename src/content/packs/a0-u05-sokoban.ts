@@ -21,6 +21,9 @@ const PACK_ID = "a0-u05";
 /** The pack, resolved once; a missing pack fails the load (never a child). */
 const pack = packForBinding(PACK_ID);
 if (!pack) throw new Error(`a0-u05-sokoban: pack ${PACK_ID} missing from a0-packs.json`);
+/** Narrowed rows alias (closures below capture the narrowed table). */
+const packRows = pack.words;
+const packWaves = pack.waves;
 
 /** Procedural icon key per es id (R7-4: icon ALWAYS present; the en gloss
  * subtitle fades per englishLevel — never the only signifier). */
@@ -46,7 +49,7 @@ export type SokobanWord = PackWord & { icon: string };
 
 /** The pack's word table with icon keys — id-keyed, byte-identical es. */
 export const words: Map<string, SokobanWord> = new Map(
-  pack.words.map((w) => {
+  packRows.map((w) => {
     const icon = ICONS[w.es];
     if (!icon) throw new Error(`a0-u05-sokoban: no icon for pack word ${w.es}`);
     return [w.es, { ...w, icon }];
@@ -55,7 +58,7 @@ export const words: Map<string, SokobanWord> = new Map(
 
 /** The wave id lists, byte-identical from the pack's waves table. */
 export function waveIds(wave: number): string[] {
-  const ids = pack.waves[String(wave)];
+  const ids = packWaves[String(wave)];
   if (!Array.isArray(ids)) throw new Error(`a0-u05-sokoban: wave ${wave} is not a word list`);
   return ids;
 }
