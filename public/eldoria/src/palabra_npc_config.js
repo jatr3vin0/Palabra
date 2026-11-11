@@ -69,4 +69,42 @@ window.PALABRA_MISSIONS = {
     reward: { gems: 15 },
     doneFlag: 'mission_ana_balloons_done',
   },
+  // Second missions (imported-pack connection, pack1 = a0-u03 "La casa y la
+  // tienda"): same NPC offers its second mission once the gate one is done
+  // (INTEGRATION §3 — two gate NPCs total, dialogue variant gated on
+  // flagsAll/flagsNone). The binding is the PACK id; the resolver in
+  // src/content/packs/a0-packs.ts accepts it (and the pack's own lesson-level
+  // field) — that reconciliation lives there, documented.
+  mission_pip_jet2: {
+    id: 'mission_pip_jet2',
+    npc: 'kid_pip',
+    game: 'Capitán Rico: Sky Words',
+    frameId: 'plaza-rico-shooter',       // same jet, new pack
+    contentBinding: 'a0-u03',            // pack 1: casa / mesa / silla / cama…
+    difficulty: 'child',
+    proficiency: {
+      cefr: 'A0',
+      unit: 'u03',
+      vocab: ['casa', 'mesa', 'silla', 'cama'],
+      masteryThreshold: 3,
+    },
+    reward: { gems: 15 },
+    doneFlag: 'mission_pip_jet2_done',
+  },
+  mission_ana_balloons2: {
+    id: 'mission_ana_balloons2',
+    npc: 'villager_ana',
+    game: 'Globos de la Palabra',
+    frameId: 'casa-rosa-verse',
+    contentBinding: 'a0-u03',            // scripture: Josué 24:15 (RV1909), teaches casa
+    difficulty: 'child',
+    proficiency: {
+      cefr: 'A0',
+      unit: 'u03',
+      vocab: ['casa', 'mesa', 'pared', 'verde'],
+      masteryThreshold: 3,
+    },
+    reward: { gems: 15 },
+    doneFlag: 'mission_ana_balloons2_done',
+  },
 };

@@ -61,6 +61,20 @@ DIALOGUE.elder_rowan = [
       ['Ah! You are awake at last!', 'You carry a weight on your', 'back, pilgrim. I know.'],
       ['The King\'s Roll has three', 'seals. Thieves stole them.'],
       ['Take these gems for the journey.', 'The Narrow Gate awaits you.', 'Go west. Go, pilgrim!'] ] },
+  // Second-mission handoff pointer (pack1, a0-u03): both gate missions done
+  // and the pack-1 missions not — the Evangelista sends the pilgrim to Pip
+  // and Ana, whose handoff variants launch the new missions per the mission
+  // registry (two gate NPCs kept; Evangelista points, does not launch).
+  { if: { flagsAll: ['mission_pip_jet_done', 'mission_ana_balloons_done'],
+          flagsNone: ['mission_pip_jet2_done', 'mission_ana_balloons2_done'] },
+    lines: [
+      ['¡Buen trabajo, peregrino!', 'Hay palabras nuevas en el pueblo.'],
+      ['Pip vuela con palabras de casa.', 'Ana tiene globos nuevos.'],
+      ['¡Habla con ellos y aprende!'] ],
+    gloss: [
+      ['Good work, pilgrim!', 'There are new words in the village.'],
+      ['Pip flies with house words.', 'Ana has new balloons.'],
+      ['Talk to them and learn!'] ] },
   { lines: [
       ['La Puerta Angosta está al oeste,', 'tras el bosque. Toca la puerta.'],
       ['Corta la hierba alta y tendrás', 'corazones. Truco de Evangelista.'] ],
@@ -99,7 +113,19 @@ DIALOGUE.shopkeep_mira = [
 // glosses only — never spoken. Handoff variant carries the mission binding.
 // ---------------------------------------------------------------------------
 DIALOGUE.kid_pip = [
-  // 1) REPEAT MEETING — after the jet game is won
+  // 1) SECOND-MISSION HANDOFF (pack1 = a0-u03) — gate jet done, pack-1 jet
+  //    not yet → launches the SAME jet with the new pack (casa/mesa/silla…)
+  { if: { flagsAll: ['mission_pip_jet_done'], flagsNone: ['mission_pip_jet2_done'] },
+    mission: 'mission_pip_jet2',
+    lines: [
+      ['¡Capitán Rico vuela otra vez!', 'Palabras de la casa. ¡Mira!'],
+      ['La mesa. La silla. La cama.', '¡Escucha y toca la palabra!'],
+      ['¡Vamos! ¡Otra vez, piloto!'] ],
+    gloss: [
+      ['Captain Rico flies again!', 'Words of the house. Look!'],
+      ['The table. The chair. The bed.', 'Listen and touch the word!'],
+      ['Let\'s go! Again, pilot!'] ] },
+  // 2) REPEAT MEETING — after BOTH jet missions are won
   { if: { flagsAll: ['mission_pip_jet_done'] }, lines: [
       ['¡Guau! ¡Tú ganaste! ¡Bravo!',
        'El jet está feliz. Yo también.'],
@@ -143,7 +169,19 @@ DIALOGUE.kid_pip = [
 // Voice: villagerF. Handoff variant carries the mission binding.
 // ---------------------------------------------------------------------------
 DIALOGUE.villager_ana = [
-  // 1) REPEAT MEETING — after the balloon game is won
+  // 1) SECOND-MISSION HANDOFF (pack1 = a0-u03) — gate balloons done, pack-1
+  //    balloons not yet → Josué 24:15 verse round (teaches casa)
+  { if: { flagsAll: ['mission_ana_balloons_done'], flagsNone: ['mission_ana_balloons2_done'] },
+    mission: 'mission_ana_balloons2',
+    lines: [
+      ['Mi casa nueva tiene globos.', 'El versículo es de Josué.'],
+      ['«que yo y mi casa serviremos', 'á Jehová.» Escucha, cariño.'],
+      ['El globo dice "casa".', '¡Pum! ¡Muy bien, cariño!'] ],
+    gloss: [
+      ['My new house has balloons.', 'The verse is from Joshua.'],
+      ['“…me and my house will serve', 'the LORD.” Listen, dear.'],
+      ['The balloon says "casa".', 'Pop! Very good, dear!'] ] },
+  // 2) REPEAT MEETING — after BOTH balloon missions are won
   { if: { flagsAll: ['mission_ana_balloons_done'] }, lines: [
       ['¡Qué bien lo hiciste!',
        'Dios te bendiga, cariño.'],
