@@ -81,6 +81,9 @@ type EndCb = () => void;
 let speechEndCb: EndCb | null = null;
 /** Watchdog timer for the in-flight kokoro turn (see speakSpanish). */
 let speakWatchdog: number | null = null;
+/** Flow watchdog for browser-fallback lines (speakFallback) — re-armed with
+ * every auto-rescue attempt so the flow waits for audio to actually start. */
+let flowWatchdog: number | null = null;
 /** The current kokoro turn's line, kept so a generation failure (speakError)
  * can be rescued with the browser voice instead of leaving the player with a
  * silently dropped line (live-build defect, 2026-11-11). */
@@ -90,6 +93,10 @@ function clearSpeakWatchdog(): void {
   if (speakWatchdog != null) {
     window.clearTimeout(speakWatchdog);
     speakWatchdog = null;
+  }
+  if (flowWatchdog != null) {
+    window.clearTimeout(flowWatchdog);
+    flowWatchdog = null;
   }
 }
 
@@ -338,47 +345,68 @@ function esVoice(): SpeechSynthesisVoice | null {
 
 /** Instant browser-voice line while kokoro is un-warmed (cold start). Cast
  * pitch/rate are approximated cheaply (rate/pitch sliders). Returns whether
- * anything was actually queued. */
+ * anything was actually queued.
+ *
+ * NO DROPPED LINES (owner play-test 4): Chrome can silently drop an utterance
+ * queued right after cancel(), and the very first lines of a session race the
+ * async voice-list load — the owner heard a silent first attempt and only the
+ * 🔊 re-speak rescued it. So the queue arms AUTO-RESCUES: while nothing has
+ * become audible and the engine has nothing queued, the line is re-queued
+ * (fresh utterance, voice list re-scanned) at 350 ms / 1.5 s / 3.5 s — the same
+ * call the 🔊 button makes. The flow watchdog re-arms with every attempt so
+ * the page waits for AUDIO START, but speech stays a bonus: if the engine
+ * truly cannot speak, the watchdog still releases the game. */
 function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
   try {
     const synth = window.speechSynthesis;
     synth.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "es-ES";
-    const es = esVoice();
-    if (es) utter.voice = es;
-    // the fallback stays single-voice (brief): speed/pitch approximate the cast
-    if (opts?.speed != null) {
-      utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
-    } else {
-      utter.rate = slow ? 0.6 : 0.92;
-    }
-    if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
-    let started = false;
-    utter.onstart = () => {
-      started = true;
-      setStatus({ generating: false, speaking: true });
-    };
-    // Watchdog: some browsers (and headless runners) never fire onend/onerror —
-    // speech is a bonus, never a blocker, so fire the callback anyway.
-    utter.onend = fireSpeechEnd;
-    utter.onerror = fireSpeechEnd;
-    window.setTimeout(fireSpeechEnd, 4000 + text.length * 120);
-    // Chrome can silently drop an utterance queued right after cancel() — the
-    // exact cold-start symptom (page 1 spoke, page 2 text-only). If the engine
-    // never started it, queue it once more (unless the line was stopped since).
     const epoch = voiceEpoch;
-    synth.speak(utter);
-    window.setTimeout(() => {
-      if (!started && !synth.speaking && !synth.pending && voiceEpoch === epoch) {
-        try {
-          synth.speak(utter);
-        } catch {
-          // nothing more to try — the flow watchdog already released it
-        }
+    let started = false;
+    // (Re)queue the line: a FRESH utterance each time — engines sometimes
+    // refuse a re-used one after cancel(). `speaking`/`pending` guards stop a
+    // rescue from stacking on top of an attempt that did start.
+    const queue = () => {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "es-ES";
+      const es = esVoice();
+      if (es) utter.voice = es;
+      // the fallback stays single-voice (brief): speed/pitch approximate the cast
+      if (opts?.speed != null) {
+        utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
+      } else {
+        utter.rate = slow ? 0.6 : 0.92;
       }
-    }, 350);
+      if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
+      utter.onstart = () => {
+        started = true;
+        setStatus({ generating: false, speaking: true });
+      };
+      // Watchdog: some browsers (and headless runners) never fire onend/onerror —
+      // speech is a bonus, never a blocker, so fire the callback anyway.
+      utter.onend = fireSpeechEnd;
+      utter.onerror = fireSpeechEnd;
+      try {
+        synth.speak(utter);
+      } catch {
+        // nothing more to try — the flow watchdog already releases it
+      }
+    };
+    const armFlowWatchdog = () => {
+      if (flowWatchdog != null) window.clearTimeout(flowWatchdog);
+      flowWatchdog = window.setTimeout(fireSpeechEnd, 4000 + text.length * 120);
+    };
+    const rescue = () => {
+      if (started || voiceEpoch !== epoch) return;
+      if (synth.speaking || synth.pending) return;
+      queue(); // auto-rescue: exactly what the 🔊 re-speak button does
+      armFlowWatchdog();
+    };
+    queue();
+    armFlowWatchdog();
+    window.setTimeout(rescue, 350);
+    window.setTimeout(rescue, 1500);
+    window.setTimeout(rescue, 3500);
     return true;
   } catch (err) {
     // speech is a bonus, never a blocker — but never silently: say what broke
