@@ -197,6 +197,8 @@ window.UIScene = class UIScene extends Phaser.Scene {
     g.add([box, img, name, desc]);
     this.bannerGroup = g;
     this.tweens.add({ targets: img, y: 82, duration: 300, yoyo: true, repeat: 2 });
+    // voice-first: the item-get banner speaks its name and description
+    window.Palabra.speak(info.name + '. ' + (info.desc || ''), 'narrator');
     this.time.delayedCall(2050, () => { if (this.bannerGroup === g) { g.destroy(true); this.bannerGroup = null; } });
   }
 

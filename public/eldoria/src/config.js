@@ -20,5 +20,5 @@ window.CONFIG = {
   CAPS: { gems: 999, arrows: 30, bombs: 12, potions: 4 },
   SAVE_PREFIX: 'shattered-crown-slot-',
   SAVE_SLOTS: 3,
-  FONT: 'PressStart',  // pixel font loaded in index.html; latin-only — keep game strings ASCII
+  FONT: 'PressStart',
 };

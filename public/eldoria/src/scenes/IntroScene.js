@@ -8,7 +8,7 @@ window.IntroScene = class IntroScene extends Phaser.Scene {
       ['Hace mucho tiempo, la CORONA', 'mantenía la tierra en paz.', ''],
       ['Pero el hechicero MORGRATH', 'la rompió en tres gemas', 'y las escondió en templos...'],
       ['Monstruos entraron al pueblo.', 'El cielo se puso gris.', ''],
-      ['El anciano Rowan te eligió,', 'un niño de la Aldea Sauce,', 'para buscar las gemas.'],
+      ['El anciano Rowan te eligió.', 'Eres de la Aldea Sauce.', 'Ve a buscar las gemas.'],
       ['¡Recupera la corona!', '¡Vence a Morgrath!', '¡Sé valiente!'],
     ];
     this.page = 0;

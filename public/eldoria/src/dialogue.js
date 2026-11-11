@@ -36,6 +36,6 @@ window.Dialogue = {
 
   sign(id) {
     const s = DIALOGUE.signs && DIALOGUE.signs[id];
-    return { pages: [Array.isArray(s) && s.length ? s : ['(weathered writing)']] };
+    return { pages: [Array.isArray(s) && s.length ? s : ['(letras borrosas)']] };
   },
 };

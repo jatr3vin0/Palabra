@@ -129,7 +129,7 @@ window.TitleScene = class TitleScene extends Phaser.Scene {
     } else {
       this.eraseArmed = this.sel;
       AUDIO.sfx('denied');
-      const t = this.text(160, 184, 'Toca E otra vez para borrar la casilla ' + (this.sel + 1) + '!', '#ff8080', 8, true);
+      const t = this.text(160, 184, '¡Toca E otra vez para borrar!', '#ff8080', 8, true);
       this.time.delayedCall(2000, () => { t.destroy(); if (this.eraseArmed === this.sel) this.eraseArmed = -1; });
     }
   }
