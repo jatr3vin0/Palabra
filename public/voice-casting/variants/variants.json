@@ -1,0 +1,330 @@
+{
+ "grid": [
+  {
+   "character": "Gigante Desesperación",
+   "prefix": "05_giant_despair",
+   "variants": [
+    {
+     "variant": 1,
+     "voice": "em_santa",
+     "speed": 0.8,
+     "pitch": 0.76,
+     "desc": "variante uno, voz em santa, grave y lento"
+    },
+    {
+     "variant": 2,
+     "voice": "em_alex",
+     "speed": 0.78,
+     "pitch": 0.8,
+     "desc": "variante dos, voz em alex, grave y lento"
+    },
+    {
+     "variant": 3,
+     "voice": "em_santa",
+     "speed": 0.72,
+     "pitch": 0.7,
+     "desc": "variante tres, voz em santa, el más grave y el más lento"
+    }
+   ]
+  },
+  {
+   "character": "Narrador",
+   "prefix": "06_narrator",
+   "variants": [
+    {
+     "variant": 1,
+     "voice": "em_alex",
+     "speed": 0.98,
+     "pitch": 0.97,
+     "desc": "variante uno, voz em alex, narrador medido"
+    },
+    {
+     "variant": 2,
+     "voice": "em_santa",
+     "speed": 0.94,
+     "pitch": 0.98,
+     "desc": "variante dos, voz em santa, más cálido y más lento"
+    },
+    {
+     "variant": 3,
+     "voice": "em_alex",
+     "speed": 0.9,
+     "pitch": 0.92,
+     "desc": "variante tres, voz em alex, más hondo y pausado"
+    }
+   ]
+  },
+  {
+   "character": "Mercy",
+   "prefix": "07_mercy",
+   "variants": [
+    {
+     "variant": 1,
+     "voice": "ef_dora",
+     "speed": 1.0,
+     "pitch": 1.02,
+     "desc": "variante uno, voz ef dora, cálida y natural"
+    },
+    {
+     "variant": 2,
+     "voice": "ef_dora",
+     "speed": 0.92,
+     "pitch": 0.96,
+     "desc": "variante dos, voz ef dora, la más cálida y pausada"
+    },
+    {
+     "variant": 3,
+     "voice": "ef_dora",
+     "speed": 1.06,
+     "pitch": 1.08,
+     "desc": "variante tres, voz ef dora, cálida pero más viva"
+    }
+   ]
+  }
+ ],
+ "clips": [
+  {
+   "file": "05_giant_despair_v1_dramatic.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 1,
+   "voice": "em_santa",
+   "speed": 0.8,
+   "pitch": 0.76,
+   "style": "dramatic",
+   "dur": 6.34,
+   "rms_db": -22.9,
+   "peak_db": -3.1,
+   "bytes": 36328
+  },
+  {
+   "file": "05_giant_despair_v1_conversational.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 1,
+   "voice": "em_santa",
+   "speed": 0.8,
+   "pitch": 0.76,
+   "style": "conversational",
+   "dur": 6.28,
+   "rms_db": -22.9,
+   "peak_db": -4.0,
+   "bytes": 36165
+  },
+  {
+   "file": "05_giant_despair_v2_dramatic.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 2,
+   "voice": "em_alex",
+   "speed": 0.78,
+   "pitch": 0.8,
+   "style": "dramatic",
+   "dur": 6.81,
+   "rms_db": -22.9,
+   "peak_db": -4.2,
+   "bytes": 38500
+  },
+  {
+   "file": "05_giant_despair_v2_conversational.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 2,
+   "voice": "em_alex",
+   "speed": 0.78,
+   "pitch": 0.8,
+   "style": "conversational",
+   "dur": 6.73,
+   "rms_db": -22.9,
+   "peak_db": -4.9,
+   "bytes": 38727
+  },
+  {
+   "file": "05_giant_despair_v3_dramatic.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 3,
+   "voice": "em_santa",
+   "speed": 0.72,
+   "pitch": 0.7,
+   "style": "dramatic",
+   "dur": 7.26,
+   "rms_db": -22.9,
+   "peak_db": -4.3,
+   "bytes": 38546
+  },
+  {
+   "file": "05_giant_despair_v3_conversational.ogg",
+   "character": "Gigante Desesperación",
+   "variant": 3,
+   "voice": "em_santa",
+   "speed": 0.72,
+   "pitch": 0.7,
+   "style": "conversational",
+   "dur": 7.3,
+   "rms_db": -22.9,
+   "peak_db": -3.5,
+   "bytes": 38848
+  },
+  {
+   "file": "06_narrator_v1_dramatic.ogg",
+   "character": "Narrador",
+   "variant": 1,
+   "voice": "em_alex",
+   "speed": 0.98,
+   "pitch": 0.97,
+   "style": "dramatic",
+   "dur": 4.98,
+   "rms_db": -22.9,
+   "peak_db": -4.6,
+   "bytes": 32312
+  },
+  {
+   "file": "06_narrator_v1_conversational.ogg",
+   "character": "Narrador",
+   "variant": 1,
+   "voice": "em_alex",
+   "speed": 0.98,
+   "pitch": 0.97,
+   "style": "conversational",
+   "dur": 5.08,
+   "rms_db": -22.9,
+   "peak_db": -5.1,
+   "bytes": 32893
+  },
+  {
+   "file": "06_narrator_v2_dramatic.ogg",
+   "character": "Narrador",
+   "variant": 2,
+   "voice": "em_santa",
+   "speed": 0.94,
+   "pitch": 0.98,
+   "style": "dramatic",
+   "dur": 5.12,
+   "rms_db": -22.9,
+   "peak_db": -2.6,
+   "bytes": 33827
+  },
+  {
+   "file": "06_narrator_v2_conversational.ogg",
+   "character": "Narrador",
+   "variant": 2,
+   "voice": "em_santa",
+   "speed": 0.94,
+   "pitch": 0.98,
+   "style": "conversational",
+   "dur": 5.2,
+   "rms_db": -22.9,
+   "peak_db": -3.3,
+   "bytes": 34496
+  },
+  {
+   "file": "06_narrator_v3_dramatic.ogg",
+   "character": "Narrador",
+   "variant": 3,
+   "voice": "em_alex",
+   "speed": 0.9,
+   "pitch": 0.92,
+   "style": "dramatic",
+   "dur": 5.33,
+   "rms_db": -22.9,
+   "peak_db": -4.1,
+   "bytes": 33206
+  },
+  {
+   "file": "06_narrator_v3_conversational.ogg",
+   "character": "Narrador",
+   "variant": 3,
+   "voice": "em_alex",
+   "speed": 0.9,
+   "pitch": 0.92,
+   "style": "conversational",
+   "dur": 5.32,
+   "rms_db": -22.9,
+   "peak_db": -4.3,
+   "bytes": 33513
+  },
+  {
+   "file": "07_mercy_v1_dramatic.ogg",
+   "character": "Mercy",
+   "variant": 1,
+   "voice": "ef_dora",
+   "speed": 1.0,
+   "pitch": 1.02,
+   "style": "dramatic",
+   "dur": 4.9,
+   "rms_db": -22.9,
+   "peak_db": -2.0,
+   "bytes": 31809
+  },
+  {
+   "file": "07_mercy_v1_conversational.ogg",
+   "character": "Mercy",
+   "variant": 1,
+   "voice": "ef_dora",
+   "speed": 1.0,
+   "pitch": 1.02,
+   "style": "conversational",
+   "dur": 4.85,
+   "rms_db": -22.9,
+   "peak_db": -3.6,
+   "bytes": 31536
+  },
+  {
+   "file": "07_mercy_v2_dramatic.ogg",
+   "character": "Mercy",
+   "variant": 2,
+   "voice": "ef_dora",
+   "speed": 0.92,
+   "pitch": 0.96,
+   "style": "dramatic",
+   "dur": 5.16,
+   "rms_db": -22.9,
+   "peak_db": -1.4,
+   "bytes": 32881
+  },
+  {
+   "file": "07_mercy_v2_conversational.ogg",
+   "character": "Mercy",
+   "variant": 2,
+   "voice": "ef_dora",
+   "speed": 0.92,
+   "pitch": 0.96,
+   "style": "conversational",
+   "dur": 5.21,
+   "rms_db": -22.9,
+   "peak_db": -3.7,
+   "bytes": 32381
+  },
+  {
+   "file": "07_mercy_v3_dramatic.ogg",
+   "character": "Mercy",
+   "variant": 3,
+   "voice": "ef_dora",
+   "speed": 1.06,
+   "pitch": 1.08,
+   "style": "dramatic",
+   "dur": 4.83,
+   "rms_db": -22.9,
+   "peak_db": -2.5,
+   "bytes": 32453
+  },
+  {
+   "file": "07_mercy_v3_conversational.ogg",
+   "character": "Mercy",
+   "variant": 3,
+   "voice": "ef_dora",
+   "speed": 1.06,
+   "pitch": 1.08,
+   "style": "conversational",
+   "dur": 4.66,
+   "rms_db": -22.9,
+   "peak_db": -4.2,
+   "bytes": 32011
+  }
+ ],
+ "reel": {
+  "file": "variants-reel.ogg",
+  "dur": 153.31,
+  "rms_db": -24.0,
+  "peak_db": -2.7,
+  "note": "post-gain pass -1.2 dB to keep decode headroom"
+ },
+ "engine": "kokoro-82M int8 (kokoro_onnx 0.6.1), mono 24 kHz ogg/vorbis q3",
+ "normalisation": "RMS -22.9 dBFS per clip, peak ceiling -1.5 dBFS"
+}
