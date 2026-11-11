@@ -16,11 +16,11 @@ window.VictoryScene = class VictoryScene extends Phaser.Scene {
     }
 
     const lines = [
-      ['¡MORGRATH CAE!', 26, '#ffe97f', 16],
-      ['La Corona de Eldoria brilla otra vez.', 104, '#e8e8ff', 8],
-      ['La luz vuelve a las praderas,', 118, '#bbbbdd', 8],
-      ['al bosque, a las cumbres, a la arena.', 130, '#bbbbdd', 8],
-      ['¡ERES EL HÉROE DE ELDORIA!', 150, '#7fe9a0', 8],
+      ['¡A CASA!', 26, '#ffe97f', 16],
+      ['Apollyon huye. ¡El paso es libre!', 104, '#e8e8ff', 8],
+      ['Cruzas el río. La puerta se abre.', 118, '#bbbbdd', 8],
+      ['El rollo está sellado. ¡Pasa!', 130, '#bbbbdd', 8],
+      ['¡ERES PEREGRINO DE LA CIUDAD!', 150, '#7fe9a0', 8],
     ];
     lines.forEach(([str, y, color, size], i) => {
       const t = this.add.text(160, y, str, {
