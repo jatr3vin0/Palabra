@@ -86,9 +86,12 @@ const BOSSES = (W.BOSSES ?? {}) as Record<string, { name?: string; voice?: strin
 // ── corpus assembly ──────────────────────────────────────────────────────────
 type Line = { voice: VoiceKey; text: string; src: string };
 const corpus: Line[] = [];
+/** NO trim: the manifest key must be the EXACT call-site bytes (the runtime
+ * looks lines up by exact text — a trimmed key would miss a raw call-site
+ * string with outer whitespace). Only empty strings are skipped. */
 const add = (voice: string, text: string, src: string) => {
-  const t = text.trim();
-  if (!t) return;
+  const t = String(text);
+  if (!t.trim()) return;
   if (!(voice in VOICE_CAST)) throw new Error(`gen-voice-clips: unknown cast key "${voice}" for ${src}`);
   corpus.push({ voice: voice as VoiceKey, text: t, src });
 };
@@ -108,53 +111,87 @@ for (const [signId, pages] of Object.entries(DIALOGUE.signs as unknown as Record
   add("narrator", pages.join(" "), `sign:${signId}`);
 }
 
-// 2) scenes — fixed strings, hardcoded here with provenance (the Phaser scene
-//    files cannot be imported; the bytes mirror the source exactly).
-// IntroScene.js pages (pages[page].filter(Boolean).join(' '))
-const INTRO_PAGES = [
-  ["Este cuento es un sueño.", "Veo a un peregrino.", "Lleva un peso en la espalda."],
-  ["El peso es su culpa.", "Pesa mucho. Nadie lo quita.", "Solo la cruz lo puede quitar."],
-  ["Un hombre le habla: Evangelista.", "Deja esta ciudad hoy.", "Hay una puerta angosta. Pasa."],
-  ["El Rey da un rollo sellado.", "Tres sellos tiene el rollo.", "Los enemigos los roban."],
-  ["Busca los tres sellos.", "Cruza el río. La Ciudad Celestial", "te espera. ¡Ve, peregrino!"],
-];
-for (const page of INTRO_PAGES) add("narrator", page.filter(Boolean).join(" "), "scene:IntroScene");
-// VictoryScene.js — lines.map(l => l[0]).join(' ')
-add(
-  "narrator",
-  "¡A CASA! Apollyon huye. ¡El paso es libre! Cruzas el río. La puerta se abre. El rollo está sellado. ¡Pasa! ¡ERES PEREGRINO DE LA CIUDAD!",
-  "scene:VictoryScene",
-);
-// GameOverScene.js — arrival line + the two menu options
-add("narrator", "FIN DEL JUEGO. ¡No te rindas, héroe!", "scene:GameOverScene");
-add("narrator", "Seguir desde el último guardado", "scene:GameOverScene");
-add("narrator", "Volver al inicio", "scene:GameOverScene");
-// PauseScene.js — title, save result, slider labels, music toggle
-add("narrator", "PAUSA", "scene:PauseScene");
-add("narrator", "¡Guardado!", "scene:PauseScene");
-add("narrator", "¡No se pudo guardar!", "scene:PauseScene");
-add("narrator", "Música", "scene:PauseScene");
-add("narrator", "Voces", "scene:PauseScene");
-add("narrator", "Efectos", "scene:PauseScene");
-add("narrator", "Música: SÍ", "scene:PauseScene");
-add("narrator", "Música: NO", "scene:PauseScene");
-// TitleScene.js
-add("narrator", "Palabra, aprende español jugando. Elige una casilla para empezar tu aventura.", "scene:TitleScene");
-for (let n = 1; n <= 3; n++) {
-  add("narrator", `Casilla ${n}. Aventura guardada.`, "scene:TitleScene");
-  add("narrator", `Casilla ${n}. Nueva aventura.`, "scene:TitleScene");
+// ── 2) scenes — SINGLE SOURCE OF TRUTH: every string is EXTRACTED from the
+//    scene file's bytes (the same bytes Phaser runs), never hand-copied. An
+//    anchor that misses is a HARD ERROR — the corpus must never silently
+//    drift from the call sites again (the owner's wrong-audio report). ────────
+const readFile = (await import("node:fs/promises")).readFile;
+const SC = path.join(ROOT, "public", "eldoria", "src");
+/** Pull a literal from a world file and evaluate it — exact call-site bytes. */
+async function literal(file: string, anchor: RegExp, what: string): Promise<unknown> {
+  const src = await readFile(path.join(SC, file), "utf8");
+  const m = src.match(anchor);
+  if (!m) throw new Error(`gen-voice-clips: anchor for ${what} NOT FOUND in ${file} — corpus would drift`);
+  return eval("(" + m[1] + ")");
 }
-add("narrator", "¡Toca E otra vez para borrar!", "scene:TitleScene");
+/** Pull one single-quoted string literal that follows a fixed prefix. */
+async function litStr(file: string, anchor: RegExp, what: string): Promise<string> {
+  const src = await readFile(path.join(SC, file), "utf8");
+  const m = src.match(anchor);
+  if (!m) throw new Error(`gen-voice-clips: anchor for ${what} NOT FOUND in ${file} — corpus would drift`);
+  return m[1];
+}
+
+// IntroScene.js — pages spoken as `this.pages[page].filter(Boolean).join(' ')`
+const introPages = (await literal("scenes/IntroScene.js", /this\.pages = (\[[\s\S]*?\]);/, "intro pages")) as string[][];
+for (const page of introPages) add("narrator", page.filter(Boolean).join(" "), "scene:IntroScene");
+// VictoryScene.js — `lines.map(l => l[0]).join(' ')`
+const victoryLines = (await literal("scenes/VictoryScene.js", /const lines = (\[[\s\S]*?\]);/, "victory lines")) as Array<[string, number, string, number]>;
+add("narrator", victoryLines.map((l) => l[0]).join(" "), "scene:VictoryScene");
+// GameOverScene.js — arrival line + `this.opts` menu options
+add("narrator", await litStr("scenes/GameOverScene.js", /Palabra\.speak\('([^']+)', 'narrator'\)/, "gameover arrival"), "scene:GameOverScene");
+const goOpts = (await literal("scenes/GameOverScene.js", /this\.opts = (\[[\s\S]*?\]);/, "gameover opts")) as string[];
+for (const o of goOpts) add("narrator", o, "scene:GameOverScene");
+// PauseScene.js — title, save-result ternary, slider labels, music toggle
+add("narrator", await litStr("scenes/PauseScene.js", /Palabra\.speak\('(PAUSA)', 'narrator'\)/, "pause title"), "scene:PauseScene");
+{
+  const src = await readFile(path.join(SC, "scenes/PauseScene.js"), "utf8");
+  const save = src.match(/speak\(ok \? '([^']+)' : '([^']+)'/);
+  if (!save) throw new Error("gen-voice-clips: anchor for pause save-result NOT FOUND");
+  add("narrator", save[1], "scene:PauseScene");
+  add("narrator", save[2], "scene:PauseScene");
+  const music = src.match(/speak\('Música: ' \+ \(AUDIO\.musicMuted \? '([^']+)' : '([^']+)'\)/);
+  if (!music) throw new Error("gen-voice-clips: anchor for pause music toggle NOT FOUND");
+  add("narrator", "Música: " + music[2], "scene:PauseScene"); // unmuted → SÍ branch
+  add("narrator", "Música: " + music[1], "scene:PauseScene"); // muted → NO branch
+  for (const k of ["music", "voice", "sfx"]) {
+    const lbl = src.match(new RegExp(`key: '${k}', label: '([^']+)'`));
+    if (!lbl) throw new Error(`gen-voice-clips: anchor for pause label ${k} NOT FOUND`);
+    add("narrator", lbl[1], "scene:PauseScene");
+  }
+}
+// TitleScene.js — welcome, per-slot menu lines, erase warning
+add("narrator", await litStr("scenes/TitleScene.js", /Palabra\.speak\('([^']+)', 'narrator'\)/, "title welcome"), "scene:TitleScene");
+{
+  const src = await readFile(path.join(SC, "scenes/TitleScene.js"), "utf8");
+  const menu = src.match(/'Casilla ' \+ \(this\.sel \+ 1\) \+ '\. ' \+ \(s && s\.exists \? '([^']+)' : '([^']+)'\)/);
+  if (!menu) throw new Error("gen-voice-clips: anchor for title menu template NOT FOUND");
+  const slots = src.match(/for \(let i = 0; i < (\d+); i\+\+\) \{[\s\S]*?Casilla/);
+  const nSlots = slots ? Number(slots[1]) : 3;
+  for (let n = 1; n <= nSlots; n++) {
+    add("narrator", `Casilla ${n}. ${menu[1]}`, "scene:TitleScene");
+    add("narrator", `Casilla ${n}. ${menu[2]}`, "scene:TitleScene");
+  }
+  add("narrator", await litStr("scenes/TitleScene.js", /Palabra\.speak\('(¡Toca E[^']+)'/, "title erase"), "scene:TitleScene");
+}
 // palabra.js — mission result lines (repeat win + first win per mission gems)
-add("narrator", "¡Misión cumplida! Puntos de experiencia guardados en Palabra.", "bridge:palabra.missionResult");
-for (const [mid, m] of Object.entries(MISSIONS)) {
-  const gems = m.reward?.gems;
-  if (gems) add("narrator", `¡Misión cumplida! Ganaste ${gems} gemas para el mundo y puntos de experiencia en Palabra.`, `bridge:palabra.missionResult:${mid}`);
+add("narrator", await litStr("palabra.js", /speak\('(¡Misión cumplida! Puntos[^']+)', 'narrator'\)/, "mission repeat"), "bridge:palabra.missionResult");
+{
+  const src = await readFile(path.join(SC, "palabra.js"), "utf8");
+  const first = src.match(/speak\(\s*'(¡Misión cumplida! Ganaste )' \+ gems \+ '([^']+)'/);
+  if (!first) throw new Error("gen-voice-clips: anchor for mission first-win NOT FOUND");
+  for (const [mid, m] of Object.entries(MISSIONS)) {
+    const gems = m.reward?.gems;
+    if (gems) add("narrator", `${first[1]}${gems}${first[2]}`, `bridge:palabra.missionResult:${mid}`);
+  }
 }
 
 // 3) item-get banners + boss names
+// banner: byte-exact with UIScene `info.name + '. ' + (info.desc || '')`
 for (const [id, it] of Object.entries(ITEMS)) {
-  add("narrator", `${it.name}. ${it.desc ?? ""}`.trim(), `item:${id}`);
+  add("narrator", `${it.name}. ${it.desc || ""}`, `item:${id}`);
+  // PauseScene menu voice speaks the BARE item name (nav + pause open)
+  add("narrator", it.name, `item-name:${id}`);
 }
 for (const [id, def] of Object.entries(BOSSES)) {
   const rows = Array.isArray(def) ? def : [def];
@@ -180,19 +217,43 @@ for (const p of A0_PACKS) {
   add("scripture", v.verse, `pack:${p.packId}`);
   add("scripture", v.say, `pack:${p.packId}`);
 }
-// fixed session strings of the mini-game frames
-add("villagerF", "¡Tablero listo!", "frame:sokoban");            // sokoban wave-up
-add("villagerM", "¡Ronda lista!", "frame:breakout");             // breakout round-up
-add("villagerM", "¡Cruce listo!", "frame:road-cross");           // road-cross round-up
-add("villagerM", "Sin corazones. Respira, escucha y otra vez.", "frame:breakout+road-cross");
-add("villagerF", "Sin corazones. Respira, escucha y otra vez.", "frame:sokoban");
-add("villagerF", "¡Esa es la palabra que falta! Escucha el versículo otra vez.", "frame:casa");
-add("villagerF", "¡Tres seguidas! ¡Muy bien!", "frame:casa");
-for (let next = 1; next <= 4; next++) add("villagerM", `¡Onda superada! ¡Onda ${next + 1}!`, "frame:plaza");
-// achievements — `¡Logro: <label without bangs>!`, narrator voice
+// fixed session strings of the mini-game frames — EXTRACTED from the frame
+// components' bytes (same single-source rule as the Phaser scenes: an anchor
+// that misses is a hard error, never a silent drift)
+{
+  const fg = await readFile(path.join(ROOT, "src/components/FrameGame.tsx"), "utf8");
+  const rc = await readFile(path.join(ROOT, "src/components/RoadCrossFrame.tsx"), "utf8");
+  const bo = await readFile(path.join(ROOT, "src/components/BreakoutFrame.tsx"), "utf8");
+  const pick = (src: string, re: RegExp, what: string): string => {
+    const m = src.match(re);
+    if (!m) throw new Error(`gen-voice-clips: anchor for ${what} NOT FOUND in frame component — corpus would drift`);
+    return m[1];
+  };
+  add("villagerF", pick(fg, /say\("(¡Tablero listo!)"\)/, "sokoban wave-up"), "frame:sokoban");
+  add("villagerM", pick(bo, /say\("(¡Ronda lista!)"\)/, "breakout round-up"), "frame:breakout");
+  add("villagerM", pick(rc, /say\("(¡Cruce listo!)"\)/, "road-cross round-up"), "frame:road-cross");
+  add("villagerM", pick(bo, /say\("(Sin corazones[^"]*)"\)/, "breakout out-of-hearts"), "frame:breakout+road-cross");
+  const praises = [...fg.matchAll(/sayPraise\("([^"]+)"\)/g)].map((m) => m[1]);
+  if (praises.length < 2) throw new Error("gen-voice-clips: casa praises NOT FOUND in FrameGame.tsx");
+  for (const p of praises) add("villagerF", p, "frame:casa");
+  const onda = fg.match(/say\(`(¡Onda superada! ¡Onda )\$\{next \+ 1\}(!)`\)/);
+  if (!onda) throw new Error("gen-voice-clips: anchor for plaza wave-up NOT FOUND");
+  for (let next = 1; next <= 4; next++) add("villagerM", `${onda[1]}${next + 1}${onda[2]}`, "frame:plaza");
+}
+// achievements — `¡Logro: <label without bangs>!`, narrator voice. FrameGame
+// joins MULTIPLE achievements into ONE spoken line (`lines.join(" ")`), so the
+// corpus carries every singleton AND every pair (a triple co-occurrence falls
+// back to the device voice — a miss, never wrong audio).
 const logro = (label: string) => `¡Logro: ${label.replace(/[¡!]/g, "")}!`;
-for (const a of sokobanCurve.achievements) add("narrator", logro(a.label), "achievement:sokoban");
-for (const a of breakoutCurve.achievements) add("narrator", logro(a.label), "achievement:breakout");
+const logroLines = (labels: string[]): string[] => labels.map(logro);
+const joined = (ls: string[]) => ls.join(" ");
+for (const [tag, curve] of [["sokoban", sokobanCurve], ["breakout", breakoutCurve]] as const) {
+  const singles = logroLines(curve.achievements.map((a) => a.label));
+  for (const s of singles) add("narrator", s, `achievement:${tag}`);
+  for (let i = 0; i < singles.length; i++)
+    for (let j = i + 1; j < singles.length; j++)
+      add("narrator", joined([singles[i], singles[j]]), `achievement-pair:${tag}`);
+}
 
 for (const f of Object.values(frames)) {
   const v = f.voice ?? "narrator";
@@ -282,6 +343,21 @@ function encodeMp3(audio: Float32Array, sampleRate: number): Uint8Array {
   return new Uint8Array(Buffer.concat(chunks));
 }
 
+// CLIPS_DRY=1: assemble + write the manifest only (no model, no audio) —
+// used to diff the corpus against the shipped manifest before regenerating.
+if (process.env.CLIPS_DRY) {
+  const dry: { version: number; generatedAt: string; model: string; clips: Record<string, Record<string, string>> } = {
+    version: 1,
+    generatedAt: new Date().toISOString(),
+    model: MODEL,
+    clips: {},
+  };
+  for (const c of clips) (dry.clips[c.voice] ??= {})[c.text] = c.file;
+  await writeFile(path.join(OUT_DIR, "manifest.json"), JSON.stringify(dry, null, 1));
+  console.log(`DRY: ${clips.length} unique keys → manifest written, no audio touched`);
+  process.exit(0);
+}
+
 console.log("loading kokoro model…");
 const tts = await KokoroTTS.from_pretrained(MODEL, { dtype: "q8", device: "cpu" });
 console.log("model ready");
@@ -344,3 +420,47 @@ console.log(`done: ${generated} generated, ${skipped} already on disk, ${failed}
 for (const c of failedClips) console.warn(`  missing: [${c.voice}] ${c.text.slice(0, 70)}`);
 console.log(`manifest: ${clips.length - failed} entries → public/voice-clips/manifest.json`);
 if (failed > 0) process.exit(1);
+
+// ── FINAL INTEGRITY ASSERTION (verbatim round-trip) ───────────────────────────
+// Every manifest entry must hash back to its own file name, the file must
+// exist with audio-worthy size, and no orphan may remain on disk (an orphan
+// is a stale generation the resumable run kept — it can never be looked up,
+// but leaving it invites drift). Failure exits 1 so CI/steps catch it.
+import { readdir, unlink } from "node:fs/promises";
+let rtBad = 0;
+let rtMissing = 0;
+const finalManifest = JSON.parse(await readFile(path.join(OUT_DIR, "manifest.json"), "utf8")) as {
+  clips: Record<string, Record<string, string>>;
+};
+for (const [voice, bucket] of Object.entries(finalManifest.clips)) {
+  for (const [text, file] of Object.entries(bucket)) {
+    const want = createHash("sha1").update(text + "\u0000" + voice).digest("hex");
+    if (!file.startsWith(voice + "/") || path.basename(file, ".mp3") !== want) {
+      rtBad++;
+      console.error(`  ROUND-TRIP FAIL: [${voice}] ${JSON.stringify(text.slice(0, 50))} → ${file}`);
+      continue;
+    }
+    const sz = (await stat(path.join(OUT_DIR, file)).catch(() => null))?.size ?? 0;
+    if (sz < 1200) {
+      rtMissing++;
+      console.error(`  FILE FAIL: ${file} (${sz}B) for ${JSON.stringify(text.slice(0, 50))}`);
+    }
+  }
+}
+// orphans: any mp3 on disk the manifest no longer references
+const referenced = new Set<string>();
+for (const bucket of Object.values(finalManifest.clips)) for (const f of Object.values(bucket)) referenced.add(f);
+let orphaned = 0;
+for (const voiceDir of await readdir(OUT_DIR, { withFileTypes: true })) {
+  if (!voiceDir.isDirectory()) continue;
+  for (const f of await readdir(path.join(OUT_DIR, voiceDir.name))) {
+    if (!f.endsWith(".mp3")) continue;
+    const rel = `${voiceDir.name}/${f}`;
+    if (!referenced.has(rel)) {
+      await unlink(path.join(OUT_DIR, rel));
+      orphaned++;
+    }
+  }
+}
+console.log(`integrity: entries=${Object.values(finalManifest.clips).reduce((n, b) => n + Object.keys(b).length, 0)} roundTripBad=${rtBad} fileBad=${rtMissing} orphansRemoved=${orphaned}`);
+if (rtBad > 0 || rtMissing > 0) process.exit(1);

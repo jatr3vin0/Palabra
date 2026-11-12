@@ -169,6 +169,25 @@ let clipPending: { text: string; src: string; opts: SpeakOpts; seq: number; epoc
 /** QA counter — window.__palabraClips (live object, drive-readable). */
 export const clipStats = { hits: 0, misses: 0, notReady: 0, fallbacks: 0, errors: 0 };
 
+/** QA verbatim-audio log (only when a rig sets window.__palabraQA): every
+ * speak() request with its resolved clip, every clip start/stop/drop — the
+ * drive diffs requested text vs the manifest text of the played file. */
+type QaSpeakEntry = { n: number; text: string; key?: string; clip: string | null; at: number };
+type QaAudioEntry = { n: number; ev: string; file?: string; at: number };
+function qaLog<T>(slot: "__palabraSpeak" | "__palabraAudio", entry: T): void {
+  if (typeof window === "undefined") return;
+  const w = window as unknown as Record<string, unknown>;
+  if (!w.__palabraQA) return;
+  const arr = (w[slot] as T[]) ?? (w[slot] = []);
+  arr.push(entry);
+}
+function qaSpeak(text: string, key: string | undefined, clip: string | null, n: number): void {
+  qaLog<QaSpeakEntry>("__palabraSpeak", { n, text, key, clip, at: Date.now() % 1e7 });
+}
+function qaAudio(n: number, ev: string, file?: string): void {
+  qaLog<QaAudioEntry>("__palabraAudio", { n, ev, file, at: Date.now() % 1e7 });
+}
+
 function loadClips(): void {
   if (typeof window === "undefined" || clipManifestState !== "idle") return;
   clipManifestState = "loading";
@@ -180,6 +199,7 @@ function loadClips(): void {
         clipManifest = m;
         clipManifestState = "ready";
         listeners.forEach((l) => l());
+        void integrityCheck(m); // async — never blocks the first clip
       } else {
         clipManifestState = "failed";
       }
@@ -187,6 +207,36 @@ function loadClips(): void {
     .catch(() => {
       clipManifestState = "failed"; // no manifest → every line stays device-voice
     });
+}
+
+/** INIT ASSERTION (verbatim integrity): every manifest entry must round-trip —
+ * the filename stem is exactly sha1(text + "\u0000" + voiceKey). A mismatched
+ * entry would play a DIFFERENT line's audio, so a bad manifest fails loudly
+ * here instead of silently misspeaking. Web Crypto, async, no fetches. */
+async function integrityCheck(m: ClipManifest): Promise<void> {
+  const stats = clipStats as typeof clipStats & { integrity?: { entries: number; bad: number; ok: boolean } };
+  const enc = new TextEncoder();
+  let entries = 0;
+  let bad = 0;
+  for (const [voice, bucket] of Object.entries(m.clips ?? {})) {
+    for (const [text, file] of Object.entries(bucket)) {
+      entries++;
+      try {
+        const digest = await crypto.subtle.digest("SHA-1", enc.encode(text + "\u0000" + voice));
+        const want = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+        if (file !== `${voice}/${want}.mp3` || !text.trim()) {
+          bad++;
+          console.warn("[voice] manifest round-trip FAIL:", voice, JSON.stringify(text.slice(0, 60)), file);
+        }
+      } catch {
+        bad++;
+        console.warn("[voice] manifest round-trip unreachable (no WebCrypto):", voice, file);
+        break;
+      }
+    }
+  }
+  stats.integrity = { entries, bad, ok: bad === 0 && entries > 0 };
+  if (stats.integrity.ok) console.info(`[voice] clip manifest verified: ${entries} entries round-trip clean`);
 }
 
 /** The clip for this EXACT text under this cast key, or null (device voice). */
@@ -208,23 +258,62 @@ function clipFor(text: string, key?: string): string | null {
 }
 
 /** Play one pre-generated clip. Instant: the file starts as soon as the
- * browser hands it over; no synthesis, no substitution window. */
+ * browser hands it over; no synthesis, no substitution window.
+ * SINGLE-FLIGHT: stop-before-play — any element reused here is paused and
+ * stripped of handlers FIRST, so a stale end of the previous line can never
+ * interleave with this one, and two clips can never overlap. */
 function playClip(text: string, src: string, o: SpeakOpts): void {
   const seq = lineSeq;
   const epoch = voiceEpoch;
+  qaAudio(seq, "start", src.slice(src.indexOf("voice-clips")));
   if (!clipEl) clipEl = new Audio();
   const el = clipEl;
+  // stop-before-play: the element may still carry the previous line (paused
+  // or mid-flight) — silence it and detach its handlers before reusing.
+  try {
+    el.pause();
+  } catch {
+    // ignore
+  }
+  el.onended = null;
+  el.onerror = null;
+  el.onloadedmetadata = null;
   const finish = () => {
     window.clearTimeout(flowWatch);
     if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    qaAudio(seq, "end");
     fireSpeechEnd();
   };
-  const flowWatch = window.setTimeout(() => {
-    if (seq === lineSeq && epoch === voiceEpoch) fireSpeechEnd();
+  let flowWatch = window.setTimeout(() => {
+    if (seq === lineSeq && epoch === voiceEpoch) {
+      qaAudio(seq, "watchdog");
+      fireSpeechEnd();
+    }
   }, 4000 + text.length * 120);
+  // Once the file's real duration is known, the flow waits for the WHOLE clip
+  // (bounded) — a long clip must not be cut mid-sentence by the next page.
+  el.onloadedmetadata = () => {
+    if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    const ms = Math.min(30000, Math.round((el.duration || 0) * 1300) + 800);
+    if (ms > 4000 + text.length * 120) {
+      window.clearTimeout(flowWatch);
+      flowWatch = window.setTimeout(() => {
+        if (seq === lineSeq && epoch === voiceEpoch) {
+          qaAudio(seq, "watchdog");
+          fireSpeechEnd();
+        }
+      }, ms);
+    }
+  };
   const deviceFallback = () => {
     window.clearTimeout(flowWatch);
     if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    qaAudio(seq, "error-fallback");
+    try {
+      el.pause();
+    } catch {
+      // ignore
+    }
     clipEl = null; // rebuild next call — this element failed
     clipStats.fallbacks++;
     // The unchanged device path carries the line now.
@@ -250,6 +339,7 @@ function playClip(text: string, src: string, o: SpeakOpts): void {
       // nothing waits on speech meanwhile (the flow watchdog released above).
       clipStats.errors++;
       clipPending = { text, src, opts: o, seq, epoch };
+      qaAudio(seq, "stash");
       finish();
       return;
     }
@@ -403,14 +493,18 @@ export function primeVoice(): void {
       window.removeEventListener("keydown", onGesture);
       // A clip the autoplay policy denied at boot retries here — the first
       // tap unlocks <audio> the same way it unlocks the speech probe.
+      // SINGLE-FLIGHT: only the CURRENT line replays (seq+epoch fresh); a
+      // stale stash is dropped, and the replay stops anything first.
       const p = clipPending;
       if (p && !speechProven) {
         clipPending = null;
         if (p.seq === lineSeq && p.epoch === voiceEpoch) {
           lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
+          stopSpeaking();
           playClip(p.text, p.src, p.opts);
           return;
         }
+        qaAudio(p.seq, "drop-stale");
       }
       if (!speechProven) runSpeechSelfTest(true);
     };
@@ -538,6 +632,11 @@ export function getVoiceVolume(): number {
  * always runs to its end; no clip can ever replace it (there is no engine). */
 export function stopSpeaking(): void {
   voiceEpoch++;
+  qaAudio(lineSeq, "stop");
+  // A stashed autoplay-denied line whose epoch just went stale is DROPPED —
+  // a stop means the scene moved on; the old line must never replay on the
+  // next gesture over new content (verbatim rule: heard = displayed).
+  clipPending = null;
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();
@@ -589,6 +688,7 @@ export function speakSpanish(
   // PHASE-1 CLIP CAST: a manifest hit plays the pre-generated clip instantly
   // (no TTS at all); a miss rides the device voice unchanged below.
   const clip = clipFor(text, o.key);
+  qaSpeak(text, o.key, clip, lineSeq);
   if (clip) {
     playClip(text, clip, o);
     return;
