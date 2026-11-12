@@ -103,21 +103,16 @@ window.Palabra = {
           desc: '+' + gems + ' gemas · XP en Palabra',
         });
         if (window.AUDIO) window.AUDIO.playJingle('fanfare');
-        if (window.UIScene && window.Palabra) {
-          window.Palabra.speak(
-            '¡Misión cumplida! Ganaste ' + gems + ' gemas para el mundo y puntos de experiencia en Palabra.',
-            'narrator',
-          );
-        }
+        // NO redundant speak here (D1, owner play-test: double speech every
+        // mission end) — showBanner speaks the sanitized banner text once.
       } else {
         gs.banner({
           art: 'gem',
           name: '¡Misión cumplida!',
           desc: firstWin ? 'XP guardado en Palabra' : 'Repaso: XP en Palabra, sin gemas',
         });
-        if (window.UIScene && window.Palabra) {
-          window.Palabra.speak('¡Misión cumplida! Puntos de experiencia guardados en Palabra.', 'narrator');
-        }
+        // NO redundant speak here (D1) — the banner's speak is the mission-end
+        // line; a second Palabra.speak only replaced/cut it (one voice at a time).
       }
     }
     // Returning to the world always writes the world save (save = world
@@ -191,3 +186,14 @@ window.addEventListener('message', (e) => {
     }, ms);
   }
 })();
+
+// D2 (owner play-test: silent first pages): the child's taps and keys land IN
+// THIS IFRAME — the app's window-level gesture listeners never see them, so a
+// clip the autoplay policy denied at boot was stashed and never replayed.
+// Forward every gesture to the app: it re-runs the stash replay (and the
+// post-gesture speech probe) exactly as if the tap had landed on the parent.
+['pointerdown', 'keydown'].forEach((ev) => {
+  window.addEventListener(ev, () => {
+    if (window.Palabra) window.Palabra.post({ type: 'palabra:gesture' });
+  }, { passive: true, capture: true });
+});

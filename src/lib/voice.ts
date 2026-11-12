@@ -485,36 +485,45 @@ export function primeVoice(): void {
   // only allow speech after a gesture, and the voice list lands
   // asynchronously. This is the ONE probe allowed to claim the pill, because
   // a silent engine AFTER a gesture is a truly voiceless device.
+  // D2: the SAME replay runs for gestures forwarded from the world iframe
+  // (notifyUserGesture) — the child's taps never reach this parent listener.
   if (!gestureProbeArmed) {
     gestureProbeArmed = true;
-    const onGesture = () => {
-      gestureSeen = true;
-      window.removeEventListener("pointerdown", onGesture);
-      window.removeEventListener("keydown", onGesture);
-      // A clip the autoplay policy denied at boot retries here — the first
-      // tap unlocks <audio> the same way it unlocks the speech probe.
-      // SINGLE-FLIGHT: only the CURRENT line replays (seq+epoch fresh); a
-      // stale stash is dropped, and the replay stops anything first.
-      const p = clipPending;
-      if (p && !speechProven) {
-        clipPending = null;
-        if (p.seq === lineSeq && p.epoch === voiceEpoch) {
-          lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
-          stopSpeaking();
-          playClip(p.text, p.src, p.opts);
-          return;
-        }
-        qaAudio(p.seq, "drop-stale");
-      }
-      if (!speechProven) runSpeechSelfTest(true);
-    };
-    window.addEventListener("pointerdown", onGesture, { passive: true });
-    window.addEventListener("keydown", onGesture);
+    window.addEventListener("pointerdown", notifyUserGesture, { passive: true });
+    window.addEventListener("keydown", notifyUserGesture);
   }
   if (!selfTestArmed) {
     selfTestArmed = true;
     runSpeechSelfTest(false); // boot probe: pre-gesture, may never claim
   }
+}
+
+/**
+ * A user gesture arrived — from the PARENT window, or forwarded from the
+ * world iframe ('palabra:gesture', D2: the child's taps land inside the
+ * iframe and the parent's listeners never fire). Replays a clip the autoplay
+ * policy denied earlier (the stash) — the owner's device unlocks <audio>
+ * with the first tap, so THIS is the moment the first line becomes audible
+ * instead of sitting stashed until the next speak drops it — and runs the
+ * post-gesture speech probe. SINGLE-FLIGHT: only the CURRENT line replays
+ * (seq+epoch fresh); a stale stash is dropped, and the replay stops anything
+ * first.
+ */
+export function notifyUserGesture(): void {
+  if (typeof window === "undefined") return;
+  gestureSeen = true;
+  const p = clipPending;
+  if (p) {
+    clipPending = null;
+    if (p.seq === lineSeq && p.epoch === voiceEpoch) {
+      lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
+      stopSpeaking();
+      playClip(p.text, p.src, p.opts);
+      return;
+    }
+    qaAudio(p.seq, "drop-stale");
+  }
+  if (!speechProven) runSpeechSelfTest(true);
 }
 
 /**
@@ -686,15 +695,51 @@ export function speakSpanish(
   stopSpeaking();
   speechEndCb = onEnd ?? null;
   // PHASE-1 CLIP CAST: a manifest hit plays the pre-generated clip instantly
-  // (no TTS at all); a miss rides the device voice unchanged below.
+  // (no TTS at all); a miss rides the device voice unchanged below. The QA
+  // speak entry logs exactly ONCE per line, at delivery.
   const clip = clipFor(text, o.key);
-  qaSpeak(text, o.key, clip, lineSeq);
   if (clip) {
+    qaSpeak(text, o.key, clip, lineSeq);
     playClip(text, clip, o);
+    return;
+  }
+  // D2 (owner play-test: silent first pages): the manifest revalidates
+  // NETWORK-FIRST on every publish — on the owner's device that fetch can
+  // outlive the first dialogue of the session, and the "miss" would ride a
+  // DEAD device voice (total silence) even though the clip exists. While the
+  // manifest is still LOADING, hold the line briefly (🔊 generating state,
+  // flow not released) and deliver it the moment the manifest lands. Bounded:
+  // a failed/slow manifest releases to the device voice after 3 s. A next
+  // line (lineSeq) or an explicit stop (epoch) cancels the wait stale.
+  if (clipManifestState === "loading") {
+    const seq = lineSeq;
+    const epoch = voiceEpoch;
+    const t0 = Date.now();
+    setStatus({ generating: true, speaking: false });
+    const poll = window.setInterval(() => {
+      if (seq !== lineSeq || epoch !== voiceEpoch) {
+        window.clearInterval(poll);
+        return;
+      }
+      if (clipManifestState === "loading" && Date.now() - t0 < 3000) return;
+      window.clearInterval(poll);
+      const c = clipFor(text, o.key);
+      qaSpeak(text, o.key, c, seq);
+      if (c) {
+        playClip(text, c, o);
+        return;
+      }
+      const spoke = speakDevice(text, o.slow ?? false, o);
+      if (!spoke) {
+        setStatus({ generating: false });
+        fireSpeechEnd();
+      }
+    }, 100);
     return;
   }
   // ONE path: the device Spanish voice speaks the line now. The flow watchdog
   // + utter.onend (both seq-guarded) own the release.
+  qaSpeak(text, o.key, null, lineSeq);
   const spoke = speakDevice(text, o.slow ?? false, o);
   if (!spoke) {
     // No device speech is possible: release the flow immediately — the game

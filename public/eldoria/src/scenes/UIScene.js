@@ -1,5 +1,19 @@
 // HUD (hearts/gems/ammo/keys/equipped), dialogue box, item-get banner,
 // saved toast and the boss health bar. Runs in parallel with GameScene.
+
+// D1 (owner play-test): banners SPEAK sanitized Spanish while the on-screen
+// text keeps its symbols — TTS reads '+' as the English word "plus", spells
+// "XP" in English, and chokes on '·'. ONE mapping, shared verbatim with the
+// clip generator (scripts/gen-voice-clips.ts extracts and evaluates THIS
+// function — a change here re-keys the corpus automatically).
+window.PALABRA_BANNER_SAY = function (s) {
+  return String(s)
+    .replace(/\+/g, 'más')
+    .replace(/·/g, ',')
+    .replace(/XP/g, 'puntos')
+    .replace(/%/g, ' por ciento');
+};
+
 window.UIScene = class UIScene extends Phaser.Scene {
   constructor() { super('UI'); }
 
@@ -254,8 +268,10 @@ window.UIScene = class UIScene extends Phaser.Scene {
     g.add([box, img, name, desc]);
     this.bannerGroup = g;
     this.tweens.add({ targets: img, y: 82, duration: 300, yoyo: true, repeat: 2 });
-    // voice-first: the item-get banner speaks its name and description
-    window.Palabra.speak(info.name + '. ' + (info.desc || ''), 'narrator');
+    // voice-first: the item-get banner speaks its name and description —
+    // SANITIZED (D1, owner play-test): the display above keeps its symbols,
+    // the voice never reads '+' as the English word "plus" or spells "XP"
+    window.Palabra.speak(info.name + '. ' + PALABRA_BANNER_SAY(info.desc || ''), 'narrator');
     this.time.delayedCall(2050, () => { if (this.bannerGroup === g) { g.destroy(true); this.bannerGroup = null; } });
   }
 

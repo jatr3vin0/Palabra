@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { StatsBar, useProgress } from "~/components/Chrome";
 import { FrameGame, type MissionResult } from "~/components/FrameGame";
-import { onVoicePhase, setVoiceVolume, stopSpeaking, speakSpanish, warmVoice } from "~/lib/voice";
+import { onVoicePhase, notifyUserGesture, setVoiceVolume, stopSpeaking, speakSpanish, warmVoice } from "~/lib/voice";
 import { castParams, type VoiceKey } from "~/lib/voiceCast";
 import type { Progress } from "~/lib/storage";
 
@@ -123,6 +123,13 @@ function Adventure() {
             sfx: p?.sfxVol ?? 1,
             voice: p?.voiceVol ?? 1,
           });
+          break;
+        }
+        case "palabra:gesture": {
+          // D2: the child's taps/keys land inside the world iframe — the
+          // parent's gesture listeners never fire, so the world forwards each
+          // one; the app replays any autoplay-denied (stashed) first line.
+          notifyUserGesture();
           break;
         }
         case "palabra:speak": {

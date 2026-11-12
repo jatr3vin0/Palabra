@@ -160,6 +160,15 @@ add("narrator", await litStr("scenes/PauseScene.js", /Palabra\.speak\('(PAUSA)',
     add("narrator", lbl[1], "scene:PauseScene");
   }
 }
+// UIScene.js — the banner speech sanitizer (D1): evaluated VERBATIM from the
+// scene bytes so corpus keys are always the runtime's sanitized text.
+{
+  const uisSrc = await readFile(path.join(SC, "scenes/UIScene.js"), "utf8");
+  const mSan = uisSrc.match(/window\.PALABRA_BANNER_SAY = (function[\s\S]*?\});/);
+  if (!mSan) throw new Error("gen-voice-clips: anchor for PALABRA_BANNER_SAY NOT FOUND in UIScene.js — corpus would drift");
+  (globalThis as Record<string, unknown>).__bannerSay = eval("(" + mSan[1] + ")");
+}
+const bannerSay = (globalThis as Record<string, unknown>).__bannerSay as (s: unknown) => string;
 // TitleScene.js — welcome, per-slot menu lines, erase warning
 add("narrator", await litStr("scenes/TitleScene.js", /Palabra\.speak\('([^']+)', 'narrator'\)/, "title welcome"), "scene:TitleScene");
 {
@@ -174,39 +183,33 @@ add("narrator", await litStr("scenes/TitleScene.js", /Palabra\.speak\('([^']+)',
   }
   add("narrator", await litStr("scenes/TitleScene.js", /Palabra\.speak\('(¡Toca E[^']+)'/, "title erase"), "scene:TitleScene");
 }
-// palabra.js — mission result lines (repeat win + first win per mission gems)
-add("narrator", await litStr("palabra.js", /speak\('(¡Misión cumplida! Puntos[^']+)', 'narrator'\)/, "mission repeat"), "bridge:palabra.missionResult");
+// palabra.js — the missionResult BANNER is the SINGLE mission-end voice (D1:
+// the two redundant Palabra.speak lines are DELETED from palabra.js — they
+// double-spoke every mission end and TTS read '+' as English "plus").
+// UIScene.showBanner now speaks `info.name + '. ' + PALABRA_BANNER_SAY(
+// info.desc || '')` — the composed desc runs through the SAME evaluated
+// sanitizer bytes ('+'→más, '·'→',', 'XP'→puntos, '%'→' por ciento').
 {
   const src = await readFile(path.join(SC, "palabra.js"), "utf8");
-  const first = src.match(/speak\(\s*'(¡Misión cumplida! Ganaste )' \+ gems \+ '([^']+)'/);
-  if (!first) throw new Error("gen-voice-clips: anchor for mission first-win NOT FOUND");
-  for (const [mid, m] of Object.entries(MISSIONS)) {
-    const gems = m.reward?.gems;
-    if (gems) add("narrator", `${first[1]}${gems}${first[2]}`, `bridge:palabra.missionResult:${mid}`);
-  }
-  // The missionResult BANNER (uis showBanner) — spoken as
-  // `info.name + '. ' + (info.desc || '')` (UIScene.js bytes). First win:
-  // desc = '+' + gems + ' gemas · XP en Palabra' per mission gems; replay /
-  // gemless: the fixed ternary literals. Same call site, same joiner.
   const bannerName = src.match(/name:\s*'(¡Misión cumplida!)',/);
   const gemDesc = src.match(/desc:\s*'\+' \+ gems \+ '([^']+)'/);
   const noGemsDesc = src.match(/desc:\s*firstWin \? '([^']+)' : '([^']+)'/);
   const uis = await readFile(path.join(SC, "scenes/UIScene.js"), "utf8");
-  const joiner = uis.match(/Palabra\.speak\(info\.name \+ '(\. )' \+ \(info\.desc \|\| ''\)/);
+  const joiner = uis.match(/Palabra\.speak\(info\.name \+ '(\. )' \+ PALABRA_BANNER_SAY\(info\.desc \|\| ''\)/);
   if (!bannerName || !gemDesc || !noGemsDesc || !joiner)
     throw new Error("gen-voice-clips: anchor for mission banner NOT FOUND — corpus would drift");
   for (const [mid, m] of Object.entries(MISSIONS)) {
     const gems = m.reward?.gems;
-    if (gems) add("narrator", `${bannerName[1]}${joiner[1]}+${gems}${gemDesc[1]}`, `bridge:palabra.missionBanner:${mid}`);
+    if (gems) add("narrator", `${bannerName[1]}${joiner[1]}${bannerSay(`+${gems}${gemDesc[1]}`)}`, `bridge:palabra.missionBanner:${mid}`);
   }
-  add("narrator", `${bannerName[1]}${joiner[1]}${noGemsDesc[1]}`, "bridge:palabra.missionBanner:noGems");
-  add("narrator", `${bannerName[1]}${joiner[1]}${noGemsDesc[2]}`, "bridge:palabra.missionBanner:replay");
+  add("narrator", `${bannerName[1]}${joiner[1]}${bannerSay(noGemsDesc[1])}`, "bridge:palabra.missionBanner:noGems");
+  add("narrator", `${bannerName[1]}${joiner[1]}${bannerSay(noGemsDesc[2])}`, "bridge:palabra.missionBanner:replay");
 }
 
 // 3) item-get banners + boss names
-// banner: byte-exact with UIScene `info.name + '. ' + (info.desc || '')`
+// banner: byte-exact with UIScene `info.name + '. ' + PALABRA_BANNER_SAY(info.desc || '')`
 for (const [id, it] of Object.entries(ITEMS)) {
-  add("narrator", `${it.name}. ${it.desc || ""}`, `item:${id}`);
+  add("narrator", `${it.name}. ${bannerSay(it.desc || "")}`, `item:${id}`);
   // PauseScene menu voice speaks the BARE item name (nav + pause open)
   add("narrator", it.name, `item-name:${id}`);
 }
@@ -488,3 +491,59 @@ for (const voiceDir of await readdir(OUT_DIR, { withFileTypes: true })) {
 }
 console.log(`integrity: entries=${Object.values(finalManifest.clips).reduce((n, b) => n + Object.keys(b).length, 0)} roundTripBad=${rtBad} fileBad=${rtMissing} orphansRemoved=${orphaned}`);
 if (rtBad > 0 || rtMissing > 0) process.exit(1);
+
+// ── COVERAGE GATE (D3): every dialogue/sign/scene/item/boss/banner page the
+// RUNTIME can speak must resolve in the FRESH manifest — on the owner's
+// TTS-dead device a manifest miss is total silence for that line. The
+// lookups are re-derived here INDEPENDENTLY of the corpus array (fresh
+// extraction from the world data + scene bytes, incl. the sanitizer join);
+// generation FAILS (exit 1) on any miss.
+{
+  const gateMisses: string[] = [];
+  const has = (voice: string, text: string) => Boolean(finalManifest.clips[voice]?.[text]);
+  const gate = (voice: string, text: string, src: string) => {
+    if (text && text.trim() && !has(voice, text)) gateMisses.push(`${src} [${voice}] ${text.slice(0, 70)}`);
+  };
+  for (const [npcId, meta] of Object.entries(PALABRA_NPCS)) {
+    const variants = DIALOGUE[npcId];
+    if (!variants) continue;
+    variants.forEach((v, vi) => { for (const page of v.lines ?? []) gate(meta.voice, page.join(" "), `dialogue:${npcId}#${vi}`); });
+  }
+  for (const [signId, pages] of Object.entries(DIALOGUE.signs as unknown as Record<string, string[]>)) gate("narrator", pages.join(" "), `sign:${signId}`);
+  for (const page of introPages) gate("narrator", page.filter(Boolean).join(" "), "scene:IntroScene");
+  gate("narrator", victoryLines.map((l) => l[0]).join(" "), "scene:VictoryScene");
+  const goSrc = await readFile(path.join(SC, "scenes/GameOverScene.js"), "utf8");
+  const goArr = goSrc.match(/Palabra\.speak\('([^']+)', 'narrator'\)/);
+  if (goArr) gate("narrator", goArr[1], "scene:GameOverScene");
+  for (const o of goOpts) gate("narrator", o, "scene:GameOverScene");
+  for (const [id, it] of Object.entries(ITEMS)) {
+    gate("narrator", `${it.name}. ${bannerSay(it.desc || "")}`, `item:${id}`);
+    gate("narrator", it.name, `item-name:${id}`);
+  }
+  for (const [id, def] of Object.entries(BOSSES)) {
+    const rows = Array.isArray(def) ? def : [def];
+    for (const r of rows) if (r?.name && r?.voice) gate(r.voice, r.name, `boss:${id}`);
+  }
+  {
+    const src = await readFile(path.join(SC, "palabra.js"), "utf8");
+    const bn = src.match(/name:\s*'(¡Misión cumplida!)',/);
+    const gd = src.match(/desc:\s*'\+' \+ gems \+ '([^']+)'/);
+    const ng = src.match(/desc:\s*firstWin \? '([^']+)' : '([^']+)'/);
+    const uis2 = await readFile(path.join(SC, "scenes/UIScene.js"), "utf8");
+    const jo = uis2.match(/Palabra\.speak\(info\.name \+ '(\. )' \+ PALABRA_BANNER_SAY\(info\.desc \|\| ''\)/);
+    if (bn && gd && ng && jo) {
+      for (const [mid, m] of Object.entries(MISSIONS)) {
+        const gems = m.reward?.gems;
+        if (gems) gate("narrator", `${bn[1]}${jo[1]}${bannerSay(`+${gems}${gd[1]}`)}`, `gate:missionBanner:${mid}`);
+      }
+      gate("narrator", `${bn[1]}${jo[1]}${bannerSay(ng[1])}`, "gate:missionBanner:noGems");
+      gate("narrator", `${bn[1]}${jo[1]}${bannerSay(ng[2])}`, "gate:missionBanner:replay");
+    } else gateMisses.push("gate:mission-banner anchors NOT FOUND");
+  }
+  if (gateMisses.length) {
+    console.error(`COVERAGE GATE FAILED: ${gateMisses.length} runtime lookups unresolved in the fresh manifest`);
+    gateMisses.slice(0, 40).forEach((m) => console.error(`  GATE MISS ${m}`));
+    process.exit(1);
+  }
+  console.log(`coverage gate: dialogue/sign/scene/item/boss/banner lookups all resolve in the fresh manifest`);
+}

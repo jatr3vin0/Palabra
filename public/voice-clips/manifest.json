@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generatedAt": "2026-11-12T19:23:45.573Z",
+ "generatedAt": "2026-11-12T23:00:51.530Z",
  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
  "clips": {
   "hero": {
@@ -571,11 +571,9 @@
    "Casilla 3. Aventura guardada.": "narrator/43d0523627d6c0356c9ee55646dc020da24ef7e6.mp3",
    "Casilla 3. Nueva aventura.": "narrator/9d9c3ec2820eb9681b2df7dd7c1d008a1baea81c.mp3",
    "¡Toca E otra vez para borrar!": "narrator/307cc2b2d1f2ff442c342a0521cde3024534d92d.mp3",
-   "¡Misión cumplida! Puntos de experiencia guardados en Palabra.": "narrator/fde4f0ba3e3f080c575a6cc958eb9417111ab430.mp3",
-   "¡Misión cumplida! Ganaste 15 gemas para el mundo y puntos de experiencia en Palabra.": "narrator/fadf70958dd90dc8dd9562b9bc36a34b5f7c7d94.mp3",
-   "¡Misión cumplida!. +15 gemas · XP en Palabra": "narrator/67cf9e9780f892f366f8d048a8473af9b8ebce92.mp3",
-   "¡Misión cumplida!. XP guardado en Palabra": "narrator/5003bb1549f24b4d58ef29d1421bd7e556c4aee5.mp3",
-   "¡Misión cumplida!. Repaso: XP en Palabra, sin gemas": "narrator/a39466022491a80c8506b9a1050159286d4410ea.mp3",
+   "¡Misión cumplida!. más15 gemas , puntos en Palabra": "narrator/b156b0714675244ef440dcec14fae0c7c07f9640.mp3",
+   "¡Misión cumplida!. puntos guardado en Palabra": "narrator/6939bf8357c7e661290aa7d508dd07043f9114eb.mp3",
+   "¡Misión cumplida!. Repaso: puntos en Palabra, sin gemas": "narrator/94a1f913551e069c5510f2dcda69b32b116128f2.mp3",
    "Bordón de peregrino. ¡Pulsa ESPACIO para golpear!": "narrator/0c422e13f7bb0f96ce371b3e68bbc58546d4c3fe.mp3",
    "Bordón de peregrino": "narrator/850c928af24989cc0a15ab16a394dac7e2d97525.mp3",
    "Espada del Espíritu. La Palabra de Dios. Corta doble.": "narrator/34e90f3e2f4500877a68f024527513cd8f3a519f.mp3",
