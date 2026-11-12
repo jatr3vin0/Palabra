@@ -419,8 +419,9 @@ function esVoice(): SpeechSynthesisVoice | null {
 }
 
 /** Instant browser-voice line while kokoro is un-warmed (cold start). Cast
- * pitch/rate are approximated cheaply (rate/pitch sliders). Returns whether
- * anything was actually queued.
+ * speed/pitch are mapped onto rate/pitch (widened, clamped) so one device
+ * voice still sounds per-character. Returns whether anything was actually
+ * queued.
  *
  * NO DROPPED LINES (owner play-test 4): Chrome can silently drop an utterance
  * queued right after cancel(), and the very first lines of a session race the
@@ -450,13 +451,19 @@ function speakFallback(text: string, slow: boolean, opts?: SpeakOpts): boolean {
       if (es) utter.voice = es;
       // The fallback voice rides the same "Voces" slider as kokoro clips.
       utter.volume = voiceVol;
-      // the fallback stays single-voice (brief): speed/pitch approximate the cast
+      // ONE device voice, so per-character distinction rides entirely on the
+      // cast table's speed/pitch (owner defect 2026-11-11: every character
+      // sounded identical). WIDENED around 1.0 so the semitone/pace deltas are
+      // audible, then clamped to learner-intelligible ranges (rate 0.5–1.4,
+      // pitch 0.5–1.5; the Web Speech spec allows far more).
       if (opts?.speed != null) {
-        utter.rate = Math.max(0.5, Math.min(1.5, opts.speed * 0.95));
+        utter.rate = Math.max(0.5, Math.min(1.4, 1 + (opts.speed - 1) * 2));
       } else {
         utter.rate = slow ? 0.6 : 0.92;
       }
-      if (opts?.pitch) utter.pitch = Math.max(0.4, Math.min(1.6, 1 + opts.pitch / 12));
+      if (opts?.pitch != null) {
+        utter.pitch = Math.max(0.5, Math.min(1.5, 1 + opts.pitch * 0.12));
+      }
       utter.onstart = () => {
         if (seq !== lineSeq) return;
         started = true;

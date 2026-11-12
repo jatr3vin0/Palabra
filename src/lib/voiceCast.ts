@@ -38,12 +38,14 @@ export const VOICE_CAST: Record<VoiceKey, VoiceParams> = {
   child: { voiceId: "ef_dora", speed: 1.08, pitch: 2 },
   // elder male: slow + low = aged
   elder: { voiceId: "em_alex", speed: 0.9, pitch: -2 },
-  // neutral adult men (Capitán Rico, guards, farmers)
+  // neutral adult men (Tomás, Joss, Finn) — firm: steady pace, level pitch
   villagerM: { voiceId: "em_alex", speed: 1.0, pitch: 0 },
-  // warm adult women (Ana) — unhurried, smiling
-  villagerF: { voiceId: "ef_dora", speed: 0.95, pitch: 0 },
-  // warm storyteller — menus, signs, the narrator line (warmest Spanish voice)
-  narrator: { voiceId: "em_santa", speed: 0.95, pitch: 0 },
+  // warm adult women (Ana, Mira, Zara) — brighter/faster than the narrator so
+  // the two never blur on the single device voice (owner defect 2026-11-11)
+  villagerF: { voiceId: "ef_dora", speed: 1.02, pitch: 1 },
+  // warm storyteller — menus, signs, the narrator line (warmest Spanish voice);
+  // lower/slower than the villagers for the same reason
+  narrator: { voiceId: "em_santa", speed: 0.9, pitch: -1 },
   // scripture read reverently (Génesis 1:1 in the balloon frame)
   scripture: { voiceId: "em_alex", speed: 0.85, pitch: -1 },
   // deep, slow, menacing — Apollyon, Giant Despair, tempters (phase 2)
