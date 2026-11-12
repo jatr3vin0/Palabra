@@ -246,6 +246,19 @@ DIALOGUE.villager_ana = [
 // Joss — farmer, south meadows
 // ---------------------------------------------------------------------------
 DIALOGUE.farmer_joss = [
+  // MISSION HANDOFF (game #4 breakout): gated on the mission's doneFlag —
+  // offered on EVERY talk until won (first-match-wins: it sits above the
+  // item/game lines so earned lines can never hide it). REPASO variant after
+  // done recaps the four wave-1 words. A0 copy, ≤30 chars/line, gloss pages
+  // mirrored (sokoban D1 pattern).
+  { if: { flagsNone: ['mission_joss_ladrillos_done'] }, mission: 'mission_joss_ladrillos', lines: [
+      ['¡Hola, peregrino!', 'Mi muro enseña palabras.'],
+      ['El pan. El agua.', 'La sal. La miel. ¡Mira!'],
+      ['Rompe el muro en orden.', '¡Deletrea conmigo!'] ],
+    gloss: [
+      ['Hi, pilgrim!', 'My wall teaches words.'],
+      ['The bread. The water.', 'The salt. The honey. Look!'],
+      ['Break the wall in order.', 'Spell with me!'] ] },
   { if: { flagsAll: ['game_complete'] }, lines: [
       ['Mis plantas crecen tranquilas.', 'La mejor cosecha en años. ¡Gracias!'] ],
     gloss: [
@@ -254,6 +267,15 @@ DIALOGUE.farmer_joss = [
       ['¿Bombas? Hay una roca rota', 'junto al cruce de caminos.', '¡Bum primero, preguntas después!'] ],
     gloss: [
       ['Bombs? There is a cracked rock', 'by the crossroads.', 'Boom first, ask later!'] ] },
+  // REPASO — after the spelling wall: the four words, once more
+  { if: { flagsAll: ['mission_joss_ladrillos_done'] }, lines: [
+      ['¡Deletreaste el muro!', 'La cosecha está segura.'],
+      ['Repaso: el pan, el agua,', 'la sal y la miel. ¡Bien!'],
+      ['Vuelve cuando quieras.'] ],
+    gloss: [
+      ['You spelled the wall!', 'The harvest is safe.'],
+      ['Review: the bread, the water,', 'the salt and the honey. Well done!'],
+      ['Come back anytime.'] ] },
   { lines: [
       ['Los slimes saltan en mis plantas.', 'Dales un golpe por mí, ¿sí?'],
       ['Las rocas rotas guardan secretos.', 'Vi una cerca del cruce.'] ],

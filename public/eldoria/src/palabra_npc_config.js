@@ -143,4 +143,22 @@ window.PALABRA_MISSIONS = {
     reward: { gems: 15 },
     doneFlag: 'mission_tomas_calle_done',
   },
+  // Game #4 (breakout-word): farmer Joss's spelling wall — a0-u04 + the
+  // a0-u01-l4 cut madre/padre (GAMES-2-4-bindings #4).
+  mission_joss_ladrillos: {
+    id: 'mission_joss_ladrillos',
+    npc: 'farmer_joss',
+    game: 'Ladrillos del Alfabeto',
+    frameId: 'ladrillos-alfabeto',       // breakout template (game #4)
+    contentBinding: 'a0-u04',            // pool a0-u04 + l4 cut (plan §2)
+    difficulty: 'child',
+    proficiency: {
+      cefr: 'A0',
+      unit: 'u04',
+      vocab: ['pan', 'agua', 'sal', 'miel'],  // wave 1 of the pack
+      masteryThreshold: 3,               // words per round (R3+ anchor)
+    },
+    reward: { gems: 15 },
+    doneFlag: 'mission_joss_ladrillos_done',
+  },
 };

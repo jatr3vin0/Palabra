@@ -134,6 +134,9 @@ export const ALMACEN_FRAME_ID = "almacen-palabra";
  * `camino-road-cross` reconciled to its canonical id at landing, ruling 5).
  * Bound to a0-u05 — joins the sokoban two-frame replay loop (R5). */
 export const CALLE_FRAME_ID = "camino-road-cross";
+/** «Ladrillos del Alfabeto» — breakout (game #4; frame id RULED at landing,
+ * PORT §9 ruling 2). Bound to a0-u04 (+ the a0-u01-l4 cut madre/padre). */
+export const LADRILLOS_FRAME_ID = "ladrillos-alfabeto";
 
 /** Génesis 1:1, Reina-Valera 1909, quoted literally. */
 export const GENESIS_1_1 = "En el principio creó Dios los cielos y la tierra.";
@@ -460,6 +463,40 @@ export const frames: Record<string, FrameDef> = {
       en: "Crossing with care is listening well! See you later!",
     },
     rounds: [] satisfies RoadCrossRoundDef[],
+  },
+
+  // ─── La granja: «Ladrillos del Alfabeto» — breakout (game #4) ──────────────
+  // Joss the farmer teaches the spelling loop: bricks carry LETTERS
+  // (R1–R3) and SYLLABLES (R4–R5); the next-needed brick glows. Boards are
+  // GENERATED per word from the a0-u04 pack + the l4 cut (binder
+  // a0-u04-breakout.ts) — never hand-authored here.
+  [LADRILLOS_FRAME_ID]: {
+    id: LADRILLOS_FRAME_ID,
+    kind: "phaser",
+    mechanic: "breakout-word",
+    params: { speed: 1.0, difficulty: 2, masteryThreshold: 3, xpPerLevel: 50 },
+    villager: { name: "Joss", emoji: "🧑‍🌾" },
+    place: "La granja",
+    englishLevel: 0,
+    xp: 10,
+    voice: "villagerM",
+    greeting: {
+      es: "¡Hola! Soy Joss, el granjero. ¡Vamos a deletrear!",
+      en: "Hi! I'm Joss, the farmer. Let's spell!",
+    },
+    howto: {
+      es: ["Escucha la palabra.", "Rompe las letras en orden.", "¡No dejes caer la pelota!"],
+      en: ["Listen to the word.", "Break the letters in order.", "Don't drop the ball!"],
+    },
+    howtoSpoken:
+      "¡Ladrillos del Alfabeto! Escucha la palabra. Rompe los ladrillos en orden: pe… a… ene… ¡pan! Mueve la paleta con el dedo, con las flechas o con A y D. No dejes caer la pelota. El ladrillo dorado es el que sigue. ¡Un ladrillo equivocado cuesta un corazón!",
+    praise: PRAISE,
+    gentle: GENTLE,
+    farewell: {
+      es: "¡Qué buen deletreo! La cosecha está lista. ¡Hasta luego!",
+      en: "What good spelling! The harvest is ready. See you later!",
+    },
+    rounds: [],
   },
 };
 

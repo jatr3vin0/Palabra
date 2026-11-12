@@ -46,6 +46,7 @@ import { achievementLabel, curve as sokobanCurve } from "~/games/templates/sokob
 import { createController as createSokobanController, type SokobanRound } from "~/games/templates/sokoban-word/types";
 import { nearFormDecoys, waveIds, wordFor } from "~/content/packs/a0-u05-sokoban";
 import { RoadCrossFrame } from "~/components/RoadCrossFrame";
+import { BreakoutFrame } from "~/components/BreakoutFrame";
 
 export const EN_GENESIS_1_1 = "In the beginning God created the heavens and the earth. (NKJV)";
 
@@ -311,6 +312,18 @@ export function FrameGame({
   if (frame?.kind === "phaser" && frame.mechanic === "road-cross-word") {
     return (
       <RoadCrossFrame
+        frame={frame}
+        embedded={embedded}
+        missionDifficulty={missionDifficulty}
+        contentBinding={contentBinding}
+        onWin={onWin}
+        onExit={onExit}
+      />
+    );
+  }
+  if (frame?.kind === "phaser" && frame.mechanic === "breakout-word") {
+    return (
+      <BreakoutFrame
         frame={frame}
         embedded={embedded}
         missionDifficulty={missionDifficulty}
