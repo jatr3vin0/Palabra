@@ -144,6 +144,119 @@ export function onVoicePhase(cb: (phase: VoicePhase) => void): () => void {
   };
 }
 
+// ── Pre-generated clip cast (phase 1, owner directive 2026-11-12) ────────────
+//
+// The owner's device has NO usable Spanish speechSynthesis voice (device
+// capability limit) but audio PLAYBACK works — so the fixed Spanish corpus is
+// pre-generated server-side (scripts/gen-voice-clips.ts, kokoro per cast row)
+// and shipped as public/voice-clips/<voiceKey>/<hash>.mp3 + manifest.json.
+// Before any device speak, the manifest is consulted: a HIT plays the clip
+// through one <audio> element INSTANTLY — no TTS, no wait; the caller's onEnd
+// fires at clip end, so music ducking and page flows work unchanged. A MISS
+// rides the device voice exactly as before (byte-for-byte the old path).
+// One clip at a time: a new line replaces the old (the ONE cancel semantics —
+// stopSpeaking or the next line are still the only things that cut a line).
+
+const CLIP_MANIFEST_URL = "/voice-clips/manifest.json";
+type ClipManifest = { clips?: Record<string, Record<string, string>> };
+let clipManifest: ClipManifest | null = null;
+let clipManifestState: "idle" | "loading" | "ready" | "failed" = "idle";
+let clipEl: HTMLAudioElement | null = null;
+/** Boot-time autoplay denial stashes the line here; the first user gesture
+ * retries it (the world's intro speaks before any tap exists). */
+let clipPending: { text: string; src: string; opts: SpeakOpts; seq: number; epoch: number } | null = null;
+
+/** QA counter — window.__palabraClips (live object, drive-readable). */
+export const clipStats = { hits: 0, misses: 0, notReady: 0, fallbacks: 0, errors: 0 };
+
+function loadClips(): void {
+  if (typeof window === "undefined" || clipManifestState !== "idle") return;
+  clipManifestState = "loading";
+  window
+    .fetch(CLIP_MANIFEST_URL)
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+    .then((m: ClipManifest) => {
+      if (m && m.clips) {
+        clipManifest = m;
+        clipManifestState = "ready";
+        listeners.forEach((l) => l());
+      } else {
+        clipManifestState = "failed";
+      }
+    })
+    .catch(() => {
+      clipManifestState = "failed"; // no manifest → every line stays device-voice
+    });
+}
+
+/** The clip for this EXACT text under this cast key, or null (device voice). */
+function clipFor(text: string, key?: string): string | null {
+  const m = clipManifest;
+  if (!m || !m.clips) {
+    if (clipManifestState === "loading") clipStats.notReady++;
+    else clipStats.misses++;
+    return null;
+  }
+  const bucket = m.clips[key ?? "narrator"];
+  const hit = bucket ? bucket[text] : undefined;
+  if (hit) {
+    clipStats.hits++;
+    return "/voice-clips/" + hit;
+  }
+  clipStats.misses++;
+  return null;
+}
+
+/** Play one pre-generated clip. Instant: the file starts as soon as the
+ * browser hands it over; no synthesis, no substitution window. */
+function playClip(text: string, src: string, o: SpeakOpts): void {
+  const seq = lineSeq;
+  const epoch = voiceEpoch;
+  if (!clipEl) clipEl = new Audio();
+  const el = clipEl;
+  const finish = () => {
+    window.clearTimeout(flowWatch);
+    if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    fireSpeechEnd();
+  };
+  const flowWatch = window.setTimeout(() => {
+    if (seq === lineSeq && epoch === voiceEpoch) fireSpeechEnd();
+  }, 4000 + text.length * 120);
+  const deviceFallback = () => {
+    window.clearTimeout(flowWatch);
+    if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    clipEl = null; // rebuild next call — this element failed
+    clipStats.fallbacks++;
+    // The unchanged device path carries the line now.
+    const spoke = speakDevice(text, o.slow ?? false, o);
+    if (!spoke) {
+      setStatus({ generating: false });
+      fireSpeechEnd();
+    }
+  };
+  el.onended = finish;
+  el.onerror = () => {
+    clipStats.errors++;
+    deviceFallback();
+  };
+  el.volume = voiceVol; // the "Voces" slider's stored purpose (clip gain)
+  el.src = src; // replaces any in-flight clip — ONE clip at a time
+  setStatus({ generating: false, speaking: true });
+  markSpeechProven(); // recorded audio IS proven speech — a shown pill clears
+  el.play().catch((err: DOMException) => {
+    if (seq !== lineSeq || epoch !== voiceEpoch) return;
+    if (err && err.name === "NotAllowedError") {
+      // Autoplay policy: no gesture yet. Stash and retry on the first one —
+      // nothing waits on speech meanwhile (the flow watchdog released above).
+      clipStats.errors++;
+      clipPending = { text, src, opts: o, seq, epoch };
+      finish();
+      return;
+    }
+    deviceFallback();
+  });
+}
+
 // ── Per-character device-voice selection ─────────────────────────────────────
 
 /** Cast order for voice assignment: narrator first (the storyteller anchor),
@@ -251,6 +364,9 @@ function runSpeechSelfTest(mayClaim: boolean): void {
     // voiceless device. And a pre-gesture probe never condemns: the first
     // user gesture re-probes. Only a silent POST-GESTURE probe gets the pill.
     if (speechProven || speechEndCb != null || synth.speaking || synth.pending) return;
+    // With the pre-generated cast loaded the app HAS audio — a silent
+    // speechSynthesis is no longer "voice unavailable" (the owner's device).
+    if (clipManifest) return;
     if (!mayClaim) return;
     setStatus({ state: "unavailable" });
   }, 3000);
@@ -261,6 +377,10 @@ function runSpeechSelfTest(mayClaim: boolean): void {
  * NO worker is started; the model download is gone with the engine. */
 export function primeVoice(): void {
   if (typeof window === "undefined") return;
+  // The clip manifest loads FIRST and REGARDLESS of speechSynthesis — a
+  // voiceless device still plays every corpus line from files.
+  loadClips();
+  (window as unknown as Record<string, unknown>).__palabraClips = clipStats;
   if (!("speechSynthesis" in window)) return;
   try {
     window.speechSynthesis.addEventListener("voiceschanged", () => {
@@ -281,6 +401,17 @@ export function primeVoice(): void {
       gestureSeen = true;
       window.removeEventListener("pointerdown", onGesture);
       window.removeEventListener("keydown", onGesture);
+      // A clip the autoplay policy denied at boot retries here — the first
+      // tap unlocks <audio> the same way it unlocks the speech probe.
+      const p = clipPending;
+      if (p && !speechProven) {
+        clipPending = null;
+        if (p.seq === lineSeq && p.epoch === voiceEpoch) {
+          lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
+          playClip(p.text, p.src, p.opts);
+          return;
+        }
+      }
       if (!speechProven) runSpeechSelfTest(true);
     };
     window.addEventListener("pointerdown", onGesture, { passive: true });
@@ -416,6 +547,18 @@ export function stopSpeaking(): void {
   }
   // The cancelled utterance's onend goes stale (seq guard) — drop the handle.
   activeUtter = null;
+  // An in-flight CLIP stops the same way — the next line replaces it.
+  if (clipEl) {
+    try {
+      clipEl.pause();
+    } catch {
+      // ignore
+    }
+    clipEl.onended = null;
+    clipEl.onerror = null;
+    clipEl.removeAttribute("src");
+    clipEl = null;
+  }
   fireSpeechEnd();
 }
 
@@ -443,6 +586,13 @@ export function speakSpanish(
   lineSeq++;
   stopSpeaking();
   speechEndCb = onEnd ?? null;
+  // PHASE-1 CLIP CAST: a manifest hit plays the pre-generated clip instantly
+  // (no TTS at all); a miss rides the device voice unchanged below.
+  const clip = clipFor(text, o.key);
+  if (clip) {
+    playClip(text, clip, o);
+    return;
+  }
   // ONE path: the device Spanish voice speaks the line now. The flow watchdog
   // + utter.onend (both seq-guarded) own the release.
   const spoke = speakDevice(text, o.slow ?? false, o);
