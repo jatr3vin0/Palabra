@@ -26,9 +26,11 @@
  * a clip arrived (there is no clip path); only an explicit stop — stopSpeaking
  * from the user/scene, or the next line replacing this one — cancels speech.
  *
- * Boot speech self-test: a silent-level probe utterance after boot / first
- * user gesture; if onstart never fires within 3 s, a visible status pill says
- * the voice is unavailable, and the game stays fully playable.
+ * Boot speech self-test: a silent-level probe utterance at boot (never
+ * claims — pre-gesture probes false-fail), re-probed on the FIRST user
+ * gesture; only the post-gesture probe may show the visible "unavailable"
+ * pill, and never once any utterance has started. The game stays fully
+ * playable either way.
  */
 
 import { useSyncExternalStore } from "react";
@@ -208,6 +210,8 @@ let selfTestArmed = false;
 let speechProven = false;
 let selfTestTimer: number | null = null;
 let gestureProbeArmed = false;
+/** True once the user has produced any real gesture (tap or key). */
+let gestureSeen = false;
 
 function markSpeechProven(): void {
   speechProven = true;
@@ -220,8 +224,12 @@ function markSpeechProven(): void {
 
 /** Silent-level probe utterance: if onstart never fires within 3 s the device
  * cannot (or is not allowed to) speak — show the visible status pill and keep
- * the game fully playable. */
-function runSpeechSelfTest(): void {
+ * the game fully playable. `mayClaim` gates WHO may show the pill: the boot
+ * probe runs before any user gesture and engines may hold or queue-discard
+ * silent probes there (the pre-gesture probe false-fails), so it may NOT
+ * claim — the first user gesture re-probes, and only THAT re-probe claims.
+ * Every claim path is also a no-op once any utterance has started. */
+function runSpeechSelfTest(mayClaim: boolean): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const synth = window.speechSynthesis;
   try {
@@ -240,8 +248,10 @@ function runSpeechSelfTest(): void {
     selfTestTimer = null;
     // A line already proved speech, a real line is in flight (its onstart will
     // prove it), or the engine still holds audio — none of these is a
-    // voiceless device. Only a truly silent engine gets the pill.
+    // voiceless device. And a pre-gesture probe never condemns: the first
+    // user gesture re-probes. Only a silent POST-GESTURE probe gets the pill.
     if (speechProven || speechEndCb != null || synth.speaking || synth.pending) return;
+    if (!mayClaim) return;
     setStatus({ state: "unavailable" });
   }, 3000);
 }
@@ -256,24 +266,29 @@ export function primeVoice(): void {
     window.speechSynthesis.addEventListener("voiceschanged", () => {
       esVoiceCache = null;
       voiceMap = null;
-      if (!speechProven) runSpeechSelfTest();
+      if (!speechProven) runSpeechSelfTest(gestureSeen);
     });
   } catch {
     // older engines: esVoice()/buildVoiceMap() re-scan per line anyway
   }
-  // After first user gesture (or boot): re-probe once — some engines only
-  // allow speech after a gesture, and the voice list lands asynchronously.
+  // After the first user gesture (tap OR key): re-probe once — some engines
+  // only allow speech after a gesture, and the voice list lands
+  // asynchronously. This is the ONE probe allowed to claim the pill, because
+  // a silent engine AFTER a gesture is a truly voiceless device.
   if (!gestureProbeArmed) {
     gestureProbeArmed = true;
     const onGesture = () => {
+      gestureSeen = true;
       window.removeEventListener("pointerdown", onGesture);
-      if (!speechProven) runSpeechSelfTest();
+      window.removeEventListener("keydown", onGesture);
+      if (!speechProven) runSpeechSelfTest(true);
     };
-    window.addEventListener("pointerdown", onGesture, { passive: true, once: true });
+    window.addEventListener("pointerdown", onGesture, { passive: true });
+    window.addEventListener("keydown", onGesture);
   }
   if (!selfTestArmed) {
     selfTestArmed = true;
-    runSpeechSelfTest();
+    runSpeechSelfTest(false); // boot probe: pre-gesture, may never claim
   }
 }
 
