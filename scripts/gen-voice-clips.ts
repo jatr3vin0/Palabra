@@ -184,6 +184,23 @@ add("narrator", await litStr("palabra.js", /speak\('(¡Misión cumplida! Puntos[
     const gems = m.reward?.gems;
     if (gems) add("narrator", `${first[1]}${gems}${first[2]}`, `bridge:palabra.missionResult:${mid}`);
   }
+  // The missionResult BANNER (uis showBanner) — spoken as
+  // `info.name + '. ' + (info.desc || '')` (UIScene.js bytes). First win:
+  // desc = '+' + gems + ' gemas · XP en Palabra' per mission gems; replay /
+  // gemless: the fixed ternary literals. Same call site, same joiner.
+  const bannerName = src.match(/name:\s*'(¡Misión cumplida!)',/);
+  const gemDesc = src.match(/desc:\s*'\+' \+ gems \+ '([^']+)'/);
+  const noGemsDesc = src.match(/desc:\s*firstWin \? '([^']+)' : '([^']+)'/);
+  const uis = await readFile(path.join(SC, "scenes/UIScene.js"), "utf8");
+  const joiner = uis.match(/Palabra\.speak\(info\.name \+ '(\. )' \+ \(info\.desc \|\| ''\)/);
+  if (!bannerName || !gemDesc || !noGemsDesc || !joiner)
+    throw new Error("gen-voice-clips: anchor for mission banner NOT FOUND — corpus would drift");
+  for (const [mid, m] of Object.entries(MISSIONS)) {
+    const gems = m.reward?.gems;
+    if (gems) add("narrator", `${bannerName[1]}${joiner[1]}+${gems}${gemDesc[1]}`, `bridge:palabra.missionBanner:${mid}`);
+  }
+  add("narrator", `${bannerName[1]}${joiner[1]}${noGemsDesc[1]}`, "bridge:palabra.missionBanner:noGems");
+  add("narrator", `${bannerName[1]}${joiner[1]}${noGemsDesc[2]}`, "bridge:palabra.missionBanner:replay");
 }
 
 // 3) item-get banners + boss names
@@ -264,9 +281,16 @@ for (const f of Object.values(frames)) {
   for (const g of f.gentle) add(v, g, `frame:${f.id}`);
   add(v, f.farewell.es, `frame:${f.id}`);
   const rv = f.roundVoice ?? v;
-  for (const r of f.rounds as Array<{ say?: string; word?: string }>) {
+  for (const r of f.rounds as Array<{ say?: string; word?: string; balloons?: string[]; label?: string }>) {
     if (r.say) add(rv, r.say, `frame:${f.id}:round`);
     if (r.word) add(v, r.word, `frame:${f.id}:word`);
+    // scripture balloon-pop (FrameGame.tsx pop()): every balloon value is
+    // spoken as a bare word under the ROUND voice — pop() speaks the data
+    // value, and the adaptive replay slips missed words (incl. a round's own
+    // answer) back in as wrong balloons, so the harvest carries ALL values.
+    // label = display form of the answer balloon (readable ⇒ carried too).
+    for (const b of r.balloons ?? []) add(rv, b, `frame:${f.id}:balloon`);
+    if (r.label) add(rv, r.label, `frame:${f.id}:label`);
   }
 }
 

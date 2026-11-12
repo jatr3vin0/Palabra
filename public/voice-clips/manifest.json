@@ -1,6 +1,6 @@
 {
  "version": 1,
- "generatedAt": "2026-11-12T17:55:09.794Z",
+ "generatedAt": "2026-11-12T19:23:45.573Z",
  "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
  "clips": {
   "hero": {
@@ -573,6 +573,9 @@
    "¡Toca E otra vez para borrar!": "narrator/307cc2b2d1f2ff442c342a0521cde3024534d92d.mp3",
    "¡Misión cumplida! Puntos de experiencia guardados en Palabra.": "narrator/fde4f0ba3e3f080c575a6cc958eb9417111ab430.mp3",
    "¡Misión cumplida! Ganaste 15 gemas para el mundo y puntos de experiencia en Palabra.": "narrator/fadf70958dd90dc8dd9562b9bc36a34b5f7c7d94.mp3",
+   "¡Misión cumplida!. +15 gemas · XP en Palabra": "narrator/67cf9e9780f892f366f8d048a8473af9b8ebce92.mp3",
+   "¡Misión cumplida!. XP guardado en Palabra": "narrator/5003bb1549f24b4d58ef29d1421bd7e556c4aee5.mp3",
+   "¡Misión cumplida!. Repaso: XP en Palabra, sin gemas": "narrator/a39466022491a80c8506b9a1050159286d4410ea.mp3",
    "Bordón de peregrino. ¡Pulsa ESPACIO para golpear!": "narrator/0c422e13f7bb0f96ce371b3e68bbc58546d4c3fe.mp3",
    "Bordón de peregrino": "narrator/850c928af24989cc0a15ab16a394dac7e2d97525.mp3",
    "Espada del Espíritu. La Palabra de Dios. Corta doble.": "narrator/34e90f3e2f4500877a68f024527513cd8f3a519f.mp3",
@@ -660,8 +663,24 @@
    "Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.": "scripture/fca269f02de4b485d2ec011df33295bb5aa1c564.mp3",
    "«Jesús le dice: Yo soy el camino, y la verdad, y la vida: nadie viene al Padre, sino por mí.»": "scripture/2fb7e5219bc4cb6817399adaef11d9f92a2eb342.mp3",
    "«En el principio creó Dios los cielos y la… tierra.»": "scripture/3fcf416c11f9caff0519656511d132dc159021ac.mp3",
+   "tierra": "scripture/272bbce0b83b34d7aae26d2ecc5ccf11d9ee76a6.mp3",
+   "casa": "scripture/f14d1a92e7af570778bb8f9fa72f4fd0c1f8cb07.mp3",
+   "llave": "scripture/3b0de63a1a75367b1ceabb1f0060a895a44aa82a.mp3",
+   "mañana": "scripture/1d38d2cbbb185353eeb2ec2ef82dba7bbba4d05d.mp3",
+   "gracias": "scripture/80e0d827204c4c4adbf90075e7864456dcd5b552.mp3",
    "«En el principio creó… Dios… los cielos y la tierra.»": "scripture/1615ec19b3ebc945256acde8beff239b6bafbe16.mp3",
-   "«En el principio creó Dios los… cielos… y la tierra.»": "scripture/c7ebb99d30b3900e0a8f93e557fc2a366a318f3e.mp3"
+   "Dios": "scripture/c7e52b5fb18d6a87221f279c0146e74444f612ef.mp3",
+   "noche": "scripture/f152228789c1cb25d4216917f7254d5d707d53d5.mp3",
+   "hombre": "scripture/b23c7e3b46edc4c184c23d403a74084396145926.mp3",
+   "jardín": "scripture/97891d33a4416f455cd802e2d8e60e5a60af7e6e.mp3",
+   "padre": "scripture/23b2bdf279775364c8e5cc45ebaeebec3698b092.mp3",
+   "«En el principio creó Dios los… cielos… y la tierra.»": "scripture/c7ebb99d30b3900e0a8f93e557fc2a366a318f3e.mp3",
+   "cielo": "scripture/94dc6f7244c9cb5e52c2904c24290ecc76d933e9.mp3",
+   "días": "scripture/e75d7686dffd2866216342176fb29255da87b6c0.mp3",
+   "hermanos": "scripture/d935616bae625857af1aa0484d27900d6e3e904d.mp3",
+   "hijos": "scripture/742b2c27df7b922d981c88201ed53cbed6aac973.mp3",
+   "tardes": "scripture/fbcd3b4e9251bc0b483b69f0905435e7a25c73ad.mp3",
+   "cielos": "scripture/5cc4c221121832c53b5740562470e1d4bfa3a0ac.mp3"
   }
  }
 }
