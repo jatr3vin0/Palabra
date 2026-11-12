@@ -57,7 +57,7 @@ export type RoadCrossBoard = {
 
 /**
  * The bridge the scene receives. Wired in React:
- *   speak   → speakSpanish (instant-first device voice; kokoro substitution)
+ *   speak   → speakSpanish (device voice only — instant, per-character)
  *   onHit   → the SAFE crossing completed: ALWAYS the round's es id
  *             (CONTRACT-CRITICAL — never a lane index; replay keys on word ids);
  *             praise speech; on replay rounds clearMiss(p, word)

@@ -18,7 +18,7 @@ export type SkyWordRound = {
 
 /**
  * The bridge object the scenes receive. Wired in React:
- *   speak   → speakSpanish (kokoro, speechSynthesis fallback)
+ *   speak   → speakSpanish (device voice only)
  *   onHit   → praise speech; on replay rounds clearMiss(p, word)
  *   onMiss  → loseHeart(recordMiss(p, round.word, frame.id)) + gentle speech
  *             + re-speak of round.say ~1.9 s later (fresh formation)

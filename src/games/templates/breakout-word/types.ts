@@ -45,7 +45,7 @@ export type BreakoutBoard = {
 
 /**
  * The bridge the scene receives. Wired in React:
- *   speak   → speakSpanish (instant-first device voice; kokoro substitution)
+ *   speak   → speakSpanish (device voice only — instant, per-character)
  *   onHit   → the COMPLETED WORD's es (contract-critical — never a letter or
  *             syllable; replay keys on word ids, byte-identical). Praise +
  *             clearMiss on replay rounds + advance to the next word-board.

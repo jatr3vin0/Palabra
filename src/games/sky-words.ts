@@ -4,7 +4,7 @@
  * Ported from the audited `sausi-7/games → shooter/space-fighter` shape
  * (portrait, tap-to-shoot, config-driven tempo) and rebuilt as an original
  * template: every sprite is drawn here with Graphics — no external art, no
- * CDN, no webfont loader, no Phaser audio (all speech is React's kokoro voice
+ * CDN, no webfont loader, no Phaser audio (all speech is React's device voice
  * through the bridge).
  *
  * Scenes never touch storage or voice: they call the bridge only.

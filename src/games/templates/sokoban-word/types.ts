@@ -33,7 +33,7 @@ export type SokobanRound = {
 
 /**
  * The bridge object the scene receives. Wired in React:
- *   speak   → speakSpanish (kokoro, speechSynthesis fallback)
+ *   speak   → speakSpanish (device voice only — instant, per-character)
  *   onHit   → the COMPLETED PAIR's es (R7-3 — early completion counts);
  *             praise speech; on replay boards clearMiss(p, word)
  *   onMiss  → ALWAYS the NAMED pair's es (R7-3); loseHeart(recordMiss(p,

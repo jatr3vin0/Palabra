@@ -1,10 +1,10 @@
 /**
- * The Palabra voice cast — the ONE table that maps character types to kokoro
- * voices (voiceId + speed + pitch, per the casting verified against the
- * Kokoro-82M-v1.0-ONNX voice list). Kokoro ships exactly three Spanish voices
- * (ef_dora F, em_alex M, em_santa M); child/elder/villain casting is via
- * speed + pitch (playbackRate lift 2^(n/12), generated at speed/r so duration
- * is unchanged — see voice.worker.ts).
+ * The Palabra voice cast — the ONE table that maps character types to voice
+ * params. DEVICE-VOICE BUILD (owner P0 2026-11-12): live speech is the device's
+ * Spanish voice only — `voiceId` (the kokoro-era voice id) is dormant table
+ * shape; the cast `key` selects the character's assigned device voice (see
+ * voice.ts), and speed+pitch map onto utterance rate/pitch so one-voice devices
+ * still sound per-character (c1d84d2).
  *
  * The adventure (Eldoria iframe) references these by KEY only (its
  * palabra_npc_config.js stores character keys, never numbers), so re-casting a
@@ -23,13 +23,16 @@ export type VoiceKey =
   | "villain";
 
 export type VoiceParams = {
+  /** The cast row itself — what device-voice selection round-robins over. */
+  key: VoiceKey;
+  /** Dormant kokoro-era voice id (table shape for the future clip path). */
   voiceId: string;
   speed: number;
   /** Semitones: + = brighter (children), − = deeper (villains). */
   pitch: number;
 };
 
-export const VOICE_CAST: Record<VoiceKey, VoiceParams> = {
+export const VOICE_CAST: Record<VoiceKey, Omit<VoiceParams, "key">> = {
   // Pip (boy ~10): light, quick, exclamatory — gate casting row "hero"
   hero: { voiceId: "ef_dora", speed: 1.05, pitch: 2 },
   // girl ~10: matches the boy's warmth, not chipmunk-bright (owner recast)
@@ -52,7 +55,9 @@ export const VOICE_CAST: Record<VoiceKey, VoiceParams> = {
   villain: { voiceId: "em_santa", speed: 0.9, pitch: -3 },
 };
 
-/** Resolve a cast key to concrete kokoro params (safe fallback: narrator). */
+/** Resolve a cast key to concrete params (safe fallback: narrator). */
 export function castParams(key?: string | null): VoiceParams {
-  return VOICE_CAST[(key ?? "narrator") as VoiceKey] ?? VOICE_CAST.narrator;
+  const row = (key ?? "narrator") as VoiceKey;
+  if (VOICE_CAST[row]) return { ...VOICE_CAST[row], key: row };
+  return { ...VOICE_CAST.narrator, key: "narrator" };
 }

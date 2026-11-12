@@ -34,7 +34,7 @@ export type Progress = {
   /** Parent control: chiptune music muted (voices + SFX stay). */
   musicMuted: boolean;
   /** Audio settings panel: music / voices / effects, each 0–1. Voices meter
-   * the kokoro gain (voice.ts); the world mirrors all three for its pause menu. */
+   * * the voice gain (voice.ts); the world mirrors all three for its pause menu. */
   musicVol: number;
   voiceVol: number;
   sfxVol: number;

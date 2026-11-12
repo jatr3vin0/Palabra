@@ -67,7 +67,7 @@ export const REWARD_COPY = {
     { key: "coins", es: "Monedas: dinero de Palabra.", en: "Coins: Palabra money." },
   ],
   // Spoken in the narrator voice after the farewell line. Never the letters
-  // "XP" aloud (kokoro spells it) — say "puntos de experiencia".
+  // "XP" aloud (the voice spells it) — say "puntos de experiencia".
   // W2C compressed copy (lead-approved, DIALOGUE-sweep-playtest2.md): 2 lines.
   spoken: [
     "¡Muy bien! Puntos, gemas y monedas.",
@@ -391,7 +391,7 @@ function SkyWordsFrame({
   const pack = useMemo(() => packForBinding(contentBinding), [contentBinding]);
   const pool = useMemo(() => poolFor(pack), [pack]);
 
-  // The frame's own voice: the villager who opens it (per-character kokoro).
+  // The frame's own voice: the villager who opens it (per-character cast).
   const say = useCallback(
     (text: string, opts?: SpeakOpts, onEnd?: () => void) => {
       speakSpanish(text, opts ?? castParams(frame.voice), onEnd);
@@ -1801,11 +1801,12 @@ export function FrameShell({
           </div>
           <StatsBar p={p} />
         </div>
-        {(!embedded || voice.state === "loading") && (
+        {(!embedded || voice.state !== "idle") && (
           <div className="mx-auto max-w-2xl px-4 pb-2">
-            {/* First-download indicator (owner P0): the ~86 MB model fetch shows
-            its progress pill EVERYWHERE — embedded mission overlays included. */}
-            <VoicePill state={voice.state} progress={voice.progress} />
+            {/* Voice status pill — the boot self-test verdict included: if the
+            device cannot speak, the owner SEES it (readable⇒heard rule) while
+            the game stays fully playable. */}
+            <VoicePill state={voice.state} />
           </div>
         )}
       </header>
@@ -1858,22 +1859,16 @@ export function ExitButton({ embedded, onExit }: { embedded: boolean; onExit?: (
   );
 }
 
-function VoicePill({ state, progress }: { state: string; progress: number }) {
-  if (state === "ready") {
-    return <p className="text-center text-[11px] font-bold text-teal-700">🔊 voz natural · kokoro · español</p>;
-  }
-  if (state === "loading") {
+function VoicePill({ state }: { state: string }) {
+  if (state === "unavailable") {
+    // Boot self-test: no utterance ever started — say so, in Spanish, visibly.
     return (
-      <p className="text-center text-[11px] font-bold text-amber-700">
-        Descargando la voz natural… {Math.round(progress * 100)}% (una sola vez, luego sin internet)
+      <p className="text-center text-[11px] font-bold text-rose-700">
+        Voz no disponible — revisa el volumen del dispositivo
       </p>
     );
   }
-  return (
-    <p className="text-center text-[11px] font-bold text-stone-500">
-      🔊 voz del navegador mientras llega la voz natural…
-    </p>
-  );
+  return <p className="text-center text-[11px] font-bold text-stone-500">🔊 voz del dispositivo · español</p>;
 }
 
 // ── Game 2: the scripture balloon-pop ───────────────────────────────────────

@@ -13,7 +13,7 @@
  * release coords → one push per gesture) — new API, zero copied code.
  *
  * Every sprite is drawn here with Graphics — no external art, no CDN, no
- * webfont loader, no Phaser audio (speech is React's kokoro voice through the
+ * webfont loader, no Phaser audio (speech is React's device voice through the
  * bridge; push juice is visual). Scenes never touch storage or voice.
  */
 import * as Phaser from "phaser";

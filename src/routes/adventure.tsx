@@ -56,7 +56,8 @@ function Adventure() {
   const [musicMuted, setMusicMuted] = useState(false);
   // Audio settings panel: music / voices / effects (0–1), persisted in the
   // profile and mirrored live into the world (music + effects buses) and into
-  // the kokoro voice gain (voices).
+  // the voice gain (voices — stored for the clip path; the device voice is
+  // never scaled).
   const [vols, setVols] = useState({ music: 0.9, voice: 1, sfx: 1 });
   const updateRef = useRef(update);
   const pRef = useRef<Progress | null>(p);
@@ -85,13 +86,11 @@ function Adventure() {
     [postTo],
   );
 
-  // ── TTS cold-start fix (owner play-test 2) ─────────────────────────────
-  // The kokoro worker used to start only when a mission frame mounted, so a
-  // player walking straight into the world got text-only pages and the generic
-  // browser voice on menus. warmVoice() starts the model fetch + the silent
-  // warm-up utterance at WORLD BOOT, and every voice-phase tick is mirrored
-  // into the world so the dialogue box can show '🔊 …' while a line is
-  // generating and not yet audible.
+  // ── Device-voice speech boot (owner P0, 2026-11-12) ────────────────────
+  // warmVoice() arms the voice-list listener + the boot speech self-test at
+  // WORLD BOOT (no engine, no model download — the device speaks every line),
+  // and every voice-phase tick is mirrored into the world so the dialogue box
+  // can show '🔊 …' while a line is speaking.
   useEffect(() => {
     warmVoice();
   }, []);
@@ -127,8 +126,8 @@ function Adventure() {
           break;
         }
         case "palabra:speak": {
-          // Voice-first: every world line is spoken through kokoro with the
-          // speaker's cast voice; the chiptune ducks beneath it.
+          // Voice-first: every world line is spoken with the device's Spanish
+          // voice (the speaker's cast voice); the chiptune ducks beneath it.
           const text = String(msg.text ?? "");
           if (!text) break;
           duck(true);
@@ -231,7 +230,7 @@ function Adventure() {
   }, [musicMuted, postTo]);
 
   // Audio settings panel: one slider per bus. Persisted in the profile, and
-  // mirrored live into the world (music + effects buses) and kokoro (voices).
+  // mirrored live into the world (music + effects buses) and the voice gain (voices).
   const volsRef = useRef(vols);
   volsRef.current = vols;
   const changeVol = useCallback(
