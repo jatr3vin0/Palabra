@@ -1,7 +1,12 @@
 // Palabra service worker — caches the app shell so the installed PWA opens offline.
 // Runtime: hashed Vite assets are cache-first; navigations are network-first with a
 // cached fallback. Only same-origin GETs are ever touched.
-const CACHE = "palabra-v1";
+const CACHE = "palabra-v2";
+// Voice-corpus paths: NETWORK-FIRST — every publish can add or regenerate
+// recordings, so stale cached copies must never beat the fresh manifest or a
+// new clip file. Cache is the offline fallback only.
+const VOICE_NETWORK_FIRST = (p) =>
+  p === "/voice-clips/manifest.json" || p.startsWith("/voice-clips/");
 const PRECACHE = [
   "/",
   "/manifest.webmanifest",
@@ -66,11 +71,24 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else — including the kokoro CDN files (the ~86 MB model, the
-  // onnx wasm, the espeak phonemizer data and the voice bins) — cache-first,
-  // so the voice is offline after the one-time download. Range requests are
+  // Everything else — cache-first, EXCEPT the voice corpus which is
+  // network-first (recordings change every publish). Range requests are
   // never cached.
   if (!req.headers.has("range")) {
+    if (VOICE_NETWORK_FIRST(url.pathname)) {
+      event.respondWith(
+        fetch(req)
+          .then((res) => {
+            if (res.ok) {
+              const copy = res.clone();
+              caches.open(CACHE).then((c) => c.put(req, copy));
+            }
+            return res;
+          })
+          .catch(() => caches.match(req)),
+      );
+      return;
+    }
     event.respondWith(
       caches.match(req).then(
         (hit) =>
