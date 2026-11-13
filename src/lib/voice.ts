@@ -165,6 +165,13 @@ let clipEl: HTMLAudioElement | null = null;
 /** Boot-time autoplay denial stashes the line here; the first user gesture
  * retries it (the world's intro speaks before any tap exists). */
 let clipPending: { text: string; src: string; opts: SpeakOpts; seq: number; epoch: number } | null = null;
+/** ONE CLIP = ONE CONTIGUOUS PLAYBACK (owner play-test: intro CHOPPY, Pip page
+ * 1 garbled): a line that arrives while a clip is mid-play WAITS here instead
+ * of chopping the playing line mid-sentence. Latest-wins slot (≤1): a newer
+ * line replaces the queued one (the screen already moved on); the replaced
+ * line's flow callback fires immediately so nothing hangs. stopSpeaking
+ * flushes (an explicit stop cancels the wait). */
+let clipQueued: { text: string; opts: SpeakOpts; onEnd?: () => void } | null = null;
 
 /** QA counter — window.__palabraClips (live object, drive-readable). */
 export const clipStats = { hits: 0, misses: 0, notReady: 0, fallbacks: 0, errors: 0 };
@@ -257,17 +264,34 @@ function clipFor(text: string, key?: string): string | null {
   return null;
 }
 
+/** A clip is audibly mid-play RIGHT NOW (never counts a stashed/denied line). */
+function clipBusy(): boolean {
+  return !!(status.speaking && clipEl && !clipEl.paused && clipEl.src);
+}
+
+/** Deliver the queued line once the current clip has played start→end. */
+function deliverQueued(): void {
+  const q = clipQueued;
+  if (!q) return;
+  clipQueued = null;
+  speakSpanish(q.text, q.opts, q.onEnd);
+}
+
 /** Play one pre-generated clip. Instant: the file starts as soon as the
  * browser hands it over; no synthesis, no substitution window.
  * SINGLE-FLIGHT: stop-before-play — any element reused here is paused and
  * stripped of handlers FIRST, so a stale end of the previous line can never
- * interleave with this one, and two clips can never overlap. */
+ * interleave with this one, and two clips can never overlap.
+ * CONTIGUOUS (owner choppy fix): a started clip runs start→end — a blocked
+ * element restarts FROM 0 (never resumes mid-buffer), a failing element
+ * retries from 0 (bounded) and NEVER degrades to the device voice. */
 function playClip(text: string, src: string, o: SpeakOpts): void {
   const seq = lineSeq;
   const epoch = voiceEpoch;
   qaAudio(seq, "start", src.slice(src.indexOf("voice-clips")));
   if (!clipEl) clipEl = new Audio();
   const el = clipEl;
+  let retries = 0;
   // stop-before-play: the element may still carry the previous line (paused
   // or mid-flight) — silence it and detach its handlers before reusing.
   try {
@@ -283,6 +307,7 @@ function playClip(text: string, src: string, o: SpeakOpts): void {
     if (seq !== lineSeq || epoch !== voiceEpoch) return;
     qaAudio(seq, "end");
     fireSpeechEnd();
+    deliverQueued();
   };
   let flowWatch = window.setTimeout(() => {
     if (seq === lineSeq && epoch === voiceEpoch) {
@@ -305,46 +330,67 @@ function playClip(text: string, src: string, o: SpeakOpts): void {
       }, ms);
     }
   };
-  const deviceFallback = () => {
+  const rearmWatch = () => {
+    window.clearTimeout(flowWatch);
+    flowWatch = window.setTimeout(() => {
+      if (seq === lineSeq && epoch === voiceEpoch) {
+        qaAudio(seq, "watchdog");
+        fireSpeechEnd();
+      }
+    }, 4000 + text.length * 120);
+  };
+  // A failing clip retries FROM 0 — the resolved corpus line never degrades
+  // to a device voice (the owner's device has none; a garbage fallback would
+  // be silence at best). Bounded: two retries, then the line ends silently.
+  const retryFromZero = (why: string) => {
     window.clearTimeout(flowWatch);
     if (seq !== lineSeq || epoch !== voiceEpoch) return;
-    qaAudio(seq, "error-fallback");
+    clipStats.errors++;
+    if (retries >= 2) {
+      qaAudio(seq, "clip-end-silent");
+      fireSpeechEnd();
+      deliverQueued();
+      return;
+    }
+    retries++;
+    qaAudio(seq, "clip-retry:" + why);
+    rearmWatch();
     try {
-      el.pause();
+      el.currentTime = 0; // never resume mid-buffer
     } catch {
       // ignore
     }
-    clipEl = null; // rebuild next call — this element failed
-    clipStats.fallbacks++;
-    // The unchanged device path carries the line now.
-    const spoke = speakDevice(text, o.slow ?? false, o);
-    if (!spoke) {
-      setStatus({ generating: false });
-      fireSpeechEnd();
-    }
+    startPlay();
+  };
+  const startPlay = () => {
+    el.play().catch((err: DOMException) => {
+      if (seq !== lineSeq || epoch !== voiceEpoch) return;
+      if (err && err.name === "NotAllowedError") {
+        // Autoplay policy: no gesture yet. Stash and retry on the first one —
+        // nothing waits on speech meanwhile (the flow watchdog released above).
+        clipStats.errors++;
+        clipPending = { text, src, opts: o, seq, epoch };
+        qaAudio(seq, "stash");
+        finish();
+        return;
+      }
+      // AbortError & friends (our own pause raced the play promise, a load
+      // hiccup): restart from 0, never mid-buffer, never the device voice.
+      retryFromZero(err && err.name ? err.name : "play");
+    });
   };
   el.onended = finish;
-  el.onerror = () => {
-    clipStats.errors++;
-    deviceFallback();
-  };
+  el.onerror = () => retryFromZero("error");
   el.volume = voiceVol; // the "Voces" slider's stored purpose (clip gain)
   el.src = src; // replaces any in-flight clip — ONE clip at a time
+  try {
+    el.currentTime = 0; // a reused element restarts from 0, never mid-buffer
+  } catch {
+    // ignore
+  }
   setStatus({ generating: false, speaking: true });
   markSpeechProven(); // recorded audio IS proven speech — a shown pill clears
-  el.play().catch((err: DOMException) => {
-    if (seq !== lineSeq || epoch !== voiceEpoch) return;
-    if (err && err.name === "NotAllowedError") {
-      // Autoplay policy: no gesture yet. Stash and retry on the first one —
-      // nothing waits on speech meanwhile (the flow watchdog released above).
-      clipStats.errors++;
-      clipPending = { text, src, opts: o, seq, epoch };
-      qaAudio(seq, "stash");
-      finish();
-      return;
-    }
-    deviceFallback();
-  });
+  startPlay();
 }
 
 // ── Per-character device-voice selection ─────────────────────────────────────
@@ -516,9 +562,15 @@ export function notifyUserGesture(): void {
   if (p) {
     clipPending = null;
     if (p.seq === lineSeq && p.epoch === voiceEpoch) {
-      lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
-      stopSpeaking();
-      playClip(p.text, p.src, p.opts);
+      // A line is audibly mid-play: it OWNS the air — never restart anything
+      // over it (the owner's fragment storm came from exactly this race).
+      if (!clipBusy()) {
+        lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
+        stopSpeaking();
+        playClip(p.text, p.src, p.opts);
+        return;
+      }
+      qaAudio(p.seq, "drop-busy");
       return;
     }
     qaAudio(p.seq, "drop-stale");
@@ -646,6 +698,16 @@ export function stopSpeaking(): void {
   // a stop means the scene moved on; the old line must never replay on the
   // next gesture over new content (verbatim rule: heard = displayed).
   clipPending = null;
+  // The queued line dies with the stop (the ONE cancel) — but its flow
+  // callback must still release: nothing may hang on a line never heard.
+  const q = clipQueued;
+  clipQueued = null;
+  if (q) {
+    qaAudio(lineSeq, "queue-flush");
+    const cb = q.onEnd;
+    q.onEnd = null;
+    if (cb) cb();
+  }
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     try {
       window.speechSynthesis.cancel();
@@ -689,6 +751,24 @@ export function speakSpanish(
   onEnd?: () => void,
 ): void {
   const o: SpeakOpts = typeof opts === "object" && opts !== null ? opts : { slow: opts === true };
+  // ONE CLIP = ONE CONTIGUOUS PLAYBACK (owner play-test: the intro read as
+  // choppy fragments, Pip page 1 as garbled pieces — every tap-driven line
+  // chopped the playing clip mid-sentence). ANY line arriving while a clip is
+  // audibly mid-play WAITS: it queues behind it (latest-wins, slot ≤ 1) and
+  // plays the moment the current clip ends — nothing is ever cut into
+  // fragments, and the replaced queued line's flow callback fires at once so
+  // nothing hangs on a line never heard. Explicit stopSpeaking still flushes.
+  if (clipBusy()) {
+    const old = clipQueued;
+    clipQueued = { text, opts: o, onEnd: onEnd ?? undefined };
+    qaAudio(lineSeq, old ? "queue-replace" : "queue");
+    if (old) {
+      const cb = old.onEnd;
+      old.onEnd = null;
+      if (cb) cb();
+    }
+    return;
+  }
   // Sequence FIRST: every handler/watchdog of the previous line goes stale the
   // moment this line begins — a late end can never fire the new chain's slot.
   lineSeq++;
