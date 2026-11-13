@@ -179,8 +179,8 @@ export const clipStats = { hits: 0, misses: 0, notReady: 0, fallbacks: 0, errors
 /** QA verbatim-audio log (only when a rig sets window.__palabraQA): every
  * speak() request with its resolved clip, every clip start/stop/drop — the
  * drive diffs requested text vs the manifest text of the played file. */
-type QaSpeakEntry = { n: number; text: string; key?: string; clip: string | null; at: number };
-type QaAudioEntry = { n: number; ev: string; file?: string; at: number };
+type QaSpeakEntry = { n: number; text: string; key?: string; clip: string | null; at: number; t: number };
+type QaAudioEntry = { n: number; ev: string; file?: string; at: number; t: number };
 function qaLog<T>(slot: "__palabraSpeak" | "__palabraAudio", entry: T): void {
   if (typeof window === "undefined") return;
   const w = window as unknown as Record<string, unknown>;
@@ -188,11 +188,19 @@ function qaLog<T>(slot: "__palabraSpeak" | "__palabraAudio", entry: T): void {
   const arr = (w[slot] as T[]) ?? (w[slot] = []);
   arr.push(entry);
 }
+/** The QA rig's wall clock (performance.now() − rig boot) so qa entries and
+ * the parent's event timeline share one clock and the analyzer can check
+ * deadlines like "a dialogue page speaks within 500 ms". -1 outside a rig. */
+function qaNow(): number {
+  if (typeof window === "undefined") return -1;
+  const w = window as unknown as Record<string, unknown>;
+  return w.__rigT0 != null ? Math.round(performance.now() - (w.__rigT0 as number)) : -1;
+}
 function qaSpeak(text: string, key: string | undefined, clip: string | null, n: number): void {
-  qaLog<QaSpeakEntry>("__palabraSpeak", { n, text, key, clip, at: Date.now() % 1e7 });
+  qaLog<QaSpeakEntry>("__palabraSpeak", { n, text, key, clip, at: Date.now() % 1e7, t: qaNow() });
 }
 function qaAudio(n: number, ev: string, file?: string): void {
-  qaLog<QaAudioEntry>("__palabraAudio", { n, ev, file, at: Date.now() % 1e7 });
+  qaLog<QaAudioEntry>("__palabraAudio", { n, ev, file, at: Date.now() % 1e7, t: qaNow() });
 }
 
 function loadClips(): void {
@@ -262,6 +270,15 @@ function clipFor(text: string, key?: string): string | null {
   }
   clipStats.misses++;
   return null;
+}
+
+/** clipFor WITHOUT the stats side effects — for QA logging at request time
+ * (the queue branch) so hits/misses still count once, at delivery. */
+function clipForQuiet(text: string, key?: string): string | null {
+  const m = clipManifest;
+  if (!m || !m.clips) return null;
+  const bucket = m.clips[key ?? "narrator"];
+  return bucket && bucket[text] ? "/voice-clips/" + bucket[text] : null;
 }
 
 /** A clip is audibly mid-play RIGHT NOW (never counts a stashed/denied line). */
@@ -567,6 +584,10 @@ export function notifyUserGesture(): void {
       if (!clipBusy()) {
         lineSeq++; // re-arm the seq for the retry (nothing else took the slot)
         stopSpeaking();
+        // QA: the stash replay is a REAL delivery — log its qaSpeak (the n=3
+        // instrumentation gap: qaAudio had the start/end, qaSpeak had nothing).
+        const ci = p.src.indexOf("voice-clips");
+        qaSpeak(p.text, p.opts.key, ci >= 0 ? p.src.slice(ci) : p.src, lineSeq);
         playClip(p.text, p.src, p.opts);
         return;
       }
@@ -761,6 +782,11 @@ export function speakSpanish(
   if (clipBusy()) {
     const old = clipQueued;
     clipQueued = { text, opts: o, onEnd: onEnd ?? undefined };
+    // The line IS accepted now — log its qaSpeak AT REQUEST TIME (quiet clip
+    // lookup, no stats) so a dialogue page whose line queues behind a playing
+    // clip still has its qaSpeak within the 500 ms page-render deadline; the
+    // delivery later logs its own (n bumps then, keeping the sequence honest).
+    qaSpeak(text, o.key, clipForQuiet(text, o.key), lineSeq);
     qaAudio(lineSeq, old ? "queue-replace" : "queue");
     if (old) {
       const cb = old.onEnd;

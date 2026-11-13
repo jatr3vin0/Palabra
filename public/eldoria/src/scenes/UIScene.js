@@ -162,6 +162,7 @@ window.UIScene = class UIScene extends Phaser.Scene {
           // instead of slam-reading line after line — the next page speaks
           // 350 ms after the turn, once, unless another turn re-arms it
           d.speakAt = this.time.now + 350;
+          this.announcePage();
         } else {
           this.closeDialogue();
         }
@@ -176,7 +177,11 @@ window.UIScene = class UIScene extends Phaser.Scene {
 
   showDialogue(payload) {
     if (this.dialogue) this.closeDialogue(true);
-    const pages = (payload && payload.pages && payload.pages.length) ? payload.pages : [['...']];
+    // Every page must be SPEAKABLE (owner rule: every dialogue page render
+    // produces a speak): an empty page array would render blank and drop its
+    // speak, so it is sanitized to an ellipsis page here.
+    const rawPages = (payload && payload.pages && payload.pages.length) ? payload.pages : [['...']];
+    const pages = rawPages.map((p) => (Array.isArray(p) && p.join('').trim()) ? p : ['…']);
     const g = this.add.container(0, 0).setDepth(20);
     const box = this.add.rectangle(160, 180, 308, 62, 0x101024, 0.95).setStrokeStyle(1, 0x8888cc);
     const txt = this.text(12, 156, '', '#ffffff', 8);
@@ -198,7 +203,22 @@ window.UIScene = class UIScene extends Phaser.Scene {
       gloss: payload && payload.gloss ? payload.gloss : null, glossObj,
       speaker: payload && payload.speaker ? payload.speaker : null,
     };
+    this.announcePage();
     this.speakPage();
+  }
+
+  // Readable⇒heard verification (owner rule): every dialogue page render —
+  // the first page AND every page turn — announces itself to the app, so the
+  // QA capture can prove a qaSpeak follows within 500 ms of every render.
+  announcePage() {
+    const d = this.dialogue;
+    if (!d || !window.Palabra) return;
+    window.Palabra.post({
+      type: 'palabra:dialogue',
+      page: d.page,
+      pages: d.pages.length,
+      text: d.pages[d.page].join(' '),
+    });
   }
 
   // Voice-first: every dialogue page is SPOKEN through the app's kokoro

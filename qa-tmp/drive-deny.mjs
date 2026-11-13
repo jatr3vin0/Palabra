@@ -33,11 +33,20 @@ ws.onmessage = (e) => {
 
 const log = (...a) => console.log(...a);
 
-// find or create the adventure target
-let { targetInfos: targets } = await send(ws, "Target.getTargets");
-let page = targets.find((t) => t.type === "page" && t.url.includes("127.0.0.1:3207"));
-if (!page) page = targets.find((t) => t.type === "page");
-const targetId = page ? page.targetId : (await send(ws, "Target.createTarget", { url: "about:blank" })).targetId;
+// find or create the adventure target — STALE TABS poison the run (an old
+// 3207 page attaches, never boots, and the capture goes home empty), so every
+// pre-existing 3207 target is closed and a FRESH one is created.
+{
+  let { targetInfos: targets } = await send(ws, "Target.getTargets");
+  for (const t of targets) {
+    if (t.type === "page" && t.url.includes("127.0.0.1:3207")) {
+      await send(ws, "Target.closeTarget", { targetId: t.targetId }).catch(() => {});
+    }
+  }
+  targets = (await send(ws, "Target.getTargets")).targetInfos;
+}
+let page = null;
+const targetId = (await send(ws, "Target.createTarget", { url: "about:blank" })).targetId;
 const { sessionId } = await send(ws, "Target.attachToTarget", { targetId, flatten: true });
 const S = sessionId;
 await send(ws, "Runtime.enable", {}, S);
@@ -100,11 +109,28 @@ for (let i = 0; i < 30; i++) {
 }
 if (!booted) { log("ABORT: world never booted"); process.exit(1); }
 log("booted (Title)");
+// WORLD SPY: hook the exact speak chain (openDialogue → showDialogue →
+// speakPage → Palabra.speak → post) BEFORE any interaction — every dialogue
+// page render and every drop is then attributable per leg.
+log("spy:", await ev(`(function(){
+  var w = document.querySelector('iframe').contentWindow;
+  if (w.__spy) return 'already';
+  w.__spy = { events: [], errors: [] };
+  w.addEventListener('error', function(e){ w.__spy.errors.push(String(e.message).slice(0,120)+' @'+String(e.filename||'').split('/').pop()+':'+e.lineno); });
+  var ui = w.game.scene.getScene('UI');
+  var osp = ui.speakPage.bind(ui);
+  ui.speakPage = function(){ var d = ui.dialogue; w.__spy.events.push({ k: 'speakPage', text: d ? String(d.pages[d.page].join(' ')).slice(0,40) : null, voiceOn: !!w.PALABRA_VOICE_ON, pal: !!w.Palabra }); try { return osp(); } catch(e) { w.__spy.errors.push('speakPage: '+String(e.message).slice(0,120)); } };
+  var ospeak = w.Palabra.speak.bind(w.Palabra);
+  w.Palabra.speak = function(t, v){ w.__spy.events.push({ k: 'speak', text: String(t).slice(0,40), voice: v }); return ospeak(t, v); };
+  var opost = w.Palabra.post.bind(w.Palabra);
+  w.Palabra.post = function(m){ if (m && m.type === 'palabra:speak') w.__spy.events.push({ k: 'post', text: String(m.text||'').slice(0,40) }); return opost(m); };
+  return 'hooked';
+})()`));
 await calibrate();
 const scene = () => ev(`(function(){try{return document.querySelector('iframe').contentWindow.game.scene.scenes.filter(function(s){return s.scene.isActive()}).map(function(s){return s.scene.key})}catch(e){return ['ERR']}})()`);
 const dlg = () => ev(`(function(){try{var u=document.querySelector('iframe').contentWindow.game.scene.getScene('UI');return u.dialogue?{page:u.dialogue.page,pages:u.dialogue.pages.length}:null}catch(e){return null}})()`);
 const playerPos = () => ev(`(function(){try{var g=document.querySelector('iframe').contentWindow.game.scene.getScene('Game');var p=g.player;return p?{x:p.x,y:p.y}:null}catch(e){return null}})()`);
-const npcPos = (id) => ev(`(function(){try{var g=document.querySelector('iframe').contentWindow.game.scene.getScene('Game');var n=(g.npcs||[]).filter(function(n){return n.npcId==='${id}'||n.id==='${id}'})[0];return n?{x:n.x,y:n.y}:null}catch(e){return null}})()`);
+const npcPos = (id) => ev(`(function(){try{var g=document.querySelector('iframe').contentWindow.game.scene.getScene('Game');var n=(g.npcsLive||[]).filter(function(n){var d=n.def||{};return d.id==='${id}'||d.npc==='${id}'||n.npcId==='${id}'})[0];return n?{x:n.tx,y:n.ty}:null}catch(e){return null}})()`);
 
 // ── TAP 1: title slot row (select+start → Intro; welcome line denied at boot)
 await tapAt(160, 123); // slot row 0 center
@@ -121,32 +147,75 @@ for (let p = 0; p < 5; p++) {
 await sleep(2000);
 log("scene after intro:", JSON.stringify(await scene()));
 
-// ── walk to Pip (trusted arrow taps), then talk
+// ── walk to Pip (trusted arrow taps), then talk ─────────────────────────────
+// npcPos returns TILE coords while playerPos returns PIXEL coords: comparing
+// them directly can never satisfy the ±12 "arrived" check, so the old walk
+// burned all 40 steps against the town sign and talked to the SIGN instead of
+// Pip (the "silent page 0/1 dialogue" in the capture WAS the sign — it spoke).
+const TILE = 16;
+const spyDump = () => ev(`(function(){try{var w=document.querySelector('iframe').contentWindow;return JSON.stringify({spy:(w.__spy&&w.__spy.events||[]).slice(-8),errors:(w.__spy&&w.__spy.errors||[]).slice(-4)})}catch(e){return 'ERR'}})()`);
 const pip = await npcPos("kid_pip");
-log("pip:", JSON.stringify(pip), "player:", JSON.stringify(await playerPos()));
+log("pip tile:", JSON.stringify(pip), "player px:", JSON.stringify(await playerPos()));
 if (pip) {
-  for (let step = 0; step < 40; step++) {
+  let stuck = 0, lastPos = null;
+  for (let step = 0; step < 60; step++) {
     const me = await playerPos();
     if (!me) break;
-    const dx = pip.x - me.x, dy = pip.y - me.y;
-    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) break;
-    if (Math.abs(dx) > Math.abs(dy)) await keyTap(dx > 0 ? "ArrowRight" : "ArrowLeft", dx > 0 ? 39 : 37);
-    else await keyTap(dy > 0 ? "ArrowDown" : "ArrowUp", dy > 0 ? 40 : 38);
+    const mtx = Math.floor(me.x / TILE), mty = Math.floor(me.y / TILE);
+    const dx = pip.x - mtx, dy = pip.y - mty;
+    // stand ADJACENT on Pip's row so the front tile IS Pip (approach west)
+    if (Math.abs(dx) <= 1 && dy === 0) break;
+    if (lastPos && Math.abs(me.x - lastPos.x) < 1 && Math.abs(me.y - lastPos.y) < 1) stuck++; else stuck = 0;
+    lastPos = me;
+    let dir;
+    if (stuck >= 3) { dir = dy === 0 ? (mty % 2 ? "ArrowDown" : "ArrowUp") : "ArrowRight"; stuck = 0; }
+    else if (dy !== 0) dir = dy > 0 ? "ArrowDown" : "ArrowUp";
+    else dir = dx > 0 ? "ArrowRight" : "ArrowLeft";
+    await keyTap(dir, { ArrowRight: 39, ArrowLeft: 37, ArrowDown: 40, ArrowUp: 38 }[dir]);
     await sleep(520);
   }
-  // talk: action (SPACE) near Pip — opens the dialogue, page 1 speaks
+  log("walk end: player px", JSON.stringify(await playerPos()), "spy:", await spyDump());
+  // TALK 1 — Pip's greeting (first meeting; sets npc_pip_met, 3 pages)
   await sleep(400);
   await keyTap(" ", 32);
   await sleep(2200);
-  // Pip's dialogue pages: advance with SPACE at realistic gaps (2.2s)
   for (let p = 0; p < 10; p++) {
     const d = await dlg();
     if (!d) break;
-    log("pip page " + d.page + "/" + d.pages);
+    log("pip greeting page " + d.page + "/" + d.pages);
     await keyTap(" ", 32);
     await sleep(2200);
   }
+  log("after greeting: spy:", await spyDump());
+  // TALK 2 — the handoff variant (npc_pip_met now set): mission_pip_jet →
+  // the mission overlay opens on dialogue close. 1800 ms keeps the talk's
+  // 1500 ms no-re-talk guard from swallowing the press.
+  await sleep(1800);
+  await keyTap(" ", 32);
+  await sleep(2200);
+  for (let p = 0; p < 10; p++) {
+    const d = await dlg();
+    if (!d) break;
+    log("pip handoff page " + d.page + "/" + d.pages);
+    await keyTap(" ", 32);
+    await sleep(2200);
+  }
+  // resilience: if talk 2's SPACE was swallowed, one more try (the handoff
+  // variant is what opens the overlay, so a swallowed press kills the leg)
+  if (!(await dlg())) {
+    await sleep(1800);
+    await keyTap(" ", 32);
+    await sleep(2200);
+    for (let p = 0; p < 10; p++) {
+      const d = await dlg();
+      if (!d) break;
+      log("pip handoff(retry) page " + d.page + "/" + d.pages);
+      await keyTap(" ", 32);
+      await sleep(2200);
+    }
+  }
   await sleep(2500); // mission handoff → overlay opens (parent speaks)
+  log("after handoff: spy:", await spyDump());
 }
 
 // ── mission overlay (parent DOM): ¡Jugar!
@@ -159,9 +228,10 @@ if (overlayBtn) {
   log("overlay:", overlayBtn.t, "→ tap ¡Jugar!");
   await tap(overlayBtn.x, overlayBtn.y);
   await sleep(3000); // instructions + first balloons speak
-  // jet rounds: tap the correct word balloon (2 rounds)
+  // jet rounds: tap the correct word balloon (2 rounds) — the frame game may
+  // render in the parent DOM or in a nested iframe, so scan every document
   for (let round = 0; round < 2; round++) {
-    const target = await ev(`(function(){try{var f=document.querySelector('iframe');var d=f?f.contentDocument:document;var prompt=d.body.innerText.match(/toca la palabra\\s+([^\\n.]+)/i)||d.body.innerText.match(/palabra:\\s*([^\\n.]+)/i);var want=prompt?prompt[1].trim():null;var els=[].slice.call(d.querySelectorAll('button,[class*=balloon],[class*=word],[class*=bal]'));var hit=want?els.filter(function(e){return e.textContent.trim()===want})[0]:els.filter(function(e){return /casa|mesa|silla|sol|luna/.test(e.textContent)})[0];if(!hit)return null;var r=hit.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,want:want,t:hit.textContent.trim()}}catch(e){return null}})()`);
+    const target = await ev(`(function(){try{var docs=[document];[].forEach.call(document.querySelectorAll('iframe'),function(f){try{if(f.contentDocument)docs.push(f.contentDocument)}catch(e){}});var want=null,txt='';for(var i=0;i<docs.length&&!want;i++){txt=docs[i].body.innerText;var m=txt.match(/toca la(?: palabra| que)\\s+([^\\n.]+)/i)||txt.match(/palabra:\\s*([^\\n.]+)/i)||txt.match(/as[ií]:\\s*[¡"]*([^\\n.¡!"]+)/i);if(m)want=m[1].trim();}var hit=null;for(var j=0;j<docs.length&&!hit;j++){var els=[].slice.call(docs[j].querySelectorAll('button,[class*=balloon],[class*=word],[class*=bal]'));hit=want?els.filter(function(e){return e.textContent.trim().toLowerCase()===String(want).toLowerCase()})[0]:els.filter(function(e){return /casa|mesa|silla|sol|luna|hola/.test(e.textContent)})[0];}if(!hit)return null;var r=hit.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,want:want,t:hit.textContent.trim()}}catch(e){return null}})()`);
     if (!target) { log("round " + round + ": no balloon found, skipping"); break; }
     log("round " + round + ": tap", target.t, "want", target.want);
     await tap(target.x, target.y);
@@ -175,6 +245,17 @@ if (overlayBtn) {
 }
 
 await sleep(2000); // let the last lines finish/flush
+// post-run leg state: was the world alive, was a dialogue open, did the
+// overlay ever render — the analyzer reads the legs, this explains them.
+const legState = await ev(`(function(){try{
+  var f=document.querySelector('iframe');var w=f&&f.contentWindow;var out={alive:!!(w&&w.game)};
+  if(w&&w.game){var u=w.game.scene.getScene('UI');var g=w.game.scene.getScene('Game');
+    out.dlg=u&&u.dialogue?{page:u.dialogue.page,pages:u.dialogue.pages.length,text:(u.dialogue.pages[u.dialogue.page]||[]).join(' ')}:null;
+    out.dialogOpen=!!(g&&g.dialogOpen);
+    out.scene=w.game.scene.scenes.filter(function(s){return s.scene.isActive()}).map(function(s){return s.scene.key});}
+  out.btns=[].map.call(document.querySelectorAll('button'),function(b){return b.textContent.trim()}).filter(function(t){return t});
+  return JSON.stringify(out);}catch(e){return JSON.stringify({err:e.message})}})()`);
+log("leg state:", legState);
 const dump = await ev(`(function(){try{return window.__R&&window.__R.snap?window.__R.snap():JSON.stringify({parent:window.__audioEvents||[],qaSpeak:window.__palabraSpeak||[],qaAudio:window.__palabraAudio||[],tts:window.__ttsCalls||0,clips:window.__palabraClips||{}})}catch(e){return JSON.stringify({err:e.message})}})()`);
 writeFileSync(OUT, dump);
 log("capture written:", OUT, "bytes:", dump.length);

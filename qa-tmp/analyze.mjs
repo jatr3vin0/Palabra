@@ -54,4 +54,20 @@ console.log("── voice.ts log ──");
 for (const e of Q) console.log(`n=${e.n} ${e.ev}${e.file ? " " + e.file.slice(0, 30) : ""}`);
 console.log("── speaks ──");
 for (const e of S) console.log(`n=${e.n} [${e.key}] ${(e.text || "").slice(0, 52)} ${e.clip ? "CLIP" : "device"}`);
+
+// R-DIALOGUE (owner rule): EVERY dialogue page render must log a qaSpeak
+// within 500 ms. The world announces each page render as MSG:palabra:dialogue
+// (UIScene.announcePage); qa entries carry the rig clock `t` (same timeline
+// as the parent events), so the deadline is checkable across both lists.
+const renders = A.filter((e) => e.ev === "MSG:palabra:dialogue");
+let dlgSilent = 0;
+console.log("── dialogue-page rule ──");
+for (const m of renders) {
+  const want = String(m.txt || "").slice(0, 40);
+  const hit = S.find((s) => s.t != null && s.t >= m.t - 150 && s.t <= m.t + 500 && String(s.text || "").slice(0, 40) === want);
+  if (!hit) { dlgSilent++; console.log(`DIALOGUE PAGE SILENT: t=${m.t} "${want}" (no qaSpeak within 500ms)`); }
+  else console.log(`dialogue page ok: t=${m.t} "${want}" → qaSpeak@${hit.t}`);
+}
+const ok = dlgSilent === 0;
 console.log(`── METRICS: maxConcurrent=${maxConc} resumes=${resumes} restarts=${restarts} ttsCalls=${c.tts} fallbacks=${(c.clips || {}).fallbacks} errors=${(c.clips || {}).errors} hits=${(c.clips || {}).hits} misses=${(c.clips || {}).misses}`);
+console.log(`── VERDICT: dialogue pages=${renders.length} silent=${dlgSilent} dialogueRule=${ok ? "GREEN" : "RED"}`);
