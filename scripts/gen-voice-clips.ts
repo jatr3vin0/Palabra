@@ -29,20 +29,21 @@
  * fallback, byte-for-byte the old path.)
  *
  * Voice: kokoro-js 1.2.1 (Apache-2.0) on onnx-community/Kokoro-82M-v1.0-ONNX
- * (q8), one .bin per cast row's voiceId (ef_dora / em_alex / em_santa), speed =
- * the cast row's speed. Spanish G2P = espeak-ng WASM (GPL-3; the phonemizer
- * bundle is English-only — the kokoro-es repair, efe1498). MP3 via
+ * (fp32; quantized CPU weights produced clipped/static PCM), one .bin per cast
+ * row's voiceId (ef_dora / em_alex / em_santa), speed =
+ * the cast row's speed. Spanish G2P = the full system espeak-ng data/CLI
+ * (GPL-3; the npm WASM bundle's partial Spanish data spells punctuation and
+ * accented characters by name). MP3 via
  * @breezystack/lamejs (24 kHz mono, 96 kbps).
  *
  * Run: bun scripts/gen-voice-clips.ts   (resumable — existing files are kept)
  */
 
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { mkdir, stat, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-// @ts-ignore — espeak-ng ships no types (scripts/espeak-ng.d.ts covers it)
-import espeakFactory from "espeak-ng";
 import { KokoroTTS } from "kokoro-js";
 import lamejs from "@breezystack/lamejs";
 
@@ -50,6 +51,7 @@ import lamejs from "@breezystack/lamejs";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = path.join(ROOT, "public", "voice-clips");
 const MODEL = "onnx-community/Kokoro-82M-v1.0-ONNX";
+const MODEL_DTYPE = "fp32" as const;
 
 // ── the cast (src/lib/voiceCast.ts is the ONE table) ────────────────────────
 type VoiceKey = keyof typeof VOICE_CAST;
@@ -346,13 +348,72 @@ for (const c of clips) perVoice.set(c.voice, (perVoice.get(c.voice) ?? 0) + 1);
 for (const [v, n] of [...perVoice.entries()].sort()) console.log(`  ${v}: ${n} clips`);
 
 // ── generation ───────────────────────────────────────────────────────────────
-/** espeak-ng G2P (the kokoro-es repair): one CLI-style instance per line. */
-async function phonemizeEs(text: string): Promise<string> {
-  const espeak = await espeakFactory({
-    arguments: ["--phonout", "out", '--sep=""', "-q", "-b=1", "--ipa=3", "-v", "es", text],
-  });
-  const raw = espeak.FS.readFile("out", { encoding: "utf8" });
-  return raw.split("\n").filter((l: string) => l.length > 0).join(" ").trim();
+/** Full system espeak-ng G2P. The npm WASM build omits enough Spanish data that
+ * it reads unknown punctuation/diacritics as character names. Never use it for
+ * shipped clips. */
+function phonemizeEs(text: string): string {
+  let raw: string;
+  try {
+    raw = execFileSync("espeak-ng", ["-q", "--ipa=3", "-v", "es", text], {
+      encoding: "utf8",
+      maxBuffer: 1024 * 1024,
+    });
+  } catch (err) {
+    throw new Error(`full system espeak-ng is required: ${String((err as Error)?.message ?? err)}`);
+  }
+  return raw.split("\n").filter((l) => l.trim().length > 0).join(" ").trim();
+}
+
+/** Reject the exact family of character-name fallbacks emitted by the partial
+ * WASM voice. Stress marks vary, so compare a stress-free form. A standalone
+ * letter name is only legitimate when the source itself contains that isolated
+ * letter (the spelling mini-game does). */
+function assertPhonemeSanity(text: string, phonemes: string): void {
+  const p = phonemes.toLocaleLowerCase("es").replace(/[ˈˌ']/gu, "");
+  const junk: Array<[string, RegExp]> = [
+    ["tilde character name", /atildə|tildə/u],
+    ["acute character name", /a?akute|aɣuðo/u],
+    ["circumflex character name", /a?θiɾkumflexo|θiɾkunflexo/u],
+    ["cedilla character name", /a?θeði(?:ʎ|j)a/u],
+    ["breve character name", /a?bɾeβe/u],
+    ["plus character name", /(?:^|\s)plus(?:\s|$)/u],
+    ["minus character name", /(?:^|\s)minus(?:\s|$)/u],
+    ["copyright character name", /kopiɾa(?:it|jt)|kopiɾajt/u],
+  ];
+  for (const [label, re] of junk) {
+    if (re.test(p)) throw new Error(`phoneme sanity: ${label} in ${JSON.stringify(phonemes)}`);
+  }
+  if (/(?:^|\s)ɛne(?:\s|$)/u.test(p) && !/(?:^|[^\p{L}])n(?:$|[^\p{L}])/iu.test(text)) {
+    throw new Error(`phoneme sanity: unexpected Latin letter-name "ene" in ${JSON.stringify(phonemes)}`);
+  }
+}
+
+/** Guard the raw Kokoro PCM before lossy encoding. This rejects silence,
+ * non-finite/static output, sustained clipping, and implausible duration for
+ * the amount of spoken text. */
+function assertPcmSanity(text: string, audio: Float32Array, sampleRate: number): void {
+  if (!Number.isFinite(sampleRate) || sampleRate < 8_000 || !audio.length) throw new Error("PCM sanity: empty/invalid PCM");
+  let peak = 0;
+  let sumSquares = 0;
+  let clipped = 0;
+  for (const sample of audio) {
+    if (!Number.isFinite(sample)) throw new Error("PCM sanity: non-finite sample/static");
+    const a = Math.abs(sample);
+    peak = Math.max(peak, a);
+    sumSquares += sample * sample;
+    if (a >= 0.999) clipped++;
+  }
+  const rms = Math.sqrt(sumSquares / audio.length);
+  const clippedRatio = clipped / audio.length;
+  const duration = audio.length / sampleRate;
+  const words = Math.max(1, text.match(/[\p{L}\p{N}]+/gu)?.length ?? 0);
+  const minDuration = Math.max(0.16, words * 0.06);
+  const maxDuration = 2.5 + words * 2.2;
+  if (peak < 0.005 || rms < 0.0015) throw new Error(`PCM sanity: near-silent peak=${peak.toFixed(4)} rms=${rms.toFixed(4)}`);
+  if (peak > 1.05 || clippedRatio > 0.01) throw new Error(`PCM sanity: clipping/static peak=${peak.toFixed(4)} clipped=${(clippedRatio * 100).toFixed(2)}%`);
+  if (duration < minDuration || duration > maxDuration) {
+    throw new Error(`PCM sanity: duration ${duration.toFixed(2)}s outside ${minDuration.toFixed(2)}–${maxDuration.toFixed(2)}s for ${words} words`);
+  }
 }
 
 function encodeMp3(audio: Float32Array, sampleRate: number): Uint8Array {
@@ -385,14 +446,32 @@ if (process.env.CLIPS_DRY) {
   process.exit(0);
 }
 
+// Phonemize and validate the WHOLE corpus before loading the model. One bad
+// character-name fallback aborts the run before any clip can be replaced.
+console.log("phonemizing full corpus with system espeak-ng…");
+const phonemesByHash = new Map<string, string>();
+for (const c of clips) {
+  const phonemes = phonemizeEs(c.text);
+  if (!phonemes) throw new Error(`espeak-ng produced no phonemes for ${JSON.stringify(c.text)}`);
+  assertPhonemeSanity(c.text, phonemes);
+  phonemesByHash.set(c.hash, phonemes);
+}
+for (const probe of ["Ciudad de Destrucción", "te espera. ¡Ve, peregrino!"]) {
+  const ipa = phonemizeEs(probe);
+  assertPhonemeSanity(probe, ipa);
+  console.log(`  G2P ${JSON.stringify(probe)} → ${ipa}`);
+}
+console.log(`phoneme sanity: ${clips.length} clips passed`);
+
 console.log("loading kokoro model…");
-const tts = await KokoroTTS.from_pretrained(MODEL, { dtype: "q8", device: "cpu" });
+const tts = await KokoroTTS.from_pretrained(MODEL, { dtype: MODEL_DTYPE, device: "cpu" });
 console.log("model ready");
 
 await mkdir(OUT_DIR, { recursive: true });
 let generated = 0;
 let skipped = 0;
 let failed = 0;
+let pcmFallbacks = 0;
 const failedClips: Clip[] = [];
 const t0 = Date.now();
 for (let i = 0; i < clips.length; i++) {
@@ -408,14 +487,31 @@ for (let i = 0; i < clips.length; i++) {
     // not generated yet
   }
   try {
-    const phonemes = await phonemizeEs(c.text);
-    if (!phonemes) throw new Error("espeak produced no phonemes");
+    const phonemes = phonemesByHash.get(c.hash);
+    if (!phonemes) throw new Error("validated phonemes missing from preflight");
     const { input_ids } = tts.tokenizer(phonemes, { truncation: true });
-    const out = await tts.generate_from_ids(input_ids, {
-      voice: VOICE_CAST[c.voice].voiceId,
-      speed: VOICE_CAST[c.voice].speed,
-    } as unknown as never);
-    if (!out.audio.length) throw new Error("kokoro produced no audio");
+    const primaryVoice = VOICE_CAST[c.voice].voiceId;
+    const candidates = [...new Set([primaryVoice, "em_alex", "em_santa"])] as string[];
+    let out: { audio: Float32Array; sampling_rate: number } | undefined;
+    const pcmErrors: string[] = [];
+    for (const voiceId of candidates) {
+      try {
+        const candidate = await tts.generate_from_ids(input_ids, {
+          voice: voiceId,
+          speed: VOICE_CAST[c.voice].speed,
+        } as unknown as never);
+        assertPcmSanity(c.text, candidate.audio, candidate.sampling_rate);
+        out = candidate;
+        if (voiceId !== primaryVoice) {
+          pcmFallbacks++;
+          console.warn(`  PCM fallback [${c.voice}] ${primaryVoice} → ${voiceId}: ${JSON.stringify(c.text.slice(0, 55))}`);
+        }
+        break;
+      } catch (err) {
+        pcmErrors.push(`${voiceId}: ${String((err as Error)?.message ?? err)}`);
+      }
+    }
+    if (!out) throw new Error(`all voice PCM candidates failed: ${pcmErrors.join(" | ")}`);
     await mkdir(path.dirname(outPath), { recursive: true });
     await writeFile(outPath, encodeMp3(out.audio, out.sampling_rate));
     generated++;
@@ -443,7 +539,7 @@ for (const c of clips) {
 }
 await writeFile(path.join(OUT_DIR, "manifest.json"), JSON.stringify(manifest, null, 1));
 
-console.log(`done: ${generated} generated, ${skipped} already on disk, ${failed} failed`);
+console.log(`done: ${generated} generated, ${skipped} already on disk, ${failed} failed, ${pcmFallbacks} safe PCM fallbacks`);
 for (const c of failedClips) console.warn(`  missing: [${c.voice}] ${c.text.slice(0, 70)}`);
 console.log(`manifest: ${clips.length - failed} entries → public/voice-clips/manifest.json`);
 if (failed > 0) process.exit(1);
